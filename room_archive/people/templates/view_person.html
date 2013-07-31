@@ -1,0 +1,43 @@
+
+{% extends 'schedulebase.html' %}
+
+{% block content %}
+	{% if person %}
+		<p>Naam: {{ person.name }}</p>
+		{% if user.is_authenticated %}
+			<p>E-mail: 
+			{% if person.email %}
+				<a href="mailto:{{ person.email }}">{{ person.email }}</a> (alleen zichtbaar voor zaalwachten)
+			{% else %}
+				(niet ingesteld?)
+			{% endif %}
+			</p>
+		{% endif %}
+		<p>Bevestigingsmails: {% if person.confirmations %}aan{% else %}uit{% endif %}</p>
+		{% if person.reservations.all %}
+			<p>Reserveringen ({{ person.reservations.all|length }}):</p>
+			<ul>
+				{% for reservation in person.reservations.all %}
+					<li {% if reservation.no_show %}class="reservation_no_show"{% endif %}>
+						{{ reservation.start|date:"M d Y, H:i" }} - 
+						<a href="{% url room reservation.room.pk %}">{{ reservation.room }}</a>
+						{% if reservation.name %}
+							{{ reservation.name }}
+						{% else %}
+							(geen beschrijving)
+						{% endif %}
+						{% if reservation.no_show %} - niet op komen dagen{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+		{% else %}
+			<p>{{ person }} heeft geen reserveringen.</p>
+		{% endif %}
+	{% else %}
+		<p>Er is geen gebruiker met dit id, sorry.</p>
+	{% endif %}
+	
+	<a href="/" data-role="button" data-icon="check">Terug naar de kalender</a>
+	
+{% endblock content %}
+

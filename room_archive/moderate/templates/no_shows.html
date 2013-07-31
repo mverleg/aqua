@@ -1,0 +1,29 @@
+
+{% extends 'schedulebase.html' %}
+
+{% block content %}
+	
+	<p>Dit is een overzicht van reserveringen in de laatste weken waarvoor mensen niet (of ruim te laat) zijn komen opdagen. Mogelijk staan mensen meerdere keren in de lijst (als ze meerdere keren niet zijn komen opdagen) of zijn ze al benaderd; dit houdt het systeem niet bij.</p>
+	
+	{% for reservation in reservations %}
+		<p style="margin-bottom: 2em;">
+			{% with reservation.person.no_shows.count as no_show_count %}
+			<strong>Reservering</strong>: {{ reservation.room }} op {{ reservation.start|date:"M d Y" }} van {{ reservation.start|date:"H:i" }} tot {{ reservation.end|date:"H:i" }}
+			{% if reservation.name %}voor "{{ reservation.name }}"{% else %}(geen beschrijving opgegeven){% endif %}
+			<br /> 
+			<strong>Persoon</strong>: {{ reservation.person.name }}, {{ reservation.person.email }}. Reserveringen: {{ reservation.person.reservations.count }}; niet gekomen: {{ no_show_count }}x
+			<br />
+			<strong>Mail</strong> (copy/paste):<br />
+			Beste {{ reservation.person.name }},<br />
+			Op {{ reservation.start|date:"M d Y" }} heb je van {{ reservation.start|date:"H:i" }} tot {{ reservation.end|date:"H:i" }} ruimte {{ reservation.room }} in het studielandschap gereserveerd, je hebt hier uiteindelijk echter geen gebruik van gemaakt.
+			{% if no_show_count > 1 %}
+				Dit is al {{ no_show_count|add:"-1" }} keer eerder voorgevallen, dus ik wil je nadrukkelijk vragen je in het vervolg af te melden. Dit kan via <a href="mailto:reserveringenstudielandschap@gmail.com" class="discrete_link">reserveringenstudielandschap@gmail.com</a>.<br />
+			{% else %}
+				Zou je in het vervolg als je verhindert bent of de ruimte niet meer nodig hebt kunnen mailen naar <a href="mailto:reserveringenstudielandschap@gmail.com" class="discrete_link">reserveringenstudielandschap@gmail.com</a> zodat andere mensen deze kunnen gebruiken?<br />
+			{% endif %}
+			Bij voorbaat dank,<br />
+			{% endwith %}
+		</p>
+	{% endfor %}
+	
+{% endblock content %}

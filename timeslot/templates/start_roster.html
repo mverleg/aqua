@@ -1,0 +1,24 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<h1>Start een nieuw rooster</h1>
+	
+	<p>Een administrator moet dit voor aanvang van elk werkrooster doen, bijvoorbeeld een paar weken voor aanvang van een kwartaal.</p>
+	
+	<form action="" method="POST">
+		
+		{{ create_roster_form.as_p }}
+		
+		{% csrf_token %}
+		
+		<p>Tijden kunnen geextrapoleerd worden van een eerder werkrooster. Als dat wenselijk is, kies dan hier een rooster. Anders kan het leeg worden gelaten.</p>
+		
+		{{ template_roster_form.as_p}}
+		
+		<input type="submit" value="Verder" data-role="button" data-icon="check" />
+		
+	</form>
+	
+{% endblock content %}

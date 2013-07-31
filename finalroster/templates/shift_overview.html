@@ -1,0 +1,28 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<p>Overzicht van uren voor {{ user.get_full_name }} tijdens maand #{{ month }} van {{ year }}</p>
+	
+	<ul>
+	{% for day in hourlist.values %}
+		{% if day.hours %}
+			<li>
+				{{ day.weekday }} {{ day.day }}: <strong>{{ day.hours }}</strong>
+			</li>
+		{% endif %}
+	{% endfor %}
+	</ul>
+	
+	<p>In totaal heeft {{ user.get_full_name }} deze maand <strong>{{ total }}</strong> uur gewerkt.</p>
+	
+	<p id="pagination">
+		<a class="left_align" href="{% url 'month_overview' user=user.pk year=prev_year month=prev_month %}"><< previous</a>
+		<a class="right_align" href="{% url 'month_overview' user=user.pk year=next_year month=next_month %}">next >></a>
+		<br class="clear" />
+	</p>
+	
+{% endblock content %}
+
+

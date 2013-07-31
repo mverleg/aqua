@@ -1,0 +1,41 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<h1>Roosters</h1>
+	
+	<ul>
+		{% for roster in rosters %}
+			<li>
+				{% if roster.state == 0 %}
+					<a href="{% url 'add_timeslots' roster=roster.pk %}">{{ roster.name }}</a>
+					 from {{ roster.start }} to {{ roster.end }}
+					 [<a href="{% url 'delete_roster' roster=roster.pk %}" class="delete_link">delete</a>]
+					  - rooster wordt ingericht
+				 {% elif roster.state == 1 %}
+					<a href="{% url 'invite_workers' roster=roster.pk %}">{{ roster.name }}</a>
+					 from {{ roster.start }} to {{ roster.end }}
+					 [<a href="{% url 'delete_roster' roster=roster.pk %}" class="delete_link">delete</a>]
+					  - tijden worden doorgegeven
+				 {% elif roster.state == 2 %}
+					<a href="{% url 'calculate_status' roster=roster.pk %}">{{ roster.name }}</a>
+					 from {{ roster.start }} to {{ roster.end }}
+					  - shifts worden verdeeld
+				 {% elif roster.state == 3 %}
+					<a href="{% url 'calculate_status' roster=roster.pk %}">{{ roster.name }}</a>
+					 from {{ roster.start }} to {{ roster.end }}
+					 [<a href="{% url 'delete_roster' roster=roster.pk %}" class="delete_link">delete</a>]
+					  - shifts verdeeld, klaar voor activatie
+				 {% elif roster.state == 4 %}
+					<a href="{% url 'final_roster' roster=roster.pk %}">{{ roster.name }}</a>
+					 from {{ roster.start }} to {{ roster.end }}
+					  - actief!
+				 {% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+	
+	<a href="{% url 'start_roster' %}">Start een rooster</a>
+	
+{% endblock content %}

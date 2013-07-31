@@ -1,0 +1,9 @@
+<p>Beste {{ user.name }},</p>
+
+<p>Hierbij een bevestiging voor het reservering van <a href="{% url room reservation.room.pk %}">{{ reservation.room }}</a> op {{ reservation.start|date:"M d Y" }} van {{ reservation.start|date:"H:i" }} tot {{ reservation.end|date:"H:i" }}.</p>
+
+<p>Mocht je toch van de reservering af willen zien, dan kan je deze laten vervallen door op <a href="{{ base_url }}{% url cancel_reservation token=reservation.delete_code %}">annuleren</a> te klikken. Voor eventuele vragen kan je terecht bij de zaalwachten, in persoon of via <a href="mailto:reserveringenstudielandschap@gmail.com">reserveringenstudielandschap@gmail.com</a>.</p>
+
+<p>Tot ziens in de Library of Science</p>
+
+<p>Geen bevestigingsmails meer ontvangen? <a href="{{ base_url }}{% url subscribe_status token=user.email_token %}">Afmelden</a></p>

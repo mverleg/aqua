@@ -1,0 +1,52 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<h1>Roostersite</h1>
+	
+	{% if availabilities %}
+		<p>Je wordt gevraagd voor de volgende roosters je beschikbaarheid door te geven:</p>
+		<ul>
+			{% for roster in availabilities %}
+			<li>
+				<a href="{% url 'availability' roster=roster.pk %}">{{ roster.name }}</a>, {{ roster.timestr }}
+			</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<p>Als er roosters zijn waarvoor je gevraagd wordt beschikbaarheid door te geven komen ze hier</p>
+	{% endif %}
+	
+	{% if final %}
+		<p>Verdeelde roosters:</p>
+		<ul>
+			{% for roster in final %}
+			<li>
+				<a href="{% url 'final_roster' roster=roster.pk %}">{{ roster.name }}</a>, {{ roster.timestr }}
+			</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<p>Er zijn momenteel geen definitieve roosters</p>
+	{% endif %}
+	
+	<p><a href="{% url 'month_overview' user=user.pk %}">Overzicht</a> van je gewerkte uren</p>
+	
+	<p>
+		<a href="{% url 'change_password' %}">Wachtwoord veranderen</a> | 
+		<a href="{% url 'logout' %}">Uitloggen</a>
+	</p>
+	
+	{% if user.is_staff %}
+	<p>Beheer:</p>
+	<ul>
+		<li><a href="{% url 'start_roster' %}">Start een rooster</a></li>
+		<li><a href="{% url 'roster_overview' %}">Beheer roosters</a></li>
+		<li><a href="{% url 'month_overview_all' %}">Overzichten werkuren</a></li>
+		<li><a href="/admin/">Admin</a></li>
+	</ul>
+	{% endif %}
+	
+{% endblock content %}
+

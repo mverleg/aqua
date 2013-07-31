@@ -1,0 +1,99 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<h1>{{ slot.start|date:"Y-m-d" }} van {{ slot.start|date:"H:i" }} tot {{ slot.end|date:"H:i" }}</h1>
+	
+	<p>
+		{% if assignments %}
+			{% for assignment in assignments %}
+				<strong>{{ assignment.user.get_full_name }}</strong>
+				{% if not forloop.last %} & {% endif %}
+			{% endfor %}
+			 {{ assignments|pluralize:"heeft,hebben" }} een shift op deze tijd.
+		{% else %}
+			Niemand heeft een shift op deze tijd.
+		{% endif %}
+	</p>
+	
+	{% if assignments.count < slot.degeneracy %}
+		<p>
+			Deze shift is vrij.
+			<form action="{% url 'assignment_submit_claim' timeslot=slot.pk %}" method="POST">
+				{% csrf_token %}
+				<input type="submit" value="Ik wil deze shift" />
+			</form>
+		</p>
+	{% endif %}
+	
+	{% for assignment in assignments %}
+		{% if assignment.fortrade == 2 %}
+			<p>
+				Deze shift is vrij of wordt weggegeven.
+				<form action="{% url 'assignment_submit_claim' timeslot=slot.pk %}" method="POST">
+					{% csrf_token %}
+					<input type="submit" value="Ik wil deze shift" />
+				</form>
+			</p>
+		{% endif %}
+		
+		{% if assignment.fortrade == 1 %}
+			<p>{{ assignment.user.get_full_name }} wil deze shift ruilen. Stuur een mail als je interesse hebt.</p>
+		{% endif %}
+	{% endfor %}
+	
+	{% if owner_shift %}
+		<p>Je hebt een shift op deze tijd {% if owner_shift.note %}met opmerking "{{ owner_shift.note }}"{% endif %}. Wat wil je hier mee doen?</p>
+		
+		{% if owner_shift.fortrade == 1 %}
+			<p><strong>Je hebt deze shift te ruil aangeboden.</strong></p>
+		{% elif owner_shift.fortrade == 2 %}
+			<p><strong>Je hebt deze shift opgegeven; iedereen kan hem claimen.</strong></p>
+		{% elif owner_shift.giveto %}
+			<p><strong>Je geeft deze shift aan {{ owner_shift.giveto.username }}.</strong> Selecteer een van de opties om dit ongedaan te maken.</p>
+		{% endif %}
+		
+		<form action="{% url 'assignment_submit' assignment=owner_shift.pk %}" method="POST">
+		<ul style="list-style-type: none;">
+			{% if not owner_shift.fortrade == 0 %}<li><input type="radio" name="action" value="keep" /> Houden: de shift niet langer wegruilen of -geven</li>{% endif %}
+			{% if not owner_shift.fortrade == 1 %}<li><input type="radio" name="action" value="trade" /> Wegruilen: shift wordt als ruilbaar gemarkeerd</li>{% endif %}
+			{% if not owner_shift.fortrade == 2 %}<li><input type="radio" name="action" value="free" /> Opgeven: iedereen kan de shift claimen (maar tot dat gebeurt is het jouw verantwoordelijkheid)</li>{% endif %}
+			<li><input type="radio" name="action" value="gift" /> Aan iemand geven (de persoon moet wel accepteren)</li>
+			{% if not owner_shift.fortrade == 3 %}<li><input type="radio" name="action" value="split" /> Splitsen: de shift opsplitsen in twee kortere shifts</li>{% endif %}
+		</ul>
+		{% csrf_token %}
+		<p><input type="submit" value="Uitvoeren" /></p>
+		</form>
+	{% endif %}
+	
+	{% if user.is_staff %}
+		<p>Beheer</p>
+		{% for assignment in assignments %}
+			<p>
+				<form action="{% url 'assignment_submit_staff' assignment=assignment.pk %}" method="POST" style="display: inline;">
+					{% csrf_token %}
+					<input type="hidden" name="action" value="transfer" />
+					<input type="submit" value="Naar iemand anders overzetten" />
+				</form>
+				<form action="{% url 'assignment_submit_staff' assignment=assignment.pk %}" method="POST" style="display: inline;">
+					{% csrf_token %}
+					<input type="hidden" name="action" value="terminate" />
+					<input type="submit" value="Deze assignment opheffen" />
+				</form>
+				{{ assignment.user.get_full_name }}
+			</p>
+		{% endfor %}
+		{% if assignments.count < slot.degeneracy %}
+			<form action="{% url 'assignment_submit_delete_empty' timeslot=slot.pk %}" method="POST" style="display: inline;">
+				{% csrf_token %}
+				<input type="submit" value="Lege shift opheffen" />
+			</form>
+		{% endif %}
+	{% endif %}
+	
+	<p><a href="{% url 'final_roster' roster=roster.pk %}">Naar het overzicht</a></p>
+	
+{% endblock content %}
+
+

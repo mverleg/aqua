@@ -1,0 +1,116 @@
+
+from django_cal.views import Events  # @UnresolvedImport
+from distribute.models import Assignment
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from django.db.models.query_utils import Q
+import datetime, pytz  # @UnresolvedImport
+
+#TODO: less hacky
+def localize(dt):
+	tz = pytz.UTC
+	s = datetime.timedelta(hours = 2)
+	return tz.localize(dt - s)
+
+
+class AllCalendar(Events):
+	
+	def items(self):
+		return Assignment.objects.all()
+	
+	def filename(self):
+		return 'shifts_all.ics'
+	
+	def cal_name(self):
+		return 'Zaalwacht (iedereen)'
+	
+	def cal_desc(self):
+		return None
+	
+	def item_summary(self, item):
+		name = item.user.get_full_name()
+		if item.fortrade == 1:
+			name = '%s (te ruil)' % name
+		elif item.fortrade == 2:
+			name = '%s (weg te geven)' % name
+		return name
+	
+	def item_comment(self, item):
+		if item.note:
+			return '%s "%s"' % (item.timeslot.roster.name, item.note)
+		else:
+			return item.timeslot.roster.name
+	
+	def item_start(self, item):
+		#tz = pytz.timezone('Europe/Amsterdam')
+		#t = tz.localize(item.timeslot.start)
+		#print 'TZ: %s' % t.tzname()
+		return localize(item.timeslot.start)
+	
+	def item_end(self, item):
+		return localize(item.timeslot.end)
+	
+
+class TradeCalendar(AllCalendar):
+	
+	def items(self):
+		return Assignment.objects.filter(fortrade__in = [1, 2])
+	
+	def cal_name(self):
+		return 'Ruilshifts'
+	
+	def filename(self):
+		return 'shifts_trade.ics'
+	
+	def item_summary(self, item):
+		if item.fortrade == 1:
+			return 'te ruil (%s)' % item.user.get_full_name()
+		elif item.fortrade == 2:
+			return 'weg te geven (%s)' % item.user.get_full_name()
+		return '?'
+	
+
+class OwnCalendar(AllCalendar):
+	
+	def get_object(self, request, user):
+		return get_object_or_404(User, pk = int(user))
+	
+	def items(self, obj):
+		return Assignment.objects.filter(user = obj)
+	
+	def cal_name(self, obj):
+		return 'Zaalwacht (%s)' % obj.username
+	
+	def filename(self, obj):
+		return 'shifts_%s.ics' % ''.join(ch for ch in obj.username if ch.isalnum())
+	
+	def item_summary(self, item):
+		name = 'Zaalwacht'
+		if item.fortrade == 1:
+			name = '%s (te ruil)' % name
+		elif item.fortrade == 2:
+			name = '%s (weg te geven)' % name
+		return name
+	
+
+class AvailableCalendar(OwnCalendar):
+	
+	def items(self, obj):
+		return Assignment.objects.filter(Q(user = obj) | Q(fortrade__in = [1, 2]))
+	
+	def item_summary(self, item):
+		name = item.user.get_full_name()
+		if item.fortrade == 1:
+			name = '%s (te ruil)' % name
+		elif item.fortrade == 2:
+			name = '%s (weg te geven)' % name
+		return name
+	
+	def cal_name(self, obj):
+		return 'Zaalwacht (%s) en ruilshifts' % obj.username
+	
+	def filename(self, obj):
+		return 'shifts_%s_trade.ics' % ''.join(ch for ch in obj.username if ch.isalnum())
+	
+
+

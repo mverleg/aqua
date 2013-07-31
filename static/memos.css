@@ -1,0 +1,43 @@
+
+body
+{
+	font-family: "Calibri";
+	font-size: 7mm;
+}
+
+.paper
+{
+	width: 280mm;
+	height: 300mm;
+}
+
+.memo
+{
+	float: left;
+	border: .5mm solid black;
+	width: 400px;
+	padding: 0px;
+	margin: 15mm;
+}
+
+.line
+{
+	margin: 0px;
+	padding: 1mm 2mm;
+}
+
+.top
+{
+	background-color: #EEE;
+}
+
+.under
+{
+	border-bottom: .5mm solid black;
+	margin-bottom: -.5mm;
+}
+
+.clear
+{
+	clear: both;
+}

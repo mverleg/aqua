@@ -1,0 +1,29 @@
+
+{% extends 'overallbase.html' %}
+
+{% load static from staticfiles %}
+
+{% block cssjs %}
+	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+	<link rel="stylesheet" type="text/css" href="http://dev.jtsage.com/cdn/datebox/latest/jqm-datebox.min.css" />
+	<link rel="stylesheet" type="text/css" href="{% static 'schedule.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'bookstyle.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% url event_styles %}" />
+	
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="http://dev.jtsage.com/cdn/datebox/latest/jqm-datebox.core.min.js"></script>
+	<script type="text/javascript" src="http://dev.jtsage.com/cdn/datebox/latest/jqm-datebox.mode.calbox.min.js"></script>
+	<script type="text/javascript" src="http://dev.jtsage.com/cdn/datebox/latest/jqm-datebox.mode.flipbox.min.js"></script>
+	<script type="text/javascript" src="{% static 'schedule.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bookscript.js' %}"></script>
+{% endblock cssjs %}
+
+{% block header %}
+	<a class="ui-btn-left" href="{% url schedule %}" data-ajax="false">Home</a>
+	<h4>Schedule</h4>
+{% endblock header %}
+
+{% block content %}
+	Home!
+{% endblock content %}

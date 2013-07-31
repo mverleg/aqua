@@ -1,0 +1,14 @@
+
+{% extends 'schedulebase.html' %}
+
+{% block content %}
+	
+	<a href="{% url reservation_memos year=year.today day=day.today %}" data-role="button" data-icon="check" data-ajax="false">Print memos ({{ date.today|date:"l d M"|lower }})</a>
+	<a href="{% url reservation_memos year=year.tomorrow day=day.tomorrow %}" data-role="button" data-icon="check" data-ajax="false">Print memos ({{ date.tomorrow|date:"l d M"|lower }})</a>
+	<a href="{% url reservation_memos year=year.after day=day.after %}" data-role="button" data-icon="check" data-ajax="false">Print memos ({{ date.after|date:"l d M"|lower }})</a>
+	<a href="{% url no_shows %}" data-role="button" data-icon="check">Niet komen opdagen</a>
+	<a href="/admin/" data-role="button" data-icon="check" data-ajax="false">Admin</a>
+	<a href="{% url logout %}" data-role="button" data-icon="check">Log out</a>
+	<a href="{% url schedule %}" data-role="button" data-icon="check">Terug naar kalender</a>
+	
+{% endblock content %}

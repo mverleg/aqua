@@ -1,0 +1,9 @@
+Beste {{ user.name }},
+
+Hierbij een bevestiging voor het reservering van {{ reservation.room }} op {{ reservation.start|date:"M d Y" }} van {{ reservation.start|date:"H:i" }} tot {{ reservation.end|date:"H:i" }}.
+
+Mocht je toch van de reservering af willen zien, dan kan je deze laten vervallen naar {{ base_url }}{% url cancel_reservation token=reservation.delete_code %}"> te gaan. Voor eventuele vragen kan je terecht bij de zaalwachten, in persoon of via reserveringenstudielandschap@gmail.com.
+
+Tot ziens in de Library of Science
+
+Geen bevestigingsmails meer ontvangen? {{ base_url }}{% url subscribe_status token=user.email_token %}

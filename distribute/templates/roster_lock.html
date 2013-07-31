@@ -1,0 +1,23 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<h1>Verdeel uren voor {{ roster }}</h1>
+	
+	<p>Wanneer het opgeven van aanwezigheid begonnen is, kan het rooster niet meer aangepast worden.</p>
+	
+	<p>Dit rooster loopt van {{ roster.start }} tot {{ roster.end }} en heeft {{ roster.total_timeslots }} tijdsloten van totaal {{ roster.total_duration }} uur.</p>
+	
+	<p>Deze gebruikers worden uitgenodigd:</p>
+	<ol>
+		{% for user in roster.users %}
+			<li>{{ user }}</li>
+		{% endfor %}
+	</ol>
+	
+	<p><a href="{% url 'invite_workers' roster=roster.pk %}">Oke, laat deze mensen zich opgeven</a></p>
+	<p><a href="{% url 'add_timeslots' roster=roster.pk %}">Voeg shifts toe</a></p>
+	<p><a href="{% url 'roster_users' roster=roster.pk %}">Voeg gebruikers toe</a></p>
+	
+{% endblock content %}

@@ -1,0 +1,31 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<h1>{{ slot.start|date:"Y-m-d" }} van {{ slot.start|date:"H:i" }} tot {{ slot.end|date:"H:i" }}</h1>
+	
+	{% if staff %}
+		<p>Je zet als beheerder een shift van {{ assignment.user.get_full_name }} over. Wie krijgt deze shift?</p>
+	{% else %}
+		<p>Aan wie wil je je shift geven?</p>
+	{% endif %}
+	
+	<form action="{% if staff %}{% url 'assignment_submit_transfer' assignment=assignment.pk%}{% else %}{% url 'assignment_submit_gift' assignment=assignment.pk%}{% endif %}" method="POST">
+	<ul style="list-style-type: none;">
+		{% for user in users %}
+			<li><input type="radio" name="user" value="{{ user.pk }}" />{{ user.get_full_name }}</li>
+		{% endfor %}
+	</ul>
+	{% csrf_token %}
+	<input type="hidden" name="staff_mode" value="{{ staff }}" />
+	<p><input type="submit" value="Uitvoeren" /></p>
+	</form>
+	
+	<p>De andere gebruiker moet de shift accepteren</p>
+	
+	<p><a href="{% url 'final_roster' roster=roster.pk %}">Naar het overzicht</a></p>
+	
+{% endblock content %}
+
+

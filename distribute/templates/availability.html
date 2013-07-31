@@ -1,0 +1,62 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<h1>Beschikbaarheid voor {{ roster }}</h1>
+	
+	<p>Dit rooster loopt van {{ roster.start }} tot {{ roster.end }} en heeft {{ roster.total_timeslots }} tijdsloten van totaal {{ roster.total_duration }} uur.</p>
+	
+	<div data-role="content">
+		<div class="schedule availability_schedule">
+			<div class="schedule_times">
+				<div class="schedule_week">wk{{ week }}, {{ year }}</div>
+				<div class="schedule_830">8:30</div>
+				<div class="schedule_1030">10:30</div>
+				<div class="schedule_1230">12:30</div>
+				<div class="schedule_1330">13:30</div>
+				<div class="schedule_1530">15:50</div>
+				<div class="schedule_1730">17:30</div>
+				<div class="schedule_2000">20:00</div>
+				<div class="schedule_2200">22:00</div>
+			</div>
+			{% for day in schedule.values %}
+				<div class="schedule_{{ day.name }}">
+					<div class="schedule_date">{{ day.date }}</div>
+					{% for timeslot in day.timeslots %}
+						<!--<a href="#TODO">-->
+							<div class="schedule_timeslot schedule_timeslot_{% if not timeslot.available %}un{% endif %}available" data-pk="{{ timeslot.pk }}" data-start="{{ timeslot.start_minutes }}" data-end="{{ timeslot.end_minutes }}">
+								<span class="schedule_timeslot_time">{{ timeslot.start|date:"H:i" }}-{{ timeslot.end|date:"H:i" }}</span>
+							</div>
+						<!--</a>-->
+					{% endfor %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	
+	{% if prev_year or next_year %}
+	<p id="pagination">
+		{% if prev_year %}
+			<a class="left_align" href="{% url 'availability' roster=roster.pk year=prev_year week=prev_week %}"><< previous</a>
+		{% endif %}
+		{% if next_year %}
+			<a class="right_align" href="{% url 'availability' roster=roster.pk year=next_year week=next_week %}">next >></a>
+		{% endif %}
+		<br class="clear" />
+	</p>
+	{% endif %}
+	
+	<form id="shift_form" action="{% url 'availability_submit' roster=roster.pk %}" method="POST">
+		<input type="hidden" id="shift_input" name="shifts" value="" />
+		<input type="hidden" name="year" value="{{ year }}" />
+		<input type="hidden" name="week" value="{{ week }}" />
+		{% csrf_token %}
+	</form>
+	
+	<p id="shift_submit"><a href="#">Beschikbaarheid opslaan</a> voor deze week</p>
+	<p id="shift_copy"><a href="{% url 'availability_copy' roster=roster.pk year=year week=week %}">Kopieer naar alle weken</a>; je kunt daarna nog aanpassingen maken</p>
+	
+{% endblock content %}
+
+

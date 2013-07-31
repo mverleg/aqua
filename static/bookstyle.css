@@ -1,0 +1,23 @@
+
+label
+{
+	padding: 20px 10px 0px 10px;
+}
+
+.reservation_no_show
+{
+	color: red;
+	font-weight: bold;
+}
+
+.discrete_link
+{
+	font-weight: normal !important;
+	color: inherit !important;
+}
+
+.warning_message
+{
+	color: red;
+	font-weight: bold;
+}

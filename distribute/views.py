@@ -1,0 +1,244 @@
+
+from timeslot.models import Roster, RosterWorker, TimeSlot
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render, redirect
+from aqua.functions.notification import notification_work as notification
+from distribute.models import Availability
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.core.urlresolvers import reverse
+from aqua.functions.to_hours import to_hours
+from subprocess import Popen, STDOUT
+from aqua.functions.week_start_date import week_start_date
+import os
+import datetime
+
+
+@staff_member_required
+def roster_lock(request, roster):
+    roster = Roster.objects.get(pk = int(roster))
+    if roster.state > 0:
+        return notification(request, 'Dit rooster is al geblokkeerd')
+    return render(request, 'roster_lock.html', {
+        'roster': roster, 
+    })
+    
+
+@staff_member_required
+def invite_workers(request, roster):
+    roster = Roster.objects.get(pk = int(roster))
+    if roster.state > 1:
+        return notification(request, 'Je kunt nog niet, of niet langer, mensen uitnodigen')
+    roster.state = 1
+    roster.save()
+    
+    workers = RosterWorker.objects.filter(roster = roster)
+    for worker in workers:
+        availabilities = filter(lambda av: av.roster == roster, Availability.objects.filter(user = worker.user))
+        if availabilities:
+            worker.hours_entered = to_hours(reduce(lambda d1, d2: d1 + d2, map(lambda av: av.timeslot.duration, availabilities)))
+        else:
+            worker.hours_entered = 0
+    
+    base_url = 'http://' + request.META['HTTP_HOST']
+    
+    return render(request, 'invite_workers.html', {
+        'roster': roster,
+        'workers': workers,
+        'base_url': base_url,
+    })
+    
+
+'''
+@login_required
+def rosters_availabilities(request):
+    rosters_qd = Roster.objects.all().order_by('start')
+    rosters = []
+    for roster in rosters_qd:
+        if roster.state == 1 \
+        and RosterWorker.objects.filter(roster = roster, user = request.user):
+            rosters.append(roster)
+    rosters = filter(lambda r: r.state == 1, rosters)
+    if len(rosters) == 1:
+        return redirect(to = reverse('availability', kwargs = {'roster': rosters[0].pk}))
+    else:
+        return render(request, 'rosters_availabilities.html', {
+            'rosters': rosters,
+        })
+'''
+
+@login_required
+def availability(request, roster, year = None, week = None):
+    roster = Roster.objects.get(pk = int(roster))
+    if not roster.state == 1:
+        return notification(request, 'Je kunt nog niet, of niet meer, je beschikbaarheid doorgeven') 
+    
+    if not RosterWorker.objects.filter(roster = roster, user = request.user):
+        return notification(request, 'Je bent niet uitgenodigd voor dit rooster')
+    
+    if year == None or week == None:
+        return redirect(to = reverse('availability', kwargs={'roster': roster.pk, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
+    else:
+        year = int(year)
+        week = int(week)
+    if year < roster.start.year or (week < roster.start.isocalendar()[1] and year == roster.start.year):
+        return redirect(to = reverse('availability', kwargs={'roster': roster.pk, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
+    if year > roster.end.year or (week > roster.end.isocalendar()[1] and year == roster.end.year):
+        return redirect(to = reverse('availability', kwargs={'roster': roster.pk, 'year': roster.end.year, 'week': roster.end.isocalendar()[1]}))
+    
+    monday = week_start_date(year, week)
+    day = datetime.timedelta(days = 1)
+    
+    schedule = {
+        'monday':  {'date': monday.strftime('%a %d %b'), 'name': 'monday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday, end__lt = monday + day)},
+        'tuesday': {'date': (monday + day).strftime('%a %d %b'), 'name': 'tuesday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + day, end__lt = monday + 2 * day)},
+        'wednesday': {'date': (monday + 2 * day).strftime('%a %d %b'), 'name': 'wednesday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 2 * day, end__lt = monday + 3 * day)},
+        'thursday': {'date': (monday + 3 * day).strftime('%a %d %b'), 'name': 'thursday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 3 * day, end__lt = monday + 4 * day)},
+        'friday': {'date': (monday + 4 * day).strftime('%a %d %b'), 'name': 'friday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 4 * day, end__lt = monday + 5 * day)},
+        'saturday': {'date': (monday + 5 * day).strftime('%a %d %b'), 'name': 'saturday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 5 * day, end__lt = monday + 6 * day)},
+    }
+    
+    for schedule_day in schedule.values():
+        for timeslot in schedule_day['timeslots']:
+            if Availability.objects.filter(user = request.user, timeslot = timeslot).count():
+                timeslot.available = True
+            else:
+                timeslot.available = False
+    
+    (next_year, next_week) = (monday + 7 * day).isocalendar()[0:2]
+    (prev_year, prev_week) = (monday - 7 * day).isocalendar()[0:2]
+    
+    if prev_year < roster.start.year or (prev_week < roster.start.isocalendar()[1] and prev_year == roster.start.year):
+        (prev_year, prev_week) = (None, None)
+    if next_year > roster.end.year or (next_week > roster.end.isocalendar()[1] and next_year == roster.end.year):
+        (next_year, next_week) = (None, None)
+    
+    return render(request, 'availability.html', {
+        'roster': roster, 
+        'schedule': schedule,
+        'year': year,
+        'prev_year': prev_year,
+        'next_year': next_year,
+        'week': week,
+        'prev_week': prev_week,
+        'next_week': next_week,
+    })
+
+
+@login_required
+@require_POST
+def availability_submit(request, roster):
+    roster = Roster.objects.get(pk = int(roster))
+    if not roster.state == 1:
+        return notification(request, 'Je kunt nog niet, of niet meer, je beschikbaarheid doorgeven')
+    
+    if not RosterWorker.objects.filter(roster = roster, user = request.user):
+        return notification(request, 'Je bent niet uitgenodigd voor dit rooster')
+    
+    if request.POST['shifts']:
+        shift_pks = map(int, request.POST['shifts'].split(';'))
+    else:
+        shift_pks = []
+    
+    year = int(request.POST['year'])
+    week = int(request.POST['week'])
+    monday = week_start_date(year, week)
+    day = datetime.timedelta(days = 1)
+    
+    weekslots = TimeSlot.objects.filter(roster = roster, start__gt = monday, end__lt = monday + 7 * day)
+    Availability.objects.filter(user = request.user, timeslot__pk__in = map(lambda sl: sl.pk, weekslots)).delete()
+    
+    for shift_pk in shift_pks:
+        shift = TimeSlot.objects.get(pk = shift_pk)
+        Availability(user = request.user, timeslot = shift).save()
+    
+    return redirect(to = reverse('availability', kwargs = {'roster': roster.pk, 'year': year, 'week': week}))
+
+
+@login_required
+def availability_copy(request, roster, year, week):
+    roster = Roster.objects.get(pk = int(roster))
+    if not roster.state == 1:
+        return notification(request, 'Je kunt nog niet, of niet meer, je beschikbaarheid doorgeven')
+    
+    year = int(year)
+    week = int(week)
+    if year < roster.start.year or (week < roster.start.isocalendar()[1] and year == roster.start.year) \
+    or year > roster.end.year or (week > roster.end.isocalendar()[1] and year == roster.end.year):
+        return notification('Geen valide week')
+    
+    monday = week_start_date(year, week)
+    day = datetime.timedelta(days = 1)
+    
+    weekslots = TimeSlot.objects.filter(roster = roster, start__gt = monday, end__lt = monday + 7 * day)
+    weekavailabilities = Availability.objects.filter(user = request.user, timeslot__pk__in = map(lambda sl: sl.pk, weekslots))
+    
+    weeks = 0 * day
+    while monday + weeks >= datetime.datetime.combine(roster.start, datetime.time()):
+        weeks -= 7 * day
+    while monday + weeks <= datetime.datetime.combine(roster.end, datetime.time()):
+        if not ((monday + weeks).isocalendar()[0] == year and (monday + weeks).isocalendar()[1] == week):
+            weekslots = TimeSlot.objects.filter(roster = roster, start__gt = monday + weeks, end__lt = monday + weeks + 7 * day)
+            Availability.objects.filter(user = request.user, timeslot__pk__in = map(lambda sl: sl.pk, weekslots)).delete()
+        weeks += 7 * day
+    
+    for weekav in weekavailabilities:
+        weeks = 0 * day
+        while weekav.timeslot.start + weeks >= datetime.datetime.combine(roster.start, datetime.time()):
+            weeks -= 7 * day
+        while weekav.timeslot.end + weeks <= datetime.datetime.combine(roster.end, datetime.time()):
+            ts_match = TimeSlot.objects.filter(roster = roster, start = weekav.timeslot.start + weeks, end = weekav.timeslot.end + weeks)
+            if ts_match:
+                if not Availability.objects.filter(user = request.user, timeslot = ts_match):
+                    Availability(user = request.user, timeslot = ts_match[0]).save()
+            weeks += 7 * day
+    
+    return redirect(to = reverse('availability', kwargs = {'roster': roster.pk, 'year': year, 'week': week}))
+
+
+@staff_member_required
+def calculate_start(request, roster):
+    roster = Roster.objects.get(pk = int(roster))
+    if not roster.state in [1, 3]:
+        return notification(request, 'Je kunt nu geen berekening starten')
+    roster.state = 2
+    roster.save()
+    
+    command = ['nohup', 'python', 'manage.py', 'calculate_roster', '%d' % roster.pk]
+    Popen(command, shell = False, stdout = open(os.devnull, 'w'), stderr = STDOUT, stdin = open(os.devnull, 'w'))
+    
+    return redirect(to = reverse('calculate_status', kwargs = {'roster': roster.pk}))
+    
+
+@staff_member_required
+def calculate_restart(request, roster):
+    roster = Roster.objects.get(pk = int(roster))
+    if not roster.state == 2:
+        return notification(request, 'Je kan niet herstarten als er geen berekening bezig is')
+    roster.state = 1
+    roster.save()
+    return redirect(to = reverse('invite_workers', kwargs = {'roster': roster.pk}))
+    
+
+@staff_member_required
+def calculate_status(request, roster):
+    roster = Roster.objects.get(pk = int(roster))
+    if not roster.state in [2, 3]:
+        return notification(request, 'Dit rooster wordt op het moment niet verdeeld')
+    return render(request, 'calculate_status.html', {
+        'roster': roster
+    })
+    
+
+@staff_member_required
+def calculate_publish(request, roster):
+    roster = Roster.objects.get(pk = int(roster))
+    if not roster.state  == 3:
+        return notification(request, 'Dit rooster kan niet openbaar worden gemaakt')
+    roster.state = 4
+    roster.save()
+    return redirect(to = reverse('final_roster', kwargs = {'roster': roster.pk}))
+
+
+
+

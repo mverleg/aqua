@@ -1,0 +1,4 @@
+- dat een shift gesplitst is, gaat hij automatisch naar het laatste deel van de shift en kan ik daar kiezen of ik deze weg wil geven etc. Misschien is het handig om een keuze te geven welk stuk van de gesplitste shift je wilt 'bewerken'. Nu moest ik via het hoofdmenu -> goede week -> goede shift.
+- Misschien is het handig om na een bewerkingsoptie niet naar de huidige week terug te gaan, maar de laatst bezochte week in het overzicht.
+- Misschien is het handig om een optie te maken dat je in é keer meerdere weken vooruit kan (ipv slechts é per keer).
+

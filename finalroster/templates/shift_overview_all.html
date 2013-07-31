@@ -1,0 +1,20 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<p>Klik op een naam om het aantal uren te zien</p>
+	
+	<ul>
+	{% for user in users %}
+		<li>
+			<a href="{% url 'month_overview' user=user.pk %}">{{ user.get_full_name }}</a>
+		</li>
+	{% endfor %}
+	</ul>
+	
+	<p>In totaal heeft {{ user.get_full_name }} deze maand <strong>{{ total }}</strong> uur gewerkt.</p>
+	
+{% endblock content %}
+
+
