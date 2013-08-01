@@ -9,12 +9,25 @@ STATICFILES_DIRS = (
     '/web/aqua2/static',
 )
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/var/www/db/aqua2.db',
+from socket import gethostname
+if gethostname() == 'mulan':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': '.aqua.db',
+        }
     }
-}
+elif gethostname() == 'bambi':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'aqua',                       # Or path to database file if using sqlite3.
+            'USER': 'aqua',                       # Not used with sqlite3.
+            'PASSWORD': 'wcq6MELmdASKBSuqP',      # Not used with sqlite3.
+            'HOST': '127.0.0.1',                  # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
+        }
+    }
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -60,11 +73,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'aqua',                      # Or path to database file if using sqlite3.
-        'USER': 'aqua',                      # Not used with sqlite3.
-        'PASSWORD': 'wcq6MELdASKBSuqP',                  # Not used with sqlite3.
-        'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3308',                      # Set to empty string for default. Not used with sqlite3.
+        'NAME': 'aqua',                       # Or path to database file if using sqlite3.
+        'USER': 'aqua',                       # Not used with sqlite3.
+        'PASSWORD': 'wcq6MELdASKBSuqP',       # Not used with sqlite3.
+        'HOST': '127.0.0.1',                  # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '3308',                       # Set to empty string for default. Not used with sqlite3.
     }
 }
 '''
@@ -125,7 +138,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '(91#2uxr=+c*u%pt(*zdckg1s9=uk1ab2%c1e*)z9u7b06*j0r'
+SECRET_KEY = 'abc#2uxr=+c*u%pt(*zdckg1s9=uk1ab2%c1e*)z9u7b06*j0r'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
