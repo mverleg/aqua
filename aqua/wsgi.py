@@ -17,13 +17,13 @@ import os
 import sys
 
 # Internet says so
-sys.path.append('/web/aqua')
+sys.path.append('/live/aqua')
 
 # We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
 # if running multiple sites in the same mod_wsgi process. To fix this, use
 # mod_wsgi daemon mode with each site in its own daemon process, or use
 # os.environ["DJANGO_SETTINGS_MODULE"] = "dtest.settings"
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "aqua.settings")
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "aqua.settings")
 # Internet recommends it be changed to
 os.environ['DJANGO_SETTINGS_MODULE'] = 'aqua.settings'
 

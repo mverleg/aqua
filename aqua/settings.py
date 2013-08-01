@@ -9,6 +9,7 @@ STATICFILES_DIRS = (
     '/web/aqua2/static',
 )
 
+<<<<<<< Updated upstream
 from socket import gethostname
 if gethostname() == 'mulan':
     DATABASES = {
@@ -16,6 +17,16 @@ if gethostname() == 'mulan':
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': '.aqua.db',
         }
+=======
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'aqua',
+	'USER': 'aqua',
+	'PASSWORD': 'c8HzbpW5MCCPW8Qm',
+	'HOST': 'localhost',
+	'PORT': 3306,
+>>>>>>> Stashed changes
     }
 elif gethostname() == 'bambi':
     DATABASES = {
