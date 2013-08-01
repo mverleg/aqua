@@ -28,6 +28,8 @@ elif gethostname() == 'bambi':
             'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
         }
     }
+else:
+    raise Exception('hostname not known, no database settings')
 
 INSTALLED_APPS = (
     'django.contrib.auth',
