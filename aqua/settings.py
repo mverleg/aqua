@@ -30,6 +30,7 @@ elif gethostname() == 'bambi':
     }
 else:
     raise Exception('hostname not known, no database settings')
+print DATABASES
 
 INSTALLED_APPS = (
     'django.contrib.auth',
