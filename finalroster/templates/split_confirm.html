@@ -8,8 +8,8 @@
 	<p>Je shift is opgeplitst in:</p>
 	
 	<ul>
-		[{{ timeslot1 }}|[{{ timeslot1.pk }}]]
-		[{{ timeslot2 }}|[{{ timeslot2.pk }}]]
+		[{{ timeslot1 }}|{{ timeslot1.pk }}]
+		[{{ timeslot2 }}|{{ timeslot2.pk }}]
 		{#<li><a href="{% url 'slot_info' slot=timeslot1.pk %}">{{ timeslot1 }}</a></li>#}
 		{#<li><a href="{% url 'slot_info' slot=timeslot2.pk %}">{{ timeslot2 }}</a></li>#}
 	</ul>

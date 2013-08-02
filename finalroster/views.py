@@ -299,6 +299,7 @@ def assignment_submit_split(request, assignment):
                     cloneassignment.timeslot = assignment.timeslot
                     cloneassignment.save()
                 #return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
+                print TimeSlot.objects.get(ts_old_pk)
                 return render(request, 'split_confirm.html', {
                      'timeslot1': TimeSlot.objects.get(ts_old_pk),
                      'timeslot2': TimeSlot.objects.get(ts_new_pk),
