@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from finalroster.forms import TimeForm
 from aqua.functions.week_start_date import week_start_date
+from django.db.utils import IntegrityError
 
 
 @login_required
@@ -228,9 +229,12 @@ def assignment_submit_staff_empty(request, timeslot):
     timeslot = TimeSlot.objects.get(pk = int(timeslot))
     if not request.user.is_staff:
         return notification(request, 'Alleen beheerders mogen dit doen')
-    if Assignment.objects.filter(timeslot = timeslot).count() < timeslot.degeneracy:
-        assignment = Assignment(user = request.user, timeslot = timeslot, note = 'assigned by %s' % request.user)
-        assignment.save()
+    try:
+        if Assignment.objects.filter(timeslot = timeslot).count() < timeslot.degeneracy:
+            assignment = Assignment(user = request.user, timeslot = timeslot, note = 'assigned by %s' % request.user)
+            assignment.save()
+    except IntegrityError:
+        return notification(request, 'Sorry, je kan geen shift toewijzen als je zelf een shift op dat moment hebt. Dit omdat het achter de schermen werkt door tijdelijk jou een shift te geven en die over te zetten. Geef dus tijdelijk even je eigen shift af (of geef hem meteen aan de betreffende persoon en claim dan de lege).')
     users = [worker.user for worker in RosterWorker.objects.all()]
     return render(request, 'gift_select_user.html', {
         'assignment': assignment,
