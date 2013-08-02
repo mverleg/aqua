@@ -67,6 +67,12 @@ class TimeSlot(models.Model):
     def timestr(self):
         return '%s van %s tot %s' % (self.start.strftime(DATEFORMAT), self.end.strftime(TIMEFORMAT), self.end.strftime(TIMEFORMAT))
     
+    def year(self):
+        self.start.year
+    
+    def week(self):
+        self.start.isocalendar()[1]
+    
 
 class RosterWorker(models.Model):
     user = models.ForeignKey(User)

@@ -96,7 +96,7 @@
 		{% endif %}
 	{% endif %}
 	
-	<p><a href="{% url 'final_roster' roster=roster.pk %}">Naar het overzicht</a></p>
+	<p><a href="{% url 'final_roster' roster=roster.pk year=slot.year week=slot.week  %}">Naar het overzicht</a></p>
 	
 {% endblock content %}
 
