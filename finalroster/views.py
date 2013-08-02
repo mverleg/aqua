@@ -203,21 +203,15 @@ def assignment_submit_staff(request, assignment):
         elif request.POST['action'] == 'terminate':
             timeslot = assignment.timeslot
             if timeslot.degeneracy <= 1:
-                print 'DEG 1'
                 roster_pk = timeslot.roster.pk
                 timeslot.delete()
-                return redirect(to = reverse('final_roster', kwargs = {'roster': roster_pk}))
+                return redirect(to = reverse('final_roster', kwargs = {'roster': roster_pk, 'year': timeslot.year, 'week': timeslot.week}))
             else:
-                print 'deleting %s' % assignment
                 assignment.delete()
                 timeslot.degeneracy -= 1
                 timeslot.save()
-                print 'assignemnts: %s' % len(Assignment.objects.filter(timeslot = timeslot))
-                for k in Assignment.objects.filter(timeslot = timeslot):
-                    print k #TODO
         else:
             return notification(request, 'Action not recognized')
-        #assignment.save()
         return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
     else:
         return notification(request, 'Form not recognized')
