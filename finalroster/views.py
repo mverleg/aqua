@@ -247,6 +247,16 @@ def assignment_submit_staff_empty(request, timeslot):
 
 @login_required
 @require_POST
+def assignment_submit_add_degeneracy(request, timeslot):
+    timeslot = TimeSlot.objects.get(pk = int(timeslot))
+    if not request.user.is_staff:
+        return notification(request, 'Alleen beheerders mogen dit doen')
+    timeslot.degeneracy += 1
+    timeslot.save()
+    return redirect(to = reverse('slot_info', kwargs = { 'slot': timeslot.pk }))
+
+@login_required
+@require_POST
 def assignment_submit_delete_empty(request, timeslot):
     timeslot = TimeSlot.objects.get(pk = int(timeslot))
     if request.user.is_staff:
