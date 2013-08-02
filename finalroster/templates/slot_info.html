@@ -91,14 +91,13 @@
 			</form>
 			[{{ slot }}]
 			[{{ slot.pk }}]
-			<form action="{#{% url 'assignment_submit_staff_empty' timeslot=slot.pk %}#}" method="POST" style="display: inline;">
+			<form action="{% url 'assignment_submit_staff_empty' timeslot=slot.pk %}" method="POST" style="display: inline;">
 				{% csrf_token %}
 				<input type="submit" value="Aan iemand toewijzen" />
 			</form>
 		{% endif %}
 	{% endif %}
 	
-	{{ slot.year }}
 	<p><a href="{% url 'final_roster' roster=roster.pk year=slot.year week=slot.week %}">Naar het overzicht</a></p>
 	
 {% endblock content %}
