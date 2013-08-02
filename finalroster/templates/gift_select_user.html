@@ -16,6 +16,9 @@
 	{% endif %}
 	
 	<form action="{% if staff %}{% url 'assignment_submit_transfer' assignment=assignment.pk%}{% else %}{% url 'assignment_submit_gift' assignment=assignment.pk%}{% endif %}" method="POST">
+	{% if not users %}
+		<p>No users!</p>
+	{% endif %}
 	<ul style="list-style-type: none;">
 		{% for user in users %}
 			<li><input type="radio" name="user" value="{{ user.pk }}" />{{ user.get_full_name }}</li>

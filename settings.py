@@ -5,32 +5,9 @@ SITE_BASE_URL = 'http://www.aqua.markv.nl/'
 LOGIN_URL = '/login/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    '/web/aqua2/static',
-)
-
-from socket import gethostname
-if gethostname() == 'mulan':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': '.aqua.db',
-        }
-    }
-elif gethostname() == 'bambi':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'aqua',                       # Or path to database file if using sqlite3.
-            'USER': 'aqua',                       # Not used with sqlite3.
-            'PASSWORD': 'wcq6MELmdASKBSuqP',      # Not used with sqlite3.
-            'HOST': '127.0.0.1',                  # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
-        }
-    }
-else:
-    raise Exception('hostname not known, no database settings')
-print DATABASES
+#STATICFILES_DIRS = (
+#    '/live/aqua/static',
+#)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -55,6 +32,34 @@ INSTALLED_APPS = (
     #'general',
 )
 
+DEBUG = False
+
+from socket import gethostname
+if gethostname() == 'mulan':
+    DEBUG = True
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': '.aqua.db',
+        }
+    }
+elif gethostname() == 'bambi':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'aqua',                       # Or path to database file if using sqlite3.
+            'USER': 'aqua',                       # Not used with sqlite3.
+            'PASSWORD': 'wcq6MELmdASKBSuqP',      # Not used with sqlite3.
+            'HOST': '127.0.0.1',                  # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
+        }
+    }
+else:
+    raise Exception('hostname not known, no database settings')
+if DEBUG:
+    INSTALLED_APPS += ('django.contrib.staticfiles', )
+    STATICFILES_DIRS = ('/home/mark/aqua/static', )
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'mdilligaf@gmail.com'
 EMAIL_HOST_PASSWORD = ''
@@ -62,8 +67,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 PREPEND_WWW = False
+APPEND_SLASH = True
 
-DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -71,19 +76,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'aqua',                       # Or path to database file if using sqlite3.
-        'USER': 'aqua',                       # Not used with sqlite3.
-        'PASSWORD': 'wcq6MELdASKBSuqP',       # Not used with sqlite3.
-        'HOST': '127.0.0.1',                  # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '3308',                       # Set to empty string for default. Not used with sqlite3.
-    }
-}
-'''
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (

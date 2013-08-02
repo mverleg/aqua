@@ -13,7 +13,7 @@ from finalroster.views import final_roster, slot_info, assignment_submit,\
     assignment_submit_split, assignment_submit_gift, assignment_submit_claim,\
     assignment_submit_staff, assignment_submit_transfer,\
     assignment_submit_delete_empty, assignment_submit_staff_empty,\
-    assignment_submit_add_degeneracy
+    assignment_submit_add_degeneracy, assignment_redirect
 from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
     AvailableCalendar
 admin.autodiscover()
@@ -54,6 +54,7 @@ urlpatterns = patterns('',
     url(r'^timeslot/(?P<timeslot>[0-9]+)/staff/add/$', assignment_submit_add_degeneracy, name = 'assignment_submit_add_degeneracy'),
     url(r'^timeslot/(?P<timeslot>[0-9]+)/delete_empty/$', assignment_submit_delete_empty, name = 'assignment_submit_delete_empty'),
     url(r'^timeslot/(?P<timeslot>[0-9]+)/claim/$', assignment_submit_claim, name = 'assignment_submit_claim'),
+    url(r'^assignment/(?P<assignment>[0-9]+)/$', assignment_redirect),
     url(r'^assignment/(?P<assignment>[0-9]+)/submit/$', assignment_submit, name = 'assignment_submit'),
     url(r'^assignment/(?P<assignment>[0-9]+)/staff/$', assignment_submit_staff, name = 'assignment_submit_staff'),
     url(r'^assignment/(?P<assignment>[0-9]+)/submit/split/$', assignment_submit_split, name = 'assignment_submit_split'),

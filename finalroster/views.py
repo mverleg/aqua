@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from distribute.models import Assignment
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from finalroster.forms import TimeForm
 from aqua.functions.week_start_date import week_start_date
 from django.db.utils import IntegrityError
@@ -71,7 +71,6 @@ def final_roster(request, roster, year = None, week = None):
     roster = Roster.objects.get(pk = int(roster))
     if not roster.state == 4 and not (roster.state == 3 and request.user.is_staff):
         return notification(request, 'Dit rooster kan je op het moment niet bekijken')
-    
     if year == None or week == None:
         return redirect(to = reverse('final_roster', kwargs={'roster': roster.pk, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
     else:
@@ -109,8 +108,13 @@ def final_roster(request, roster, year = None, week = None):
         urls['own'] = 'http://' + request.get_host() + reverse('ical_own', kwargs = {'user': request.user.pk})
         urls['available'] = 'http://' + request.get_host() + reverse('ical_available', kwargs = {'user': request.user.pk})
     
+    user = AnonymousUser()
+    if request.user.is_authenticated():
+        if RosterWorker.objects.filter(user = request.user, roster = roster):
+            user = request.user
+    
     return render(request, 'final_roster.html', {
-        'user': request.user,
+        'user': user,
         'roster': roster, 
         'schedule': schedule,
         'year': year,
@@ -141,14 +145,21 @@ def slot_info(request, slot):
     })
     
 
+def assignment_redirect(request, assignment):
+    assignment = Assignment.objects.get(pk = int(assignment))
+    return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
+    
+
 @login_required
 @require_POST
 def assignment_submit(request, assignment):
     assignment = Assignment.objects.get(pk = int(assignment))
     if not assignment.timeslot.roster.state == 4:
-        return notification('Dit rooster kan je op het moment niet aangepast worden')
+        return notification(request, 'Dit rooster kan je op het moment niet aangepast worden')
+    if not RosterWorker.objects.filter(user = request.user, roster = assignment.timeslot.roster):
+        return notification(request, 'Je kan tijdens dit rooster niet werken (je account is niet toegevoegd)')
     if assignment.user.pk != request.user.pk:
-        return notification('Je mag alleen je eigen shifts aanpassen')
+        return notification(request, 'Je mag alleen je eigen shifts aanpassen')
     if 'action' in request.POST.keys():
         if request.POST['action'] == 'keep':
             assignment.fortrade = 0
@@ -229,7 +240,7 @@ def assignment_submit_staff_empty(request, timeslot):
             assignment.save()
     except IntegrityError:
         return notification(request, 'Sorry, je kan geen shift toewijzen als je zelf een shift op dat moment hebt. Dit omdat het achter de schermen werkt door tijdelijk jou een shift te geven en die over te zetten. Geef dus tijdelijk even je eigen shift af (of geef hem meteen aan de betreffende persoon en claim dan de lege).', next_page = reverse('slot_info', kwargs = { 'slot': timeslot.pk }))
-    users = [worker.user for worker in RosterWorker.objects.all()]
+    users = [worker.user for worker in RosterWorker.objects.filter(roster = timeslot.roster)]
     return render(request, 'gift_select_user.html', {
         'assignment': assignment,
         'slot': timeslot,
@@ -270,6 +281,8 @@ def assignment_submit_delete_empty(request, timeslot):
 @require_POST
 def assignment_submit_split(request, assignment):
     assignment = Assignment.objects.get(pk = int(assignment))
+    if not RosterWorker.objects.filter(user = request.user, roster = assignment.timeslot.roster) and not request.user.is_staff():
+        return notification(request, 'Je kan tijdens dit rooster niet werken (je account is niet toegevoegd)')
     if 'splitting' in request.POST.keys():
         form = TimeForm(request.POST)
         if form.is_valid():
@@ -299,10 +312,9 @@ def assignment_submit_split(request, assignment):
                     cloneassignment.timeslot = assignment.timeslot
                     cloneassignment.save()
                 #return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
-                print TimeSlot.objects.get(ts_old_pk)
                 return render(request, 'split_confirm.html', {
-                     'timeslot1': TimeSlot.objects.get(ts_old_pk),
-                     'timeslot2': TimeSlot.objects.get(ts_new_pk),
+                     'timeslot1': TimeSlot.objects.get(pk = ts_old_pk),
+                     'timeslot2': TimeSlot.objects.get(pk = ts_new_pk),
                 })
         return notification(request, 'De opgegeven tijd was niet geldig')
     else:
@@ -316,6 +328,8 @@ def assignment_submit_transfer(request, assignment):
     if request.user.is_staff:
         if 'user' in request.POST.keys():
             user = User.objects.get(pk = int(request.POST['user']))
+            if not RosterWorker.objects.filter(user = user, roster = assignment.timeslot.roster):
+                return notification(request, 'Je kan tijdens dit rooster niet werken (je account is niet toegevoegd)')
             if Assignment.objects.filter(timeslot = assignment.timeslot, user = user):
                 return notification(request, '%s heeft dan al een shift' % user, next_page = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
             assignment.user = user
@@ -336,6 +350,8 @@ def assignment_submit_gift(request, assignment):
     if request.user == assignment.user:
         if 'user' in request.POST.keys():
             user = User.objects.get(pk = int(request.POST['user']))
+            if not RosterWorker.objects.filter(user = user, roster = assignment.timeslot.roster):
+                return notification(request, '%s kan tijdens dit rooster niet werken (account is niet toegevoegd)' % user.get_full_name)
             if Assignment.objects.filter(timeslot = assignment.timeslot, user = user):
                 return notification(request, '%s heeft dan al een shift' % user, next_page = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
             assignment.giveto = user
@@ -367,6 +383,8 @@ def assignment_trade_result(request, assignment):
 def assignment_submit_claim(request, timeslot):
     timeslot = TimeSlot.objects.get(pk = int(timeslot))
     assignments = Assignment.objects.filter(timeslot = timeslot)
+    if not RosterWorker.objects.filter(user = request.user, roster = timeslot.roster):
+        return notification(request, 'Je kan tijdens dit rooster niet werken (je account is niet toegevoegd)')
     if any(assignment.user == request.user for assignment in assignments):
         return notification(request, 'You already have a shift at this time', next_page = reverse('slot_info', kwargs = {'slot': '%s' % timeslot.pk}))
     if len(assignments) < timeslot.degeneracy:
