@@ -89,9 +89,9 @@
 				{% csrf_token %}
 				<input type="submit" value="Lege shift opheffen" />
 			</form>
-			{{ slot }}
-			{{ slot.pk }}
-			<form action="{% url 'assignment_submit_staff_empty' timeslot=slot.pk %}" method="POST" style="display: inline;">
+			[{{ slot }}]
+			[{{ slot.pk }}]
+			<form action="{#{% url 'assignment_submit_staff_empty' timeslot=slot.pk %}#}" method="POST" style="display: inline;">
 				{% csrf_token %}
 				<input type="submit" value="Aan iemand toewijzen" />
 			</form>
