@@ -299,7 +299,7 @@ def assignment_submit_split(request, assignment):
                     cloneassignment.save()
                 #return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
                 return render(request, 'split_confirm.html', {
-                     'assignment1': assignment,
+                     'assignment1_pk': old_pk,
                      'assignment2': cloneassignment,
                 })
         return notification(request, 'De opgegeven tijd was niet geldig')
