@@ -12,7 +12,7 @@ from finalroster.views import final_roster, slot_info, assignment_submit,\
     assignment_trade_result, month_overview, month_overview_all,\
     assignment_submit_split, assignment_submit_gift, assignment_submit_claim,\
     assignment_submit_staff, assignment_submit_transfer,\
-    assignment_submit_delete_empty
+    assignment_submit_delete_empty, assignment_submit_staff_empty
 from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
     AvailableCalendar
 admin.autodiscover()
@@ -55,6 +55,7 @@ urlpatterns = patterns('',
     url(r'^timeslot/(?P<slot>[0-9]+)/$', slot_info, name = 'slot_info'),
     url(r'^timeslot/(?P<assignment>[0-9]+)/submit/$', assignment_submit, name = 'assignment_submit'),
     url(r'^timeslot/(?P<assignment>[0-9]+)/staff/$', assignment_submit_staff, name = 'assignment_submit_staff'),
+    url(r'^timeslot/(?P<timeslow>[0-9]+)/staff/empty/$', assignment_submit_staff_empty, name = 'assignment_submit_staff_empty'),
     url(r'^timeslot/(?P<timeslot>[0-9]+)/delete_empty/$', assignment_submit_delete_empty, name = 'assignment_submit_delete_empty'),
     url(r'^timeslot/(?P<assignment>[0-9]+)/submit/split/$', assignment_submit_split, name = 'assignment_submit_split'),
     url(r'^timeslot/(?P<assignment>[0-9]+)/submit/gift/$', assignment_submit_gift, name = 'assignment_submit_gift'),

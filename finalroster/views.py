@@ -224,6 +224,25 @@ def assignment_submit_staff(request, assignment):
 
 @login_required
 @require_POST
+def assignment_submit_staff_empty(request, timeslot):
+    timeslot = TimeSlot.objects.get(pk = int(timeslot))
+    if not request.user.is_staff:
+        return notification(request, 'Alleen beheerders mogen dit doen')
+    if Assignment.objects.filter(timeslot = timeslot).count() < timeslot.degeneracy:
+        assignment = Assignment(user = request.user, timeslot = timeslot, note = 'assigned by %s' % request.user)
+        assignment.save()
+    users = [worker.user for worker in RosterWorker.objects.all()]
+    return render(request, 'gift_select_user.html', {
+        'assignment': assignment,
+        'slot': timeslot,
+        'roster': timeslot.roster,
+        'users': users,
+        'staff': 1,
+        'was_empty': True,
+    })
+
+@login_required
+@require_POST
 def assignment_submit_delete_empty(request, timeslot):
     timeslot = TimeSlot.objects.get(pk = int(timeslot))
     if request.user.is_staff:
