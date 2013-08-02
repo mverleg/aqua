@@ -69,3 +69,5 @@ def change_password(request):
 		return notification(request, 'Je wachtwoord is veranderd', next_page = reverse('home'))
 	else:
 		return render(request, 'change_password.html')
+	
+

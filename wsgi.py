@@ -25,7 +25,7 @@ sys.path.append('/live/aqua')
 # os.environ["DJANGO_SETTINGS_MODULE"] = "dtest.settings"
 #os.environ.setdefault("DJANGO_SETTINGS_MODULE", "aqua.settings")
 # Internet recommends it be changed to
-os.environ['DJANGO_SETTINGS_MODULE'] = 'aqua.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
