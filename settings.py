@@ -32,7 +32,9 @@ INSTALLED_APPS = (
     #'general',
 )
 
-DEBUG = False
+ALLOWED_HOSTS = ['.aqua.markv.nl', ]
+
+DEBUG = True
 
 from socket import gethostname
 if gethostname() == 'mulan':
