@@ -291,7 +291,7 @@ def assignment_submit_split(request, assignment):
                 assignment.timeslot.save()
                 ts_new_pk = assignment.timeslot.pk
                 ''' Then we need to clone the assignments for everyone '''
-                assignments = Assignment.objects.filter(timeslot__pk = old_pk)
+                assignments = Assignment.objects.filter(timeslot__pk = ts_old_pk)
                 if not len(assignments):
                     raise Exception('Impossible situation (that seems to happen anyway)')
                 for cloneassignment in assignments:
