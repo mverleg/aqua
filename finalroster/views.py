@@ -234,7 +234,7 @@ def assignment_submit_staff_empty(request, timeslot):
             assignment = Assignment(user = request.user, timeslot = timeslot, note = 'assigned by %s' % request.user)
             assignment.save()
     except IntegrityError:
-        return notification(request, 'Sorry, je kan geen shift toewijzen als je zelf een shift op dat moment hebt. Dit omdat het achter de schermen werkt door tijdelijk jou een shift te geven en die over te zetten. Geef dus tijdelijk even je eigen shift af (of geef hem meteen aan de betreffende persoon en claim dan de lege).')
+        return notification(request, 'Sorry, je kan geen shift toewijzen als je zelf een shift op dat moment hebt. Dit omdat het achter de schermen werkt door tijdelijk jou een shift te geven en die over te zetten. Geef dus tijdelijk even je eigen shift af (of geef hem meteen aan de betreffende persoon en claim dan de lege).', next_page = reverse('assignment_submit_staff_empty', { 'timeslot': timeslot.pk }))
     users = [worker.user for worker in RosterWorker.objects.all()]
     return render(request, 'gift_select_user.html', {
         'assignment': assignment,
