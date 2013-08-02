@@ -284,12 +284,12 @@ def assignment_submit_split(request, assignment):
                 assignment.timeslot.end = splitat
                 assignment.timeslot.save()
                 ''' Clone trick '''
-                old_pk = assignment.timeslot.pk
+                ts_old_pk = assignment.timeslot.pk
                 assignment.timeslot.pk = None
                 assignment.timeslot.start = splitat
                 assignment.timeslot.end = prevend
                 assignment.timeslot.save()
-                new_pk = assignment.timeslot.pk
+                ts_new_pk = assignment.timeslot.pk
                 ''' Then we need to clone the assignments for everyone '''
                 assignments = Assignment.objects.filter(timeslot__pk = old_pk)
                 if not len(assignments):
@@ -300,8 +300,9 @@ def assignment_submit_split(request, assignment):
                     cloneassignment.save()
                 #return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
                 return render(request, 'split_confirm.html', {
-                     'assignment1': Assignment.objects.get(pk = old_pk),
-                     'assignment2': Assignment.objects.get(pk = new_pk),
+                     'timeslot1_pk': ts_old_pk,
+                     'timeslot2_pk': ts_new_pk,
+                     'roster': assignment.timeslot.roster,
                 })
         return notification(request, 'De opgegeven tijd was niet geldig')
     else:
