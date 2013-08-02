@@ -93,11 +93,11 @@
 				{% csrf_token %}
 				<input type="submit" value="Lege shift opheffen" />
 			</form>
-			<form action="{% url 'assignment_submit_add_degeneracy' timeslot=slot.pk %}" method="POST" style="display: inline;">
-				{% csrf_token %}
-				<input type="submit" value="Extra shift op deze tijd" />
-			</form>
 		{% endif %}
+		<form action="{% url 'assignment_submit_add_degeneracy' timeslot=slot.pk %}" method="POST" style="display: inline;">
+			{% csrf_token %}
+			<input type="submit" value="Extra shift op deze tijd" />
+		</form>
 	{% endif %}
 	
 	<p><a href="{% url 'final_roster' roster=roster.pk year=slot.year week=slot.week %}">Naar het overzicht</a></p>
