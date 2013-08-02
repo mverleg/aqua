@@ -8,11 +8,10 @@
 	<p>Je shift is opgeplitst in:</p>
 	
 	<ul>
-		{{ assignment1 }}
-		{{ assignment1.timeslot }}
-		{{ assignment1.timeslot.pk }}
-		<li><a href="{% url 'slot_info' slot=assignment1.timeslot.pk %}">{{ assignment1 }}</a></li>
-		<li><a href="{% url 'slot_info' slot=assignment2.timeslot.pk %}">{{ assignment2 }}</a></li>
+		[{{ timeslot1 }}|[{{ timeslot1.pk }}]]
+		[{{ timeslot2 }}|[{{ timeslot2.pk }}]]
+		<li><a href="{% url 'slot_info' slot=timeslot1.pk %}">{{ timeslot1 }}</a></li>
+		<li><a href="{% url 'slot_info' slot=timeslot2.pk %}">{{ timeslot2 }}</a></li>
 	</ul>
 	
 	<p><a href="{% url 'final_roster' roster=assignment1.timeslot.roster.pk year=assignment1.timeslot.year week=assignment1.timeslot.week %}">Naar het overzicht</a></p>
