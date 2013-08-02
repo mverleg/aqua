@@ -288,8 +288,8 @@ def assignment_submit_split(request, assignment):
                 assignment.timeslot.pk = None
                 assignment.timeslot.start = splitat
                 assignment.timeslot.end = prevend
-                new_pk = assignment.timeslot.pk
                 assignment.timeslot.save()
+                new_pk = assignment.timeslot.pk
                 ''' Then we need to clone the assignments for everyone '''
                 assignments = Assignment.objects.filter(timeslot__pk = old_pk)
                 if not len(assignments):
