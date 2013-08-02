@@ -205,7 +205,7 @@ def assignment_submit_staff(request, assignment):
             if timeslot.degeneracy <= 1:
                 roster_pk = timeslot.roster.pk
                 timeslot.delete()
-                return redirect(to = reverse('final_roster', kwargs = {'roster': roster_pk, 'year': timeslot.year, 'week': timeslot.week}))
+                return redirect(to = reverse('final_roster', kwargs = {'roster': roster_pk, 'year': timeslot.year(), 'week': timeslot.week()}))
             else:
                 assignment.delete()
                 timeslot.degeneracy -= 1
