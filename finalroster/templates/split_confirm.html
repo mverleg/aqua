@@ -8,6 +8,9 @@
 	<p>Je shift is opgeplitst in:</p>
 	
 	<ul>
+		{{ assignment1 }}
+		{{ assignment1.timeslot }}
+		{{ assignment1.timeslot.pk }}
 		<li><a href="{% url 'slot_info' slot=assignment1.timeslot.pk %}">{{ assignment1 }}</a></li>
 		<li><a href="{% url 'slot_info' slot=assignment2.timeslot.pk %}">{{ assignment2 }}</a></li>
 	</ul>
