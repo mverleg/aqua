@@ -159,7 +159,7 @@ def assignment_submit(request, assignment):
             assignment.fortrade = 2
             assignment.giveto = None
         elif request.POST['action'] == 'gift':
-            users = [worker.user for worker in RosterWorker.objects.exclude(pk = request.user.pk)]
+            users = [worker.user for worker in RosterWorker.objects.exclude(pk = request.user.pk).order_by('user.first_name')]
             return render(request, 'gift_select_user.html', {
                 'assignment': assignment,
                 'slot': assignment.timeslot,
