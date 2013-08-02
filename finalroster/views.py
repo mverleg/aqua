@@ -303,7 +303,11 @@ def assignment_submit_split(request, assignment):
                     cloneassignment.pk = None
                     cloneassignment.timeslot = assignment.timeslot
                     cloneassignment.save()
-                return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
+                #return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
+                return render(request, 'split_confirm.html', {
+                     'assignment1': assignment,
+                     'assignment2': cloneassignment,
+                })
         return notification(request, 'De opgegeven tijd was niet geldig')
     else:
         return notification(request, 'Form not recognized')

@@ -1,0 +1,19 @@
+
+{% extends 'workbase.html' %}
+
+{% block content %}
+	
+	<h1>Opgesplitst</h1>
+	
+	<p>Je shift is opgeplitst in:</p>
+	
+	<ul>
+		<li><a href="{% url slot_info slot=assignment1.timeslot.pk %}">{{ assignment1 }}</a></li>
+		<li><a href="{% url slot_info slot=assignment2.timeslot.pk %}">{{ assignment2 }}</a></li>
+	</ul>
+	
+	<p><a href="{% url 'final_roster' roster=roster.pk year=assignment1.timeslot.year week=assignment1.timeslot.week %}">Naar het overzicht</a></p>
+	
+{% endblock content %}
+
+
