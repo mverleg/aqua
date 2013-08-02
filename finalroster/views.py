@@ -288,6 +288,7 @@ def assignment_submit_split(request, assignment):
                 assignment.timeslot.pk = None
                 assignment.timeslot.start = splitat
                 assignment.timeslot.end = prevend
+                new_pk = assignment.timeslot.pk
                 assignment.timeslot.save()
                 ''' Then we need to clone the assignments for everyone '''
                 assignments = Assignment.objects.filter(timeslot__pk = old_pk)
@@ -300,7 +301,7 @@ def assignment_submit_split(request, assignment):
                 #return redirect(to = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
                 return render(request, 'split_confirm.html', {
                      'assignment1': Assignment.objects.get(pk = old_pk),
-                     'assignment2': cloneassignment,
+                     'assignment2': Assignment.objects.get(pk = new_pk),
                 })
         return notification(request, 'De opgegeven tijd was niet geldig')
     else:
