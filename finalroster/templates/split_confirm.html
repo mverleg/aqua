@@ -10,11 +10,11 @@
 	<ul>
 		[{{ timeslot1 }}|[{{ timeslot1.pk }}]]
 		[{{ timeslot2 }}|[{{ timeslot2.pk }}]]
-		<li><a href="{% url 'slot_info' slot=timeslot1.pk %}">{{ timeslot1 }}</a></li>
-		<li><a href="{% url 'slot_info' slot=timeslot2.pk %}">{{ timeslot2 }}</a></li>
+		{#<li><a href="{% url 'slot_info' slot=timeslot1.pk %}">{{ timeslot1 }}</a></li>#}
+		{#<li><a href="{% url 'slot_info' slot=timeslot2.pk %}">{{ timeslot2 }}</a></li>#}
 	</ul>
 	
-	<p><a href="{% url 'final_roster' roster=assignment1.timeslot.roster.pk year=assignment1.timeslot.year week=assignment1.timeslot.week %}">Naar het overzicht</a></p>
+	{#<p><a href="{% url 'final_roster' roster=assignment1.timeslot.roster.pk year=assignment1.timeslot.year week=assignment1.timeslot.week %}">Naar het overzicht</a></p>#}
 	
 {% endblock content %}
 
