@@ -76,7 +76,7 @@ def final_roster(request, roster, year = None, week = None):
     except Roster.DoesNotExist:
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state == 4 and not (roster.state == 3 and request.user.is_staff):
-        return notification(request, 'Dit rooster kan je op het moment niet bekijken')
+        return redirect(to = reverse('final_roster', kwargs = {'roster': roster.ok}))
     if year == None or week == None:
         if datetime.date.today() < roster.start:
             year = roster.start.year
@@ -181,7 +181,6 @@ def assignment_redirect(request, assignment):
 def assignment_submit(request, assignment):
     assignment = Assignment.objects.get(pk = int(assignment))
     if not assignment.timeslot.roster.state == 4:
-        return redirect(to = reverse('final_roster', kwargs = {'roster': assignment.timeslot.roster.ok}))
         return notification(request, 'Dit rooster kan je op het moment niet aangepast worden')
     if not RosterWorker.objects.filter(user = request.user, roster = assignment.timeslot.roster):
         return notification(request, 'Je kan tijdens dit rooster niet werken (je account is niet toegevoegd)')
