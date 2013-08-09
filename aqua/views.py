@@ -14,7 +14,7 @@ def work_home(request):
 	for roster in rosters_all:
 		if RosterWorker.objects.filter(roster = roster, user = request.user):
 			rosters_user.append(roster)
-	rosters_actives = [roster for roster in rosters_user if roster.state in [1, 4] and roster.active_around_now]
+	rosters_actives = [roster for roster in rosters_user if (roster.state in [1, 4] and roster.active_around_now)]
 	rosters_avilabilities = filter(lambda r: r.state == 1, rosters_user)
 	rosters_final = filter(lambda r: r.state == 4, rosters_user)
 	return render(request, 'work_home.html', {
@@ -26,7 +26,6 @@ def work_home(request):
 
 
 def login(request):
-	#print 'request.GET: %s' % request.GET.get('next')
 	if request.method == 'POST':
 		username = request.POST['username']
 		password = request.POST['password']
