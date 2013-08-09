@@ -122,6 +122,16 @@ def availability(request, roster, year = None, week = None):
     if next_year > roster.end.year or (next_week > roster.end.isocalendar()[1] and next_year == roster.end.year):
         (next_year, next_week) = (None, None)
     
+    ''' Get jump links to all the weeks '''
+    start_monday = week_start_date(roster.start.year, roster.start.isocalendar()[1])
+    end_monday = week_start_date(roster.end.year, roster.end.isocalendar()[1])
+    oneweek = datetime.timedelta(days = 7)
+    mondays = []
+    day_k = start_monday
+    while day_k <= end_monday:
+        mondays.append({'name': day_k.strftime('%d %b'), 'is_this_week': monday == day_k, 'year': day_k.year, 'week': day_k.isocalendar()[1]})
+        day_k += oneweek
+    
     return render(request, 'availability.html', {
         'roster': roster, 
         'schedule': schedule,
@@ -131,6 +141,7 @@ def availability(request, roster, year = None, week = None):
         'week': week,
         'prev_week': prev_week,
         'next_week': next_week,
+        'mondays': mondays,
     })
 
 

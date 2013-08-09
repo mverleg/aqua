@@ -36,6 +36,17 @@
 	</div>
 	
 	{% if prev_year or next_year %}
+	<p class="week_links">
+	{% for monday in mondays %}
+		{% if not monday.is_this_week %}
+			<a href="{% url 'final_roster' roster=roster.name year=monday.year week=monday.week %}">{{ monday.name|lower }}</a>
+		{% else %}
+			<strong>{{ monday.name|lower }}</strong>
+		{% endif %}
+		{% if not forloop.last %} | {% endif %}
+	{% endfor %}
+	</p>
+	
 	<p id="pagination">
 		{% if prev_year %}
 			<a class="left_align" href="{% url 'availability' roster=roster.name year=prev_year week=prev_week %}"><< previous</a>
