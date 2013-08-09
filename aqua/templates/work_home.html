@@ -10,7 +10,7 @@
 		<ul>
 			{% for roster in actives %}
 				<li>
-					<a href="{% url 'availability' roster=roster.name %}">{{ roster.name }}</a>, {{ roster.timestr }}
+					<a href="{% url 'final_roster' roster=roster.name %}">{{ roster.name }}</a>, {{ roster.timestr }}
 				</li>
 			{% endfor %}
 		</ul>
