@@ -39,7 +39,7 @@
 	<p class="week_links">
 	{% for monday in mondays %}
 		{% if not monday.is_this_week %}
-			<a href="{% url 'final_roster' roster=roster.name year=monday.year week=monday.week %}">{{ monday.name|lower }}</a>
+			<a href="{% url 'availability' roster=roster.name year=monday.year week=monday.week %}">{{ monday.name|lower }}</a>
 		{% else %}
 			<strong>{{ monday.name|lower }}</strong>
 		{% endif %}
