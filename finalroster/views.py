@@ -76,7 +76,7 @@ def final_roster(request, roster, year = None, week = None):
     except Roster.DoesNotExist:
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state == 4 and not (roster.state == 3 and request.user.is_staff):
-        return redirect(to = reverse('final_roster', kwargs = {'roster': roster.name}))
+        return redirect(to = reverse('availability', kwargs = {'roster': roster.name}))
     if year == None or week == None:
         if datetime.date.today() < roster.start:
             year = roster.start.year
