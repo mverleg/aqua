@@ -38,7 +38,7 @@ def start_roster(request):
                 template_workers = RosterWorker.objects.filter(roster = template_roster)
                 for tmp_worker in template_workers:
                     RosterWorker(user = tmp_worker.user, roster = roster, extra = 0).save()
-            return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.pk}))
+            return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.name}))
     else:
         create_roster_form = CreateRosterForm()
         template_roster_form = TemplateRosterForm()
@@ -51,7 +51,10 @@ def start_roster(request):
 
 @staff_member_required
 def add_timeslot(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
         return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
     refday = roster.start
@@ -97,14 +100,17 @@ def delete_timeslot(request, slot):
     if roster.state > 0:
         return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
     slot.delete()
-    return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.pk}))
+    return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.name}))
     
 
 @staff_member_required
 def timeslots_copy_day(request, roster, date, to = None):
     dateobj = datetime.datetime.strptime(date, DATEFORMAT)
     oneday = datetime.timedelta(days = 1)
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
         return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
     day_slots = TimeSlot.objects.filter(roster = roster).filter(start__gt = dateobj, start__lt = dateobj + oneday).order_by('start')
@@ -139,24 +145,30 @@ def timeslots_copy_day(request, roster, date, to = None):
                 start = datetime.datetime.combine(day, slot.start.time())
                 end = datetime.datetime.combine(day, slot.end.time())
                 TimeSlot(roster = roster, start = start, end = end, degeneracy = slot.degeneracy).save()
-    return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.pk}))
+    return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.name}))
     
 
 @staff_member_required
 def timeslots_empty_day(request, roster, date, to = None):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
         return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
     dateobj = datetime.datetime.strptime(date, DATEFORMAT)
     day_slots = TimeSlot.objects.filter(roster = roster).filter(start__gt = dateobj, start__lt = dateobj + datetime.timedelta(days = 1)).order_by('start')
     for slot in day_slots:
         slot.delete()
-    return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.pk}))
+    return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.name}))
     
 
 @staff_member_required
 def roster_users(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
         return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
     users = User.objects.all()
@@ -177,7 +189,10 @@ def roster_users(request, roster):
 @require_POST
 @staff_member_required
 def roster_users_submit(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
         return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
     RosterWorker.objects.filter(roster = roster).delete()
@@ -198,12 +213,12 @@ def roster_users_submit(request, roster):
         if rosteruser:
             rosteruser[0].extra = extra
             rosteruser[0].save()
-    return redirect(to = reverse('roster_users', kwargs = {'roster': roster.pk}))
+    return redirect(to = reverse('roster_users', kwargs = {'roster': roster.name}))
 
 
 @staff_member_required
 def roster_overview(request):
-    rosters = Roster.objects.all().order_by('start')
+    rosters = Roster.objects.all().order_by('-start')
     return render(request, 'roster_overview.html', {
         'rosters': rosters,
     })
@@ -211,7 +226,10 @@ def roster_overview(request):
 
 @staff_member_required
 def delete_roster(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     roster.delete()
     return redirect(to = reverse('roster_overview'))
 

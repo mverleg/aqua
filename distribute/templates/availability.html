@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
 	
@@ -38,16 +38,16 @@
 	{% if prev_year or next_year %}
 	<p id="pagination">
 		{% if prev_year %}
-			<a class="left_align" href="{% url 'availability' roster=roster.pk year=prev_year week=prev_week %}"><< previous</a>
+			<a class="left_align" href="{% url 'availability' roster=roster.name year=prev_year week=prev_week %}"><< previous</a>
 		{% endif %}
 		{% if next_year %}
-			<a class="right_align" href="{% url 'availability' roster=roster.pk year=next_year week=next_week %}">next >></a>
+			<a class="right_align" href="{% url 'availability' roster=roster.name year=next_year week=next_week %}">next >></a>
 		{% endif %}
 		<br class="clear" />
 	</p>
 	{% endif %}
 	
-	<form id="shift_form" action="{% url 'availability_submit' roster=roster.pk %}" method="POST">
+	<form id="shift_form" action="{% url 'availability_submit' roster=roster.name %}" method="POST">
 		<input type="hidden" id="shift_input" name="shifts" value="" />
 		<input type="hidden" name="year" value="{{ year }}" />
 		<input type="hidden" name="week" value="{{ week }}" />
@@ -55,7 +55,7 @@
 	</form>
 	
 	<p id="shift_submit"><a href="#">Beschikbaarheid opslaan</a> voor deze week</p>
-	<p id="shift_copy"><a href="{% url 'availability_copy' roster=roster.pk year=year week=week %}">Kopieer naar alle weken</a>; je kunt daarna nog aanpassingen maken</p>
+	<p id="shift_copy"><a href="{% url 'availability_copy' roster=roster.name year=year week=week %}">Kopieer naar alle weken</a>; je kunt daarna nog aanpassingen maken</p>
 	
 {% endblock content %}
 

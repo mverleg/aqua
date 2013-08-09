@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
 	
@@ -68,39 +68,43 @@
 	{% endif %}
 	
 	{% if user.is_staff %}
-		<p>Beheer</p>
+		<h2>Beheer</h2>
 		{% for assignment in assignments %}
-			<p>
+			<div>
 				<form action="{% url 'assignment_submit_staff' assignment=assignment.pk %}" method="POST" style="display: inline;">
 					{% csrf_token %}
 					<input type="hidden" name="action" value="transfer" />
-					<input type="submit" value="Naar iemand anders overzetten" />
+					<input type="submit" value="overzetten" />
 				</form>
 				<form action="{% url 'assignment_submit_staff' assignment=assignment.pk %}" method="POST" style="display: inline;">
 					{% csrf_token %}
 					<input type="hidden" name="action" value="terminate" />
-					<input type="submit" value="Deze assignment opheffen" />
+					<input type="submit" value="opheffen" />
 				</form>
-				{{ assignment.user.get_full_name }}
-			</p>
+				<label>{{ assignment.user.get_full_name }}</label>
+			</div>
 		{% endfor %}
 		{% if assignments.count < slot.degeneracy %}
-			<form action="{% url 'assignment_submit_staff_empty' timeslot=slot.pk %}" method="POST" style="display: inline;">
-				{% csrf_token %}
-				<input type="submit" value="Aan iemand toewijzen" />
-			</form>
-			<form action="{% url 'assignment_submit_delete_empty' timeslot=slot.pk %}" method="POST" style="display: inline;">
-				{% csrf_token %}
-				<input type="submit" value="Lege shift opheffen" />
-			</form>
+			<div>
+				<form action="{% url 'assignment_submit_staff_empty' timeslot=slot.pk %}" method="POST" style="display: inline;">
+					{% csrf_token %}
+					<input type="submit" value="toewijzen" />
+				</form>
+				<form action="{% url 'assignment_submit_delete_empty' timeslot=slot.pk %}" method="POST" style="display: inline;">
+					{% csrf_token %}
+					<input type="submit" value="opheffen" />
+				</form>
+				<label>(leeg)</label>
+			</div>
 		{% endif %}
 		<form action="{% url 'assignment_submit_add_degeneracy' timeslot=slot.pk %}" method="POST" style="display: inline;">
 			{% csrf_token %}
-			<input type="submit" value="Extra shift op deze tijd" />
+			<input type="submit" value="extra shift" />
 		</form>
 	{% endif %}
 	
-	<p><a href="{% url 'final_roster' roster=roster.pk year=slot.year week=slot.week %}">Naar het overzicht</a></p>
+	<br /><br />
+	<p><a href="{% url 'final_roster' roster=roster.name year=slot.year week=slot.week %}">Naar het overzicht</a></p>
 	
 {% endblock content %}
 

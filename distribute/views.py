@@ -16,7 +16,10 @@ import datetime
 
 @staff_member_required
 def roster_lock(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
         return notification(request, 'Dit rooster is al geblokkeerd')
     return render(request, 'roster_lock.html', {
@@ -26,7 +29,10 @@ def roster_lock(request, roster):
 
 @staff_member_required
 def invite_workers(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 1:
         return notification(request, 'Je kunt nog niet, of niet langer, mensen uitnodigen')
     roster.state = 1
@@ -69,7 +75,10 @@ def rosters_availabilities(request):
 
 @login_required
 def availability(request, roster, year = None, week = None):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state == 1:
         return notification(request, 'Je kunt nog niet, of niet meer, je beschikbaarheid doorgeven') 
     
@@ -77,14 +86,14 @@ def availability(request, roster, year = None, week = None):
         return notification(request, 'Je bent niet uitgenodigd voor dit rooster')
     
     if year == None or week == None:
-        return redirect(to = reverse('availability', kwargs={'roster': roster.pk, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
+        return redirect(to = reverse('availability', kwargs={'roster': roster.name, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
     else:
         year = int(year)
         week = int(week)
     if year < roster.start.year or (week < roster.start.isocalendar()[1] and year == roster.start.year):
-        return redirect(to = reverse('availability', kwargs={'roster': roster.pk, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
+        return redirect(to = reverse('availability', kwargs={'roster': roster.name, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
     if year > roster.end.year or (week > roster.end.isocalendar()[1] and year == roster.end.year):
-        return redirect(to = reverse('availability', kwargs={'roster': roster.pk, 'year': roster.end.year, 'week': roster.end.isocalendar()[1]}))
+        return redirect(to = reverse('availability', kwargs={'roster': roster.name, 'year': roster.end.year, 'week': roster.end.isocalendar()[1]}))
     
     monday = week_start_date(year, week)
     day = datetime.timedelta(days = 1)
@@ -128,7 +137,10 @@ def availability(request, roster, year = None, week = None):
 @login_required
 @require_POST
 def availability_submit(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state == 1:
         return notification(request, 'Je kunt nog niet, of niet meer, je beschikbaarheid doorgeven')
     
@@ -152,12 +164,15 @@ def availability_submit(request, roster):
         shift = TimeSlot.objects.get(pk = shift_pk)
         Availability(user = request.user, timeslot = shift).save()
     
-    return redirect(to = reverse('availability', kwargs = {'roster': roster.pk, 'year': year, 'week': week}))
+    return redirect(to = reverse('availability', kwargs = {'roster': roster.name, 'year': year, 'week': week}))
 
 
 @login_required
 def availability_copy(request, roster, year, week):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state == 1:
         return notification(request, 'Je kunt nog niet, of niet meer, je beschikbaarheid doorgeven')
     
@@ -193,12 +208,15 @@ def availability_copy(request, roster, year, week):
                     Availability(user = request.user, timeslot = ts_match[0]).save()
             weeks += 7 * day
     
-    return redirect(to = reverse('availability', kwargs = {'roster': roster.pk, 'year': year, 'week': week}))
+    return redirect(to = reverse('availability', kwargs = {'roster': roster.name, 'year': year, 'week': week}))
 
 
 @staff_member_required
 def calculate_start(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state in [1, 3]:
         return notification(request, 'Je kunt nu geen berekening starten')
     roster.state = 2
@@ -207,22 +225,28 @@ def calculate_start(request, roster):
     command = ['nohup', 'python', 'manage.py', 'calculate_roster', '%d' % roster.pk]
     Popen(command, shell = False, stdout = open(os.devnull, 'w'), stderr = STDOUT, stdin = open(os.devnull, 'w'))
     
-    return redirect(to = reverse('calculate_status', kwargs = {'roster': roster.pk}))
+    return redirect(to = reverse('calculate_status', kwargs = {'roster': roster.name}))
     
 
 @staff_member_required
 def calculate_restart(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state == 2:
         return notification(request, 'Je kan niet herstarten als er geen berekening bezig is')
     roster.state = 1
     roster.save()
-    return redirect(to = reverse('invite_workers', kwargs = {'roster': roster.pk}))
+    return redirect(to = reverse('invite_workers', kwargs = {'roster': roster.name}))
     
 
 @staff_member_required
 def calculate_status(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state in [2, 3]:
         return notification(request, 'Dit rooster wordt op het moment niet verdeeld')
     return render(request, 'calculate_status.html', {
@@ -232,12 +256,15 @@ def calculate_status(request, roster):
 
 @staff_member_required
 def calculate_publish(request, roster):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state  == 3:
         return notification(request, 'Dit rooster kan niet openbaar worden gemaakt')
     roster.state = 4
     roster.save()
-    return redirect(to = reverse('final_roster', kwargs = {'roster': roster.pk}))
+    return redirect(to = reverse('final_roster', kwargs = {'roster': roster.name}))
 
 
 

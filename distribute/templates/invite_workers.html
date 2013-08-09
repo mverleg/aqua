@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
 	
@@ -7,7 +7,7 @@
 	
 	<p>Het rooster is vergrendeld; mensen kunnen zich nu opgeven via:</p>
 	
-	<p><a href="{% url 'availability' roster=roster.pk %}">{{ base_url }}{% url 'availability' roster=roster.pk %}</a></p>
+	<p><a href="{% url 'availability' roster=roster.name %}">{{ base_url }}{% url 'availability' roster=roster.name %}</a></p>
 	
 	<p>Aanmeldstatus:</p>
 	<ul>
@@ -25,7 +25,7 @@
 	
 	<p>Het starten van de verdeling betekent dat mensen geen beschikbaarheid meer kunnen doorgeven!</p>
 	
-	<p><a href="{% url 'calculate_start' roster=roster.pk %}">Verdeel het rooster</a></p>
+	<p><a href="{% url 'calculate_start' roster=roster.name %}">Verdeel het rooster</a></p>
 	
 {% endblock content %}
 

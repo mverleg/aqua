@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
 	
@@ -9,7 +9,7 @@
 	
 	<p>Voeg hier gebruikers in en waar nodig het aantal extra uren (meestal niet nodig; kan ook negatief)</p>
 	
-	<form action="{% url 'roster_users_submit' roster=roster.pk %}" method="POST">
+	<form action="{% url 'roster_users_submit' roster=roster.name %}" method="POST">
 		<ul>
 		{% for user in users %}
 			<li>
@@ -25,8 +25,8 @@
 	
 	<br />
 	
-	<p><a href="{% url 'add_timeslots' roster=roster.pk %}">Voeg shifts toe</a></p>
-	<p><a href="{% url 'roster_lock' roster=roster.pk %}">Klaar; nodig gebruikers uit</a></p>
+	<p><a href="{% url 'add_timeslots' roster=roster.name %}">Voeg shifts toe</a></p>
+	<p><a href="{% url 'roster_lock' roster=roster.name %}">Klaar; nodig gebruikers uit</a></p>
 	<p><a href="/admin/">Nieuwe gebruiker</a></p>
 	
 {% endblock content %}

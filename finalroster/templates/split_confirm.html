@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
 	
@@ -12,7 +12,7 @@
 		<li><a href="{% url 'slot_info' slot=timeslot2.pk %}">{{ timeslot2 }}</a></li>
 	</ul>
 	
-	<p><a href="{% url 'final_roster' roster=timeslot1.roster.pk year=timeslot1.year week=timeslot1.week %}">Naar het overzicht</a></p>
+	<p><a href="{% url 'final_roster' roster=timeslot1.roster.name year=timeslot1.year week=timeslot1.week %}">Naar het overzicht</a></p>
 	
 {% endblock content %}
 

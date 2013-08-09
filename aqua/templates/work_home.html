@@ -1,0 +1,47 @@
+
+{% extends 'work_base.html' %}
+
+{% block content %}
+	
+	<h1>Roostersite</h1>
+	
+	{% if active %}
+		<h2>Huidige roosters</h2>
+		<ul>
+			{% for roster in actives %}
+				<li>
+					<a href="{% url 'availability' roster=roster.name %}">{{ roster.name }}</a>, {{ roster.timestr }}
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+	
+	<h2>Beschikbaarheid doorgeven</h2>
+	{% if availabilities %}
+		<p>Je wordt gevraagd voor de volgende roosters je beschikbaarheid door te geven:</p>
+		<ul>
+			{% for roster in availabilities %}
+				<li>
+					<a href="{% url 'availability' roster=roster.name %}">{{ roster.name }}</a>, {{ roster.timestr }}
+				</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<p>Als er roosters zijn waarvoor je gevraagd wordt beschikbaarheid door te geven komen ze hier</p>
+	{% endif %}
+	
+	<h2>Alle roosters</h2>
+	{% if final %}
+		<ul>
+			{% for roster in final %}
+				<li>
+					<a href="{% url 'final_roster' roster=roster.name %}">{{ roster.name }}</a>, {{ roster.timestr }}
+				</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<p>Er zijn momenteel geen definitieve roosters</p>
+	{% endif %}
+	
+{% endblock content %}
+

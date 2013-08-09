@@ -73,6 +73,10 @@ class TradeCalendar(AllCalendar):
 class OwnCalendar(AllCalendar):
 	
 	def get_object(self, request, user):
+		try:
+			user = int(user)
+		except ValueError:
+			return get_object_or_404(User, username = user)
 		return get_object_or_404(User, pk = int(user))
 	
 	def items(self, obj):

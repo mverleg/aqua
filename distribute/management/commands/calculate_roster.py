@@ -161,7 +161,7 @@ class Command(BaseCommand):
                 no_change_steps = 0
         
         ''' Prevent unnecessary blanks '''
-        t_post = time.time()
+        #t_post = time.time()
         for slot in slots:
             for deg in range(degeneracy[slot.pk]):
                 if D[slot.pk][deg] == None:

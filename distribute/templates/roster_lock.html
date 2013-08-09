@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
 	
@@ -16,8 +16,8 @@
 		{% endfor %}
 	</ol>
 	
-	<p><a href="{% url 'invite_workers' roster=roster.pk %}">Oke, laat deze mensen zich opgeven</a></p>
-	<p><a href="{% url 'add_timeslots' roster=roster.pk %}">Voeg shifts toe</a></p>
-	<p><a href="{% url 'roster_users' roster=roster.pk %}">Voeg gebruikers toe</a></p>
+	<p><a href="{% url 'invite_workers' roster=roster.name %}">Oke, laat deze mensen zich opgeven</a></p>
+	<p><a href="{% url 'add_timeslots' roster=roster.name %}">Voeg shifts toe</a></p>
+	<p><a href="{% url 'roster_users' roster=roster.name %}">Voeg gebruikers toe</a></p>
 	
 {% endblock content %}

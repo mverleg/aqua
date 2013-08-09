@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
 	
@@ -11,7 +11,7 @@
 		
 		<p>Deze pagina herlaadt automatisch (handmatig kan ook). Wanneer de verdeling klaar is verschijnt hier een update.</p>
 		
-		<p>Wanneer er lang ( > 15 min) niks verschijnt is het mogelijk dat de verdeling vastgelopen is. Klik dan, en alleen dan, op <a style="color: inherit; text-decoration: none;" href="{% url 'calculate_restart' roster=roster.pk %}">herstart</a>.</p>
+		<p>Wanneer er lang ( > 15 min) niks verschijnt is het mogelijk dat de verdeling vastgelopen is. Klik dan, en alleen dan, op <a style="color: inherit; text-decoration: none;" href="{% url 'calculate_restart' roster=roster.name %}">herstart</a>.</p>
 		
 		<script>
 			setTimeout(function () { location.reload(true); }, 5000);
@@ -22,10 +22,10 @@
 		<p>De verdeling is gemaakt! De opties:</p>
 		
 		<ul>
-			<li><a href="{% url 'final_roster' roster=roster.pk %}">Bekijk het rooster</a>; het is nu alleen voor beheerders zichtbaar</li>
-			<li><a href="{% url 'calculate_start' roster=roster.pk %}">Maak een nieuwe verdeling</a>; het proces bevat willekeur, dus nog eens proberen kan helpen</li>
-			<li><a href="{% url 'calculate_publish' roster=roster.pk %}">Maak rooster openbaar</a>; hierna kan de verdeling niet meer veranderd worden</li>
-			<li><a href="{% url 'delete_roster' roster=roster.pk %}" class="delete_link">Verwijder het rooster</a>; kan niet teruggedraaid worden; verwijderen kan niet meer wanneer het rooster openbaar is</li>
+			<li><a href="{% url 'final_roster' roster=roster.name %}">Bekijk het rooster</a>; het is nu alleen voor beheerders zichtbaar</li>
+			<li><a href="{% url 'calculate_start' roster=roster.name %}">Maak een nieuwe verdeling</a>; het proces bevat willekeur, dus nog eens proberen kan helpen</li>
+			<li><a href="{% url 'calculate_publish' roster=roster.name %}">Maak rooster openbaar</a>; hierna kan de verdeling niet meer veranderd worden</li>
+			<li><a href="{% url 'delete_roster' roster=roster.name %}" class="delete_link">Verwijder het rooster</a>; kan niet teruggedraaid worden; verwijderen kan niet meer wanneer het rooster openbaar is</li>
 		</ul>
 		
 	{% endif %}

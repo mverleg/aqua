@@ -1,6 +1,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date, timedelta
 
 DATEFORMAT = '%Y-%m-%d'
 TIMEFORMAT = '%H:%M'
@@ -35,6 +36,13 @@ class Roster(models.Model):
     def timestr(self):
         return '%s tot %s' % (self.start.strftime(DATEFORMAT), self.end.strftime(DATEFORMAT))
     
+    @property
+    def active_around_now(self):
+        day = timedelta(days = 1)
+        if self.start < date.today() + 7 * day and self.end > date.today():
+            return True
+        return False
+    
 
 class TimeSlot(models.Model):
     roster = models.ForeignKey(Roster)
@@ -42,6 +50,9 @@ class TimeSlot(models.Model):
     end = models.DateTimeField(db_index = True)
     degeneracy = models.PositiveIntegerField(default = 1)
     #user = models.ForeignKey(User, blank = True, null = True)
+    
+    class Meta():
+        ordering = ['start', ]
     
     def __unicode__(self):
         return '%s-%s' % (self.start.strftime(DATETIMEFORMAT), self.end.strftime(TIMEFORMAT))

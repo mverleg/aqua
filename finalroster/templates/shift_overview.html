@@ -1,7 +1,9 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
+	
+	<h1>{{ user.get_full_name }}: {{ year }} #{{ month }}</h1>
 	
 	<p>Overzicht van uren voor {{ user.get_full_name }} tijdens maand #{{ month }} van {{ year }}</p>
 	
@@ -18,8 +20,8 @@
 	<p>In totaal heeft {{ user.get_full_name }} deze maand <strong>{{ total }}</strong> uur gewerkt.</p>
 	
 	<p id="pagination">
-		<a class="left_align" href="{% url 'month_overview' user=user.pk year=prev_year month=prev_month %}"><< previous</a>
-		<a class="right_align" href="{% url 'month_overview' user=user.pk year=next_year month=next_month %}">next >></a>
+		<a class="left_align" href="{% url 'month_overview' user=user.username year=prev_year month=prev_month %}"><< previous</a>
+		<a class="right_align" href="{% url 'month_overview' user=user.username year=next_year month=next_month %}">next >></a>
 		<br class="clear" />
 	</p>
 	

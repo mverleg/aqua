@@ -7,21 +7,19 @@ from django.core.urlresolvers import reverse
 from timeslot.models import Roster, RosterWorker
 
 
-def stylez(request):
-	return render(request, 'stylez.html')
-
-
 @login_required
-def workhome(request):
+def work_home(request):
 	rosters_all = Roster.objects.all().order_by('-start')
 	rosters_user = []
 	for roster in rosters_all:
 		if RosterWorker.objects.filter(roster = roster, user = request.user):
 			rosters_user.append(roster)
+	rosters_actives = [roster for roster in rosters_user if roster.state in [1, 4] and roster.active_around_now]
 	rosters_avilabilities = filter(lambda r: r.state == 1, rosters_user)
 	rosters_final = filter(lambda r: r.state == 4, rosters_user)
-	return render(request, 'workhome.html', {
+	return render(request, 'work_home.html', {
 		'user': request.user,
+		'actives': rosters_actives,
 		'availabilities': rosters_avilabilities,
 		'final': rosters_final,
 	})

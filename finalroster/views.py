@@ -15,7 +15,10 @@ from django.db.utils import IntegrityError
 
 @login_required
 def month_overview(request, user, year = None, month = None):
-    user = User.objects.get(pk = int(user))
+    try:
+        user = User.objects.get(username = user)
+    except User.DoesNotExist:
+        return notification(request, 'Gebruiker met gebruikersnaam \'%s\' niet gevonden' % user)
     day = datetime.timedelta(days = 1)
     if year and month:
         year = int(year)
@@ -68,18 +71,30 @@ def month_overview_all(request):
     
 
 def final_roster(request, roster, year = None, week = None):
-    roster = Roster.objects.get(pk = int(roster))
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if not roster.state == 4 and not (roster.state == 3 and request.user.is_staff):
         return notification(request, 'Dit rooster kan je op het moment niet bekijken')
     if year == None or week == None:
-        return redirect(to = reverse('final_roster', kwargs={'roster': roster.pk, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
+        if datetime.date.today() < roster.start:
+            year = roster.start.year
+            week = roster.start.isocalendar()[1]
+        elif datetime.date.today() > roster.end:
+            year = roster.end.year
+            week = roster.end.isocalendar()[1]
+        else:
+            year = datetime.date.today().year
+            week = datetime.date.today().isocalendar()[1]
+        return redirect(to = reverse('final_roster', kwargs={'roster': roster.name, 'year': year, 'week': week}))
     else:
         year = int(year)
         week = int(week)
     if year < roster.start.year or (week < roster.start.isocalendar()[1] and year == roster.start.year):
-        return redirect(to = reverse('final_roster', kwargs={'roster': roster.pk, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
+        return redirect(to = reverse('final_roster', kwargs={'roster': roster.name, 'year': roster.start.year, 'week': roster.start.isocalendar()[1]}))
     if year > roster.end.year or (week > roster.end.isocalendar()[1] and year == roster.end.year):
-        return redirect(to = reverse('final_roster', kwargs={'roster': roster.pk, 'year': roster.end.year, 'week': roster.end.isocalendar()[1]}))
+        return redirect(to = reverse('final_roster', kwargs={'roster': roster.name, 'year': roster.end.year, 'week': roster.end.isocalendar()[1]}))
     
     monday = week_start_date(year, week)
     day = datetime.timedelta(days = 1)
@@ -105,13 +120,23 @@ def final_roster(request, roster, year = None, week = None):
     urls['all'] = 'http://' + request.get_host() + reverse('ical_all')
     urls['trade'] = 'http://' + request.get_host() + reverse('ical_trade')
     if request.user.is_authenticated():
-        urls['own'] = 'http://' + request.get_host() + reverse('ical_own', kwargs = {'user': request.user.pk})
-        urls['available'] = 'http://' + request.get_host() + reverse('ical_available', kwargs = {'user': request.user.pk})
+        urls['own'] = 'http://' + request.get_host() + reverse('ical_own', kwargs = {'user': request.user.username})
+        urls['available'] = 'http://' + request.get_host() + reverse('ical_available', kwargs = {'user': request.user.username})
     
     user = AnonymousUser()
     if request.user.is_authenticated():
         if RosterWorker.objects.filter(user = request.user, roster = roster):
             user = request.user
+    
+    ''' Get jump links to all the weeks '''
+    start_monday = week_start_date(roster.start.year, roster.start.isocalendar()[1])
+    end_monday = week_start_date(roster.end.year, roster.end.isocalendar()[1])
+    oneweek = datetime.timedelta(days = 7)
+    mondays = []
+    day_k = start_monday
+    while day_k <= end_monday:
+        mondays.append({'name': day_k.strftime('%d %b'), 'is_this_week': monday == day_k, 'year': day_k.year, 'week': day_k.isocalendar()[1]})
+        day_k += oneweek
     
     return render(request, 'final_roster.html', {
         'user': user,
@@ -124,6 +149,7 @@ def final_roster(request, roster, year = None, week = None):
         'prev_week': prev_week,
         'next_week': next_week,
         'urls': urls,
+        'mondays': mondays,
     })
     
 
@@ -203,7 +229,7 @@ def assignment_submit_staff(request, assignment):
         return notification(request, 'Alleen beheerders mogen dit doen')
     if 'action' in request.POST.keys():
         if request.POST['action'] == 'transfer':
-            users = [worker.user for worker in RosterWorker.objects.all()]
+            users = [worker.user for worker in RosterWorker.objects.filter(roster = assignment.timeslot.roster).all()]
             return render(request, 'gift_select_user.html', {
                 'assignment': assignment,
                 'slot': assignment.timeslot,
@@ -214,9 +240,9 @@ def assignment_submit_staff(request, assignment):
         elif request.POST['action'] == 'terminate':
             timeslot = assignment.timeslot
             if timeslot.degeneracy <= 1:
-                roster_pk = timeslot.roster.pk
+                roster_name = timeslot.roster.name
                 timeslot.delete()
-                return redirect(to = reverse('final_roster', kwargs = {'roster': roster_pk, 'year': timeslot.year(), 'week': timeslot.week()}))
+                return redirect(to = reverse('final_roster', kwargs = {'roster': roster_name, 'year': timeslot.year(), 'week': timeslot.week()}))
             else:
                 assignment.delete()
                 timeslot.degeneracy -= 1
@@ -266,9 +292,9 @@ def assignment_submit_delete_empty(request, timeslot):
     timeslot = TimeSlot.objects.get(pk = int(timeslot))
     if request.user.is_staff:
         if timeslot.degeneracy <= 1:
-            roster_pk = timeslot.roster.pk
+            roster_name = timeslot.roster.name
             timeslot.delete()
-            return redirect(to = reverse('final_roster', kwargs = {'roster': roster_pk}))
+            return redirect(to = reverse('final_roster', kwargs = {'roster': roster_name}))
         else:
             timeslot.degeneracy -= 1
             timeslot.save()

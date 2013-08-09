@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% block content %}
 	
@@ -16,7 +16,7 @@
 	
 	<p>(Dit kan niet ongedaan worden gemaakt{% if slot.degeneracy > 1 %} en geldt ook voor andere mensen die deze dienst hebben{% endif %})</p>
 	
-	<p><a href="{% url 'final_roster' roster=roster.pk year=slot.year week=slot.week %}">Naar het overzicht</a></p>
+	<p><a href="{% url 'final_roster' roster=roster.name year=slot.year week=slot.week %}">Naar het overzicht</a></p>
 	
 {% endblock content %}
 

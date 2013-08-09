@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% load dayshifts %}
 
@@ -25,8 +25,8 @@
 		<p>
 		{{ day|daylong }}
 		{% if day|dayshiftcount:roster.pk %}
-			[<a href="{% url 'timeslots_copy_day' roster=roster.pk date=day %}">copy</a> | 
-			<a href="{% url 'timeslots_empty_day' roster=roster.pk date=day %}">purge</a>]
+			[<a href="{% url 'timeslots_copy_day' roster=roster.name date=day %}">copy</a> | 
+			<a href="{% url 'timeslots_empty_day' roster=roster.name date=day %}">purge</a>]
 		</p>
 		{{ day|dayshifts:roster.pk }}
 		{% else %}
@@ -38,8 +38,8 @@
 		
 	{% endfor %}
 	
-	<p><a href="{% url 'roster_users' roster=roster.pk %}">Voeg gebruikers toe</a></p>
-	<p><a href="{% url 'roster_lock' roster=roster.pk %}">Klaar; nodig gebruikers uit</a></p>
+	<p><a href="{% url 'roster_users' roster=roster.name %}">Voeg gebruikers toe</a></p>
+	<p><a href="{% url 'roster_lock' roster=roster.name %}">Klaar; nodig gebruikers uit</a></p>
 	
 {% endblock content %}
 

@@ -1,5 +1,5 @@
 
-{% extends 'workbase.html' %}
+{% extends 'work_base.html' %}
 
 {% load dayshifts %}
 
@@ -18,11 +18,11 @@
 	<p>Naar welke dagen wil je dit kopieren?</p>
 	
 	<ul>
-		<li><a href="{% url 'timeslots_copy_day' roster=roster.pk date=date to="nextday" %}">Kopieer naar de volgende dag</a></li>
-		<li><a href="{% url 'timeslots_copy_day' roster=roster.pk date=date to="samedays" %}">Kopieer naar elke {{ weekday }}</a></li>
-		<li><a href="{% url 'timeslots_copy_day' roster=roster.pk date=date to="weekdays" %}">Kopieer naar elke weekdag (ma-vr)</a></li>
-		<li><a href="{% url 'timeslots_copy_day' roster=roster.pk date=date to="alldays" %}">Kopieer naar elke dag</a></li>
-		<li><a href="{% url 'add_timeslots' roster=roster.pk %}">Terug naar het overzicht</a></li>
+		<li><a href="{% url 'timeslots_copy_day' roster=roster.name date=date to="nextday" %}">Kopieer naar de volgende dag</a></li>
+		<li><a href="{% url 'timeslots_copy_day' roster=roster.name date=date to="samedays" %}">Kopieer naar elke {{ weekday }}</a></li>
+		<li><a href="{% url 'timeslots_copy_day' roster=roster.name date=date to="weekdays" %}">Kopieer naar elke weekdag (ma-vr)</a></li>
+		<li><a href="{% url 'timeslots_copy_day' roster=roster.name date=date to="alldays" %}">Kopieer naar elke dag</a></li>
+		<li><a href="{% url 'add_timeslots' roster=roster.name %}">Terug naar het overzicht</a></li>
 	</ul>
 	
 	<p>Er wordt alleen gekopieerd naar lege dagen</p>

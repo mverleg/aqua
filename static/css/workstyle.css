@@ -1,0 +1,193 @@
+
+/*
+* Style by Mark
+* Colorset: http://colllor.com/6d91c7
+*/
+
+/* #todo: locally? */
+@font-face
+{
+	font-family: 'Jura';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Jura Regular'), local('Jura-Regular'), url(http://themes.googleusercontent.com/static/fonts/jura/v4/pqMzP52_r6zHbOILcX8h-A.woff) format('woff');
+}
+
+body
+{
+	font-family: Jura, Arial;
+	margin: 0px;
+	padding: 0px;
+	background-image: url('../img/stripes.png');
+	/* Colors: B5C7E3 and A6BCDD */
+}
+
+h1, h2, h3, a
+{
+	color: #111C2C;
+}
+
+h1, h2, h3
+{
+	text-transform: uppercase;
+	margin: 0px;
+}
+
+h1
+{
+	font-size: 220%;
+}
+
+h2
+{
+	font-size: 140%;
+}
+
+p, ul
+{
+	margin: 0px 0px 1em 0px;
+}
+
+form p
+{
+	margin: 0px;
+}
+
+form
+{
+	margin-bottom: 1em;
+}
+
+label
+{
+	display: inline-block;
+	min-width: 250px;
+}
+
+button, input[type="submit"]
+{
+	margin-top: 0.5em;
+	cursor: pointer;
+	background-color: #B5C7E3;
+	border: 1px solid #111C2C;
+	color: #111C2C;
+	border-radius: 0px;
+	min-width: 200px;
+}
+
+#workpage
+{
+	background-color: #F0F4F9;
+	width: 800px;
+	margin: 30px auto 0px auto;
+	padding: 2em;
+	min-height: 900px;
+	border-right: 2px solid #A6BCDD;
+	border-bottom: 2px solid #A6BCDD;
+	border-left: 2px solid #A6BCDD;
+}
+
+#topmenu
+{
+	position: fixed;
+	width: 100%;
+	top: 0px;
+	height: 20px;
+	padding: 5px;
+	background-color: #F0F4F9;
+	border-bottom: 2px solid #A6BCDD;
+}
+
+.topmenu_options
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+.topmenu_options li
+{
+	float: left;
+	list-style-type: none;
+	margin: 0px 5px 0px 0px;
+	padding: 0px 10px;
+	min-width:75px;
+	cursor: pointer;
+}
+
+.topmenu_options a
+{
+	color: #111C2C;
+	text-decoration: none;
+}
+
+.topmenu_options li:hover a
+{
+	color: #F0F4F9;
+}
+
+.topmenu_options li:hover
+{
+	color: #F0F4F9;
+	margin-top: -5px;
+	padding-top: 5px;
+	padding-bottom: 10px;
+	border-radius: 0px 0px 5px 5px;
+	background-color: #111C2C;
+	border: #111C2C;
+	text-decoration: none;
+}
+
+.topmenu_options li:hover img
+{
+	visibility: hidden;
+}
+
+#menu_welcome_message
+{
+	cursor: default;
+}
+
+
+#topmenu_left
+{
+	float: left;
+	margin-left: 3px;
+}
+
+#topmenu_right
+{
+	float: right;
+	margin-right: 18px;
+	text-align: right;
+}
+
+.home_icon
+{
+	width: 20px;
+	height: 20px;
+	margin-top: -4px;
+	vertical-align: middle;
+}
+
+.left_align
+{
+	float: left;
+}
+
+.right_align
+{
+	float: right;
+}
+
+.clear
+{
+	clear: both;
+	height: 1px;
+}
+
+.schedule_submit_bold
+{
+	font-weight: bold;
+}
+
+

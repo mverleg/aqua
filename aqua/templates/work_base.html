@@ -1,0 +1,72 @@
+
+{% load static from staticfiles %}
+{% load recieve_shifts %}
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="Content-Script-Type" content="text/javascript">
+	    <meta http-equiv="Content-Style-Type" content="text/css">
+	    
+	    <link rel="icon" type="image/png"  href="{% static 'favicon.png' %}">
+	    <title>Aqua</title>
+	    
+	    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
+	    <script type="text/javascript" src="{% static 'jq/jquery-1.9.1.js' %}"></script>
+	    {% block cssjs %}
+		<link rel="stylesheet" type="text/css" href="{% static 'jq/jquery-ui-1.10.3.custom.min.css' %}" />
+		{# #TODO remove the above? #}
+		<link rel="stylesheet" type="text/css" href="{% static 'css/datetimepicker.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'css/timepicker.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'css/workstyle.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'css/schedule.css' %}" />
+		<script type="text/javascript" src="{% static 'jq/jquery-ui-1.10.3.custom.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/availability.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/datetimepicker.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/timepicker.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/workscript.js' %}"></script>
+	    {% endblock cssjs %}
+	</head>
+	
+    <body>
+    	<div id="topmenu">
+    		<div id="topmenu_left">
+				<ul class="topmenu_options menu_list">
+					<li><a href="{% url 'home' %}"><img class="home_icon" src="{% static 'img/home.png' %}" /> home</a></li>
+					{% if user.is_staff %}
+						<li><a href="{% url 'roster_overview' %}">roosters</a></li>
+						<li><a href="{% url 'month_overview_all' %}">werkuren</a></li>
+						<li><a href="/admin/" target="_blank">beheer</a></li>
+					{% endif %}
+				</ul>
+			</div>
+    		<div id="topmenu_right">
+    			<ul class="topmenu_options menu_list">
+    				{% if request.user.is_authenticated %}
+	    				<li id="menu_welcome_message">Welkom {{ request.user.get_full_name }}</li>
+	    				<li><a href="{% url 'month_overview' user=user.username %}">je uren</a></li>
+	    				<li><a href="{% url 'change_password' %}">wachtwoord</a></li>
+	    				<li><a href="{% url 'logout' %}">logout</a></li>
+	    			{% else %}
+	    				<li><a href="{% url 'login' %}">login</a></li>
+    				{% endif %}
+    			</ul>
+			</div>
+    		<br id="clear" />
+    	</div>
+    	<div id="workpage">
+   	    	{% block page %}
+				{% block gift_shift %}
+					{% recieve_shifts %}
+				{% endblock gift_shift %}
+				{% block content %}
+					Home!
+				{% endblock content %}
+			{% endblock page %}
+    	</div>
+   	</body>
+</html>
+
+
