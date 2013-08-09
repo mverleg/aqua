@@ -26,8 +26,8 @@ urlpatterns = patterns('',
     url(r'^change_password/$', change_password, name='change_password'),
     url(r'^change_password/$', change_password, name='change_password'),
     url(r'^$', work_home, name = 'home'),
-    url(r'^~(?P<roster>[^/]+)/$', final_roster, name = 'final_roster'),
-    url(r'^~(?P<roster>[^/]+)/(?P<year>[0-9]+)/(?P<week>[0-9]+)/$', final_roster, name = 'final_roster'),
+    url(r'^show/(?P<roster>[^/]+)/$', final_roster, name = 'final_roster'),
+    url(r'^show/(?P<roster>[^/]+)/(?P<year>[0-9]+)/(?P<week>[0-9]+)/$', final_roster, name = 'final_roster'),
     url(r'^roster/$', start_roster, name = 'start_roster'),
     url(r'^roster/overview/$', roster_overview, name = 'roster_overview'),
     url(r'^roster/(?P<roster>[^/]+)/delete/$', delete_roster, name = 'delete_roster'),
@@ -67,8 +67,8 @@ urlpatterns = patterns('',
     url(r'^ical/trade.ics$', TradeCalendar(), name = 'ical_trade'),
     url(r'^ical/user(?P<user>[0-9]+).ics$', OwnCalendar()), # LEGACY
     url(r'^ical2/user(?P<user>[0-9]+)_trace.ics$', AvailableCalendar()), # LEGACY
+    url(r'^ical/trade/(?P<user>[^/]+).ics$', AvailableCalendar(), name = 'ical_available'),
     url(r'^ical/user/(?P<user>[^/]+).ics$', OwnCalendar(), name = 'ical_own'),
-    url(r'^ical/user/(?P<user>[^/]+)_trade.ics$', AvailableCalendar(), name = 'ical_available'),
 )
 
 
