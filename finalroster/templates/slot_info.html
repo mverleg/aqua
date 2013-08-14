@@ -67,12 +67,14 @@
 		</form>
 	{% endif %}
 	
-	<p><span title="Opgegeven als beschikbaar voor het kwartaal; dit kan verouderd zijn">Beschikbaar opgegeven</span>:
-		{% for availability in availabilities %}
-			{{ availability.user.get_full_name }}
-			{% if not forloop.last %} & {% endif %}
-		{% endfor %}
-	</p>
+	{% if availabilities %}
+		<p><span title="Opgegeven als beschikbaar voor het kwartaal; dit kan verouderd zijn">Beschikbaar opgegeven</span>:
+			{% for availability in availabilities %}
+				{{ availability.user.get_full_name }}
+				{% if not forloop.last %} & {% endif %}
+			{% endfor %}
+		</p>
+	{% endif %}
 	
 	{% if user.is_staff %}
 		<h2>Beheer</h2>
