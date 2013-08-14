@@ -4,7 +4,7 @@ from timeslot.models import Roster, TimeSlot, DATEFORMAT, RosterWorker
 from aqua.functions.notification import notification_work as notification
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
-from distribute.models import Assignment
+from distribute.models import Assignment, Availability
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User, AnonymousUser
@@ -161,6 +161,7 @@ def slot_info(request, slot):
     assignments = Assignment.objects.filter(timeslot = slot)
     owner_shift = [assignment for assignment in assignments if assignment.user == request.user]
     owner_shift = owner_shift[0] if owner_shift else None
+    availabilities = Availability.objects.filter(timeslot = slot)
     
     return render(request, 'slot_info.html', {
         'user': request.user,
@@ -168,6 +169,7 @@ def slot_info(request, slot):
         'roster': slot.roster,
         'owner_shift': owner_shift,
         'assignments': assignments,
+        'availabilities': availabilities,
     })
     
 

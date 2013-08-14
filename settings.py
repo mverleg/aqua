@@ -37,7 +37,7 @@ ALLOWED_HOSTS = ['.aqua.markv.nl', ]
 DEBUG = True
 
 from socket import gethostname
-if gethostname() in ['mulan', ]:
+if gethostname() in ['mulan', 'genie', ]:
     DEBUG = True
     DATABASES = {
         'default': {
