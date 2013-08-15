@@ -1,2 +1,4 @@
 
 - generalize for multiple organizations
+- overzicht van alle uren voor een organisatie, los van kwartaal 
+

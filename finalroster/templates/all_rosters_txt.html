@@ -1,0 +1,64 @@
+
+{% extends 'work_base.html' %}
+
+{% block content %}
+	
+	<h1>Overzicht shifts (tekst versie)</h1>
+	
+    {% if not request.user.is_authenticated %}
+        <p>Als je zaalwacht bent kun je <a href="{% url 'login' %}">hier inloggen.</a></p>
+    {% endif %}
+    
+	{% for day in schedule_vals %}
+		{% if day.timeslots %}
+			<h2>{{ day.name }} {{ day.date }}</h2>
+			<ul>
+			{% for timeslot in day.timeslots %}
+				<li>
+					{{ timeslot.start|time:"H:i" }} - {{ timeslot.end|time:"H:i" }}: 
+					{% for assignment in timeslot.assignments %}
+						{{ assignment.user.get_full_name }}
+						{% if not forloop.last %} & {% endif %}
+					{% endfor %}
+				</li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endfor %}
+	
+	{% if prev_year or next_year %}
+	<p class="week_links">
+	{% for monday in mondays %}
+		{% if not monday.is_this_week %}
+			<a href="{% url 'all_rosters_txt' year=monday.year week=monday.week %}">{{ monday.name|lower }}</a>
+		{% else %}
+			<strong>{{ monday.name|lower }}</strong>
+		{% endif %}
+		{% if not forloop.last %} | {% endif %}
+	{% endfor %}
+	</p>
+	
+	<p id="pagination">
+		{% if prev_year %}
+			<a class="left_align" href="{% url 'all_rosters_txt' year=prev_year week=prev_week %}"><< previous</a>
+		{% endif %}
+		{% if next_year %}
+			<a class="right_align" href="{% url 'all_rosters_txt' year=next_year week=next_week %}">next >></a>
+		{% endif %}
+		<br class="clear" />
+	</p>
+	{% endif %} 
+	
+	{% if user.is_authenticated %}
+		<p>
+			ical / ics:
+			<a href="{{ urls.all }}">alles</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.all|urlencode:"" }}" target="_blank">gcal</a>), 
+			<a href="{{ urls.own }}">{{ user.username }}</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.own|urlencode:"" }}" target="_blank">gcal</a>), 
+			<a href="{{ urls.trade }}">te ruil</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.trade|urlencode:"" }}" target="_blank">gcal</a>), 
+			<a href="{{ urls.available }}">{{ user.username }}+ruil</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.available|urlencode:"" }}" target="_blank">gcal</a>),
+		</p>
+	{% endif %}
+	
+{% endblock content %}
+
+
