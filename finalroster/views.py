@@ -4,7 +4,7 @@ from timeslot.models import Roster, TimeSlot, DATEFORMAT, RosterWorker
 from aqua.functions.notification import notification_work as notification
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
-from distribute.models import Assignment
+from distribute.models import Assignment, Availability
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User, AnonymousUser
@@ -161,6 +161,7 @@ def slot_info(request, slot):
     assignments = Assignment.objects.filter(timeslot = slot)
     owner_shift = [assignment for assignment in assignments if assignment.user == request.user]
     owner_shift = owner_shift[0] if owner_shift else None
+    availabilities = Availability.objects.filter(timeslot = slot)
     
     return render(request, 'slot_info.html', {
         'user': request.user,
@@ -168,8 +169,79 @@ def slot_info(request, slot):
         'roster': slot.roster,
         'owner_shift': owner_shift,
         'assignments': assignments,
+        'availabilities': availabilities,
     })
     
+
+def all_rosters_txt(request, year = None, week = None):
+    rosters = Roster.objects.filter(state = 4).order_by('start')
+    if not rosters:
+        return notification(request, 'geen roosters gevonden')
+    if year == None or week == None:
+        year = datetime.date.today().year
+        week = datetime.date.today().isocalendar()[1]
+        return redirect(to = reverse('all_rosters_txt', kwargs={'year': year, 'week': week}))
+    year = int(year)
+    week = int(week)
+    
+    monday = week_start_date(year, week)
+    day = datetime.timedelta(days = 1)
+    
+    schedule = [
+        {'date': monday.strftime('%a %d %b'), 'name': 'monday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday, end__lt = monday + day)},
+        {'date': (monday + day).strftime('%a %d %b'), 'name': 'tuesday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday + day, end__lt = monday + 2 * day)},
+        {'date': (monday + 2 * day).strftime('%a %d %b'), 'name': 'wednesday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday + 2 * day, end__lt = monday + 3 * day)},
+        {'date': (monday + 3 * day).strftime('%a %d %b'), 'name': 'thursday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday + 3 * day, end__lt = monday + 4 * day)},
+        {'date': (monday + 4 * day).strftime('%a %d %b'), 'name': 'friday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday + 4 * day, end__lt = monday + 5 * day)},
+        {'date': (monday + 5 * day).strftime('%a %d %b'), 'name': 'saturday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday + 5 * day, end__lt = monday + 6 * day)},
+    ]
+    
+    (next_year, next_week) = (monday + 7 * day).isocalendar()[0:2]
+    (prev_year, prev_week) = (monday - 7 * day).isocalendar()[0:2]
+    
+    #if prev_year < rosters[0].start.year or (prev_week < rosters[0].start.isocalendar()[1] and prev_year == rosters[0].start.year):
+    #    (prev_year, prev_week) = (None, None)
+    #if next_year > rosters[0].end.year or (next_week > rosters[0].end.isocalendar()[1] and next_year == rosters[0].end.year):
+    #    (next_year, next_week) = (None, None)
+    
+    urls = {}
+    urls['all'] = 'http://' + request.get_host() + reverse('ical_all')
+    urls['trade'] = 'http://' + request.get_host() + reverse('ical_trade')
+    if request.user.is_authenticated():
+        urls['own'] = 'http://' + request.get_host() + reverse('ical_own', kwargs = {'user': request.user.username})
+        urls['available'] = 'http://' + request.get_host() + reverse('ical_available', kwargs = {'user': request.user.username})
+    
+    user = AnonymousUser()
+    if request.user.is_authenticated():
+        if RosterWorker.objects.filter(user = request.user, roster__in = rosters):
+            user = request.user
+    
+    ''' Get jump links to all the weeks '''
+    #week_start_date(roster.start.year, roster.start.isocalendar()[1])
+    #end_monday = week_start_date(roster.end.year, roster.end.isocalendar()[1])
+    oneweek = datetime.timedelta(days = 7)
+    start_monday = monday - 5 * oneweek
+    end_monday = monday + 5 * oneweek
+    mondays = []
+    day_k = start_monday
+    while day_k <= end_monday:
+        mondays.append({'name': day_k.strftime('%d %b'), 'is_this_week': monday == day_k, 'year': day_k.year, 'week': day_k.isocalendar()[1]})
+        day_k += oneweek
+    
+    return render(request, 'all_rosters_txt.html', {
+        'user': user,
+        #'roster': roster,
+        'schedule_vals': schedule,
+        'year': year,
+        'prev_year': prev_year,
+        'next_year': next_year,
+        'week': week,
+        'prev_week': prev_week,
+        'next_week': next_week,
+        'urls': urls,
+        'mondays': mondays,
+    })
+
 
 def assignment_redirect(request, assignment):
     assignment = Assignment.objects.get(pk = int(assignment))

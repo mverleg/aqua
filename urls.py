@@ -13,7 +13,7 @@ from finalroster.views import final_roster, slot_info, assignment_submit,\
     assignment_submit_split, assignment_submit_gift, assignment_submit_claim,\
     assignment_submit_staff, assignment_submit_transfer,\
     assignment_submit_delete_empty, assignment_submit_staff_empty,\
-    assignment_submit_add_degeneracy, assignment_redirect
+    assignment_submit_add_degeneracy, assignment_redirect, all_rosters_txt
 from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
     AvailableCalendar
 admin.autodiscover()
@@ -26,6 +26,8 @@ urlpatterns = patterns('',
     url(r'^change_password/$', change_password, name='change_password'),
     url(r'^change_password/$', change_password, name='change_password'),
     url(r'^$', work_home, name = 'home'),
+    url(r'^show/txt/$', all_rosters_txt, name = 'all_rosters_txt'),
+    url(r'^show/txt/(?P<year>[0-9]+)/(?P<week>[0-9]+)/$', all_rosters_txt, name = 'all_rosters_txt'),
     url(r'^show/(?P<roster>[^/]+)/$', final_roster, name = 'final_roster'),
     url(r'^show/(?P<roster>[^/]+)/(?P<year>[0-9]+)/(?P<week>[0-9]+)/$', final_roster, name = 'final_roster'),
     url(r'^roster/$', start_roster, name = 'start_roster'),
