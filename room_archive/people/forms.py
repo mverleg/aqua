@@ -10,7 +10,7 @@ class EmailForm(forms.Form):
 
 class NameForm(models.ModelForm):
     
-    class Meta():
+    class Meta:
         model = Person
         fields = ('name', )
 

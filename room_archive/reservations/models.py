@@ -28,7 +28,7 @@ class Reservation(models.Model):
     active = ActiveReservationManager()
     
     
-    class Meta():
+    class Meta:
         ordering = ['start', 'room']
     
     def save(self):

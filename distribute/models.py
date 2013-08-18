@@ -15,7 +15,7 @@ class UserSlotBase(models.Model):
     def roster(self):
         return self.timeslot.roster
     
-    class Meta():
+    class Meta:
         abstract = True
         unique_together = [['user', 'timeslot', ], ]
 

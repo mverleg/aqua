@@ -51,7 +51,7 @@ class TimeSlot(models.Model):
     degeneracy = models.PositiveIntegerField(default = 1)
     #user = models.ForeignKey(User, blank = True, null = True)
     
-    class Meta():
+    class Meta:
         ordering = ['start', ]
     
     def __unicode__(self):
