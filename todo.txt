@@ -1,6 +1,7 @@
 
 - welke mensen hebben opgegeven te kunnen voor een shift?
 - generalize for multiple organizations
+- emails wanneer ruilen enzo
 
 Extra
 - uit andere kalender (Google bijv.) automatisch halen of je druk bent
