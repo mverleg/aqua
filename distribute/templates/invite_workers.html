@@ -23,6 +23,8 @@
 		{% endfor %}
 	</ul>
 	
+	<p>There is a total of {{ hours_total }} hours, or {{ hours_pp }} average per person.</p>
+	
 	<p>Het starten van de verdeling betekent dat mensen geen beschikbaarheid meer kunnen doorgeven!</p>
 	
 	<p><a href="{% url 'calculate_start' roster=roster.name %}">Verdeel het rooster</a></p>

@@ -17,9 +17,16 @@ class Roster(models.Model):
     def __unicode__(self):
         return self.name
     
+    ''' Total time occupied by timeslots (so not counting degeneracy) '''
     @property
     def total_duration(self):
         return reduce(lambda d1, d2: d1 + d2, map(lambda ts: ts.duration, TimeSlot.objects.filter(roster = self))) 
+    
+    ''' Total time for all workers combined (so counting extra for degenerate slots) '''
+    @property
+    def total_work_time(self):
+        return reduce(lambda duration1, duration2: duration1 + duration2, map(lambda timeslot: timeslot.duration * timeslot.degeneracy, TimeSlot.objects.filter(roster = self))) 
+        #sum(timeslot.duration * timeslot.degeneracy for timeslot in TimeSlot.objects.filter())
     
     @property
     def total_timeslots(self):
