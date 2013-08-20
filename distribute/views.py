@@ -48,8 +48,8 @@ def invite_workers(request, roster):
     
     base_url = 'http://' + request.META['HTTP_HOST']
     
-    hours_total = roster.total_work_time
-    print hours_total
+    timedelta_total = roster.total_work_time
+    hours_total = timedelta_total.days * 24 + timedelta_total.seconds / 3600
     
     return render(request, 'invite_workers.html', {
         'hours_total': hours_total,
