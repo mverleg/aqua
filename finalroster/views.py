@@ -125,7 +125,7 @@ def final_roster(request, roster, year = None, week = None):
     
     user = AnonymousUser()
     if request.user.is_authenticated():
-        if RosterWorker.objects.filter(user = request.user, roster = roster):
+        if RosterWorker.objects.filter(user = request.user, roster = roster) or request.user.is_staff:
             user = request.user
     
     ''' Get jump links to all the weeks '''
@@ -156,7 +156,7 @@ def final_roster(request, roster, year = None, week = None):
 @login_required
 def slot_info(request, slot):
     slot = TimeSlot.objects.get(pk = int(slot))
-    if not slot.roster.state == 4:
+    if not slot.roster.state == 3 and not (slot.roster.state == 3 and request.user.is_staff):
         return notification(request, 'Dit rooster kan op het moment niet aangepast worden')
     assignments = Assignment.objects.filter(timeslot = slot)
     owner_shift = [assignment for assignment in assignments if assignment.user == request.user]

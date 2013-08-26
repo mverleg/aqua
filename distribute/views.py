@@ -35,10 +35,15 @@ def invite_workers(request, roster):
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 1:
         return notification(request, 'Je kunt nog niet, of niet langer, mensen uitnodigen')
-    roster.state = 1
-    roster.save()
     
     workers = RosterWorker.objects.filter(roster = roster)
+    
+    if not workers:
+        return notification(request, 'Voeg een of meer werkers toe')
+    else:
+        roster.state = 1
+        roster.save()
+    
     for worker in workers:
         availabilities = filter(lambda av: av.roster == roster, Availability.objects.filter(user = worker.user))
         if availabilities:
