@@ -159,7 +159,7 @@
 	margin: 0px;
 }
 
-.help_cursor, [title]
+.help_cursor
 {
 	cursor: help;
 }
