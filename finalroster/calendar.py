@@ -108,6 +108,8 @@ class AvailableCalendar(OwnCalendar):
 			name = '%s (te ruil)' % name
 		elif item.fortrade == 2:
 			name = '%s (weg te geven)' % name
+		else:
+			name = 'zaalwacht %s' % name
 		return name
 	
 	def cal_name(self, obj):
