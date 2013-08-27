@@ -30,7 +30,6 @@ class Roster(models.Model):
             return reduce(lambda duration1, duration2: duration1 + duration2, map(lambda timeslot: timeslot.duration * timeslot.degeneracy, roster_timeslots))
         else:
             return timedelta(seconds = 0) 
-        #sum(timeslot.duration * timeslot.degeneracy for timeslot in TimeSlot.objects.filter())
     
     @property
     def total_timeslots(self):

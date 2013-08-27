@@ -23,6 +23,7 @@
 		
 		<ul>
 			<li><a href="{% url 'final_roster' roster=roster.name %}">Bekijk het rooster</a>; het is nu alleen voor beheerders zichtbaar</li>
+			<li><a href="{% url 'roster_stats' roster=roster.name %}">Statistiek</a>; aantal uren per persoon etc</li>
 			<li><a href="{% url 'calculate_start' roster=roster.name %}">Maak een nieuwe verdeling</a>; het proces bevat willekeur, dus nog eens proberen kan helpen</li>
 			<li><a href="{% url 'calculate_publish' roster=roster.name %}">Maak rooster openbaar</a>; hierna kan de verdeling niet meer veranderd worden</li>
 			<li><a href="{% url 'delete_roster' roster=roster.name %}" class="delete_link">Verwijder het rooster</a>; kan niet teruggedraaid worden; verwijderen kan niet meer wanneer het rooster openbaar is</li>

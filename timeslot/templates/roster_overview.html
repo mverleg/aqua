@@ -30,7 +30,7 @@
 					 [<a href="{% url 'delete_roster' roster=roster.name %}" class="delete_link">delete</a>]
 					  - shifts verdeeld, klaar voor activatie
 				 {% elif roster.state == 4 %}
-					<a href="{% url 'final_roster' roster=roster.name %}">{{ roster.name }}</a>
+					<a href="{% url 'roster_stats' roster=roster.name %}">{{ roster.name }}</a>
 					 from {{ roster.start }} to {{ roster.end }}
 					  - actief!
 				 {% endif %}

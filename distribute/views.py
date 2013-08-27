@@ -295,8 +295,8 @@ def roster_stats(request, roster):
         roster = Roster.objects.get(name = roster)
     except Roster.DoesNotExist:
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
-    if not roster.state in [3, 4]:
-        return notification(request, 'Alleen verdeelde roosters hebben statistische informatie')
+    #if not roster.state in [3, 4]:
+    #    return notification(request, 'Alleen verdeelde roosters hebben statistische informatie')
     
     users = []
     for worker in RosterWorker.objects.filter(roster = roster):
