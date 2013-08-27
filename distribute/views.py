@@ -3,7 +3,7 @@ from timeslot.models import Roster, RosterWorker, TimeSlot
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from aqua.functions.notification import notification_work as notification
-from distribute.models import Availability
+from distribute.models import Availability, Assignment
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.core.urlresolvers import reverse
@@ -12,6 +12,7 @@ from subprocess import Popen, STDOUT
 from aqua.functions.week_start_date import week_start_date
 import os
 import datetime
+from django.db.models.aggregates import Count
 
 
 @staff_member_required
@@ -288,5 +289,29 @@ def calculate_publish(request, roster):
     return redirect(to = reverse('final_roster', kwargs = {'roster': roster.name}))
 
 
-
+@staff_member_required
+def roster_stats(request, roster):
+    try:
+        roster = Roster.objects.get(name = roster)
+    except Roster.DoesNotExist:
+        return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
+    if not roster.state in [3, 4]:
+        return notification(request, 'Alleen verdeelde roosters hebben statistische informatie')
+    
+    users = []
+    for worker in RosterWorker.objects.filter(roster = roster):
+        user = worker.user
+        user.extra_duration = worker.extra
+        worker_assignments = Assignment.objects.filter(timeslot__roster = roster, user = user)
+        worker_assignments_duration = sum([assignment.timeslot.duration for assignment in worker_assignments], datetime.timedelta())
+        user.assignment_duration = worker_assignments_duration.days * 24.0 + worker_assignments_duration.seconds / 3600.0
+        worker_availabilities = Availability.objects.filter(timeslot__roster = roster, user = user)
+        worker_availabilities_duration = sum([assignment.timeslot.duration for assignment in worker_availabilities], datetime.timedelta())
+        user.availability_duration = worker_availabilities_duration.days * 24.0 + worker_availabilities_duration.seconds / 3600.0
+        users.append(user)
+    
+    return render(request, 'roster_stats.html', {
+        'roster': roster,
+        'users': users,
+    })
 

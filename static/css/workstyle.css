@@ -190,4 +190,11 @@ button, input[type="submit"]
 	font-weight: bold;
 }
 
+.roster_stats td,.roster_stats th
+{
+	min-width: 120px;
+	text-align: right;
+}
+
+
 

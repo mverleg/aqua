@@ -7,7 +7,7 @@ from timeslot.views import start_roster, add_timeslot, delete_timeslot,\
     delete_roster, roster_users_submit
 from distribute.views import roster_lock, invite_workers, availability,\
     availability_submit, availability_copy, calculate_start, \
-    calculate_status, calculate_publish, calculate_restart
+    calculate_status, calculate_publish, calculate_restart, roster_stats
 from finalroster.views import final_roster, slot_info, assignment_submit,\
     assignment_trade_result, month_overview, month_overview_all,\
     assignment_submit_split, assignment_submit_gift, assignment_submit_claim,\
@@ -45,6 +45,7 @@ urlpatterns = patterns('',
     url(r'^roster/(?P<roster>[^/]+)/availability/(?P<year>[0-9]+)/(?P<week>[0-9]+)/$', availability, name = 'availability'),
     url(r'^roster/(?P<roster>[^/]+)/availability/(?P<year>[0-9]+)/(?P<week>[0-9]+)/copy/$', availability_copy, name = 'availability_copy'),
     url(r'^roster/(?P<roster>[^/]+)/availability/submit/$', availability_submit, name = 'availability_submit'),
+    url(r'^roster/(?P<roster>[^/]+)/stats/$', roster_stats, name = 'roster_stats'),
     url(r'^calc/(?P<roster>[^/]+)/start/$', calculate_start, name = 'calculate_start'),
     url(r'^calc/(?P<roster>[^/]+)/restart/$', calculate_restart, name = 'calculate_restart'),
     url(r'^calc/(?P<roster>[^/]+)/status/$', calculate_status, name = 'calculate_status'),

@@ -1,0 +1,33 @@
+
+{% extends 'work_base.html' %}
+
+{% block content %}
+	
+	<h1>Stats {{ roster }}</h1>
+	
+	<p>Van {{ roster.start }} tot {{ roster.end }},{{ roster.total_timeslots }} tijdsloten van totaal {{ roster.total_duration }} uur ({{ roster.total_work_time }} werk uren).</p>
+	
+	<table class="roster_stats">
+		<tbody>
+			<tr>
+				<th>Name</th>
+				<th>username</th>
+				<th title="the total current shifts (including trades)">assigned</th>
+				<th title="entered as available">available</th>
+				<th title="number of extra hours the algorithm strives for">extra</th>
+			</tr>
+			{% for user in users %}
+				<tr>
+					<td>{{ user.get_full_name }}</td>
+					<td>{{ user.username }}</td>
+					<td>{{ user.assignment_duration }}</td>
+					<td>{{ user.availability_duration }}</td>
+					<td>{{ user.extra_duration }}</td>
+				</tr> 
+			{% endfor %}
+		</tbody>
+	</table>
+	
+{% endblock content %}
+
+
