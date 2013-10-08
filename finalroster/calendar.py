@@ -20,10 +20,10 @@ def localize(dt):
 def time_offset_NL(dt):
 	''' march 31 '''
 	if dt.month < 5 or (dt.month == 5 and dt.day < 5):
-		return datetime.timedelta(hours = 3)
+		return datetime.timedelta(hours = 1)
 	''' okt 27 '''
 	if dt.month > 10 or (dt.month == 10 and dt.day >= 27):
-		return datetime.timedelta(hours = 3)
+		return datetime.timedelta(hours = 1)
 	''' everything else '''
 	return datetime.timedelta(hours = 2)
 	
