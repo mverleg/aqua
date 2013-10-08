@@ -4,14 +4,30 @@ from distribute.models import Assignment
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models.query_utils import Q
-import datetime, pytz  # @UnresolvedImport
+from pytz import timezone, UTC
+import datetime
+
 
 #TODO: less hacky
 def localize(dt):
-	tz = pytz.UTC
-	s = datetime.timedelta(hours = 2)
+	tz = timezone('Europe/Amsterdam')
+	tz = UTC
+	s = time_offset_NL(dt)
+	print s
 	return tz.localize(dt - s)
 
+''' check if DST is in effect in NL and return offset relative to UTC '''
+def time_offset_NL(dt):
+	''' march 31 '''
+	if dt.month < 5 or (dt.month == 5 and dt.day < 5):
+		return datetime.timedelta(hours = 2)
+	''' okt 27 '''
+	if dt.month > 10 or (dt.month == 10 and dt.day >= 27):
+		return datetime.timedelta(hours = 2)
+	''' everything else '''
+	return datetime.timedelta(hours = 3)
+	
+	
 
 class AllCalendar(Events):
 	

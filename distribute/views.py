@@ -13,6 +13,7 @@ from aqua.functions.week_start_date import week_start_date
 import os
 import datetime
 from django.db.models.aggregates import Count
+from aqua.functions.group_by import group_by
 
 
 @staff_member_required
@@ -287,7 +288,7 @@ def calculate_publish(request, roster):
     roster.state = 4
     roster.save()
     return redirect(to = reverse('final_roster', kwargs = {'roster': roster.name}))
-
+    
 
 @staff_member_required
 def roster_stats(request, roster):
@@ -297,7 +298,7 @@ def roster_stats(request, roster):
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     #if not roster.state in [3, 4]:
     #    return notification(request, 'Alleen verdeelde roosters hebben statistische informatie')
-    
+    ''' Hours per person '''
     users = []
     for worker in RosterWorker.objects.filter(roster = roster):
         user = worker.user
@@ -310,8 +311,49 @@ def roster_stats(request, roster):
         user.availability_duration = worker_availabilities_duration.days * 24.0 + worker_availabilities_duration.seconds / 3600.0
         users.append(user)
     
+    ''' Availability density (high complexity, N^4 or something) '''
+    timeslots = TimeSlot.objects.filter(roster = roster)
+    availabilities = group_by(Availability.objects.filter(timeslot__roster = roster), 'timeslot')
+    oneday = datetime.timedelta(days = 1)
+    day = roster.start
+    while day < roster.end:
+        if day.isoweekday() == 1:
+            #print '%s is monday' % day
+            first_monday = day
+            break
+    day_stats = []
+    if first_monday:
+        day = first_monday
+        while day < first_monday + 7 * oneday:
+            day_timeslots = [timeslot for timeslot in timeslots if timeslot.start.date() == day]
+            day_stat = {
+                'weekday': day.strftime("%a"),
+                'timeslots_sets': [],
+            }
+            for reference_timeslot in sorted(day_timeslots, key = lambda slot: slot.start):
+                ''' Find equivalent timeslots in other weeks '''
+                equivalents = {
+                    'first_timeslots': reference_timeslot,
+                    'equivalent_timeslots': [],
+                    'equivalent_availabilities_length': 0,
+                }
+                weekday = day
+                while weekday < roster.end:
+                    weekday_timeslots = [timeslot for timeslot in timeslots if timeslot.start.date() == weekday]
+                    for weekday_timeslot in weekday_timeslots:
+                        if weekday_timeslot.start.time() == reference_timeslot.start.time() and weekday_timeslot.end.time() == reference_timeslot.end.time():
+                            equivalents['equivalent_timeslots'].append(weekday_timeslot)
+                            equivalents['equivalent_availabilities_length'] += len(availabilities[weekday_timeslot])
+                    weekday += 7 * oneday
+                day_stat['timeslots_sets'].append(equivalents)
+            day_stats.append(day_stat)
+            day += oneday
+    
     return render(request, 'roster_stats.html', {
         'roster': roster,
         'users': users,
+        'day_stats': day_stats,
     })
+    
+
 

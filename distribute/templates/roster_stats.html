@@ -37,6 +37,28 @@
 		</tbody>
 	</table>
 	
+	{% if day_stats %}
+		<ul>
+			{% for day in day_stats %}
+				{% if day.timeslots_sets %}
+					<li><strong>{{ day.weekday }}:</strong></li>
+					{% for set in day.timeslots_sets %}
+						<li>
+							{{ set.first_timeslots.start|date:"H:i" }} - {{ set.first_timeslots.end|date:"H:i" }}:
+							{{ set.equivalent_availabilities_length }} / 
+							{{ set.equivalent_timeslots|length }}
+							{#{{ set.equivalent_availabilities }}#}
+						</li>
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+		</ul>
+	{% endif %}
+	
+	<p>
+		
+	</p>
+	
 	<p>
 		<br />
 		<a href="{% url 'final_roster' roster=roster.name %}">Bekijk het rooster</a> (of de <a href="{% url 'all_rosters_txt' %}">text versie</a> van alle roosters samen).

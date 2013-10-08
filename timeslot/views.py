@@ -56,7 +56,7 @@ def add_timeslot(request, roster):
     except Roster.DoesNotExist:
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
-        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
+        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden of zijn')
     refday = roster.start
     days = []
     slots = {}
@@ -98,7 +98,7 @@ def delete_timeslot(request, slot):
     slot = TimeSlot.objects.get(pk = int(slot))
     roster = slot.roster
     if roster.state > 0:
-        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
+        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden of zijn')
     slot.delete()
     return redirect(to = reverse('add_timeslots', kwargs = {'roster': roster.name}))
     
@@ -112,7 +112,7 @@ def timeslots_copy_day(request, roster, date, to = None):
     except Roster.DoesNotExist:
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
-        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
+        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden of zijn')
     day_slots = TimeSlot.objects.filter(roster = roster).filter(start__gt = dateobj, start__lt = dateobj + oneday).order_by('start')
     to_days = []
     if to == None:
@@ -155,7 +155,7 @@ def timeslots_empty_day(request, roster, date, to = None):
     except Roster.DoesNotExist:
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
-        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
+        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden of zijn')
     dateobj = datetime.datetime.strptime(date, DATEFORMAT)
     day_slots = TimeSlot.objects.filter(roster = roster).filter(start__gt = dateobj, start__lt = dateobj + datetime.timedelta(days = 1)).order_by('start')
     for slot in day_slots:
@@ -170,7 +170,7 @@ def roster_users(request, roster):
     except Roster.DoesNotExist:
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
-        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
+        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden of zijn')
     users = User.objects.all()
     active_user_pks = map(lambda rw: rw.user.pk, RosterWorker.objects.filter(roster = roster))
     for user in users:
@@ -194,7 +194,7 @@ def roster_users_submit(request, roster):
     except Roster.DoesNotExist:
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
-        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden')
+        return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden of zijn')
     RosterWorker.objects.filter(roster = roster).delete()
     hours = {}
     for key in request.POST.keys():
