@@ -13,7 +13,6 @@ def localize(dt):
 	tz = timezone('Europe/Amsterdam')
 	tz = UTC
 	s = time_offset_NL(dt)
-	print s
 	return tz.localize(dt - s)
 
 ''' check if DST is in effect in NL and return offset relative to UTC '''
@@ -26,8 +25,6 @@ def time_offset_NL(dt):
 		return datetime.timedelta(hours = 1)
 	''' everything else '''
 	return datetime.timedelta(hours = 2)
-	
-	
 
 class AllCalendar(Events):
 	
