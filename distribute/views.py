@@ -141,7 +141,7 @@ def availability(request, roster, year = None, week = None):
     mondays = []
     day_k = start_monday
     while day_k <= end_monday:
-        mondays.append({'name': day_k.strftime('%d %b'), 'is_this_week': monday == day_k, 'year': day_k.year, 'week': day_k.isocalendar()[1]})
+        mondays.append({'name': day_k.strftime('%d %b'), 'is_this_week': monday == day_k, 'year': day_k.isocalendar()[0], 'week': day_k.isocalendar()[1]})
         day_k += oneweek
     
     return render(request, 'availability.html', {
