@@ -8,10 +8,15 @@ from distribute.models import Availability, Assignment
 from aqua.functions.to_hours import to_hours
 from django.contrib.auth.models import User
 from aqua.functions.week_start_date import week_start_date
+from optparse import make_option
 
 
 class Command(BaseCommand):
-    help = 'Distribute a schedule [pk = arg0] until there are arg1 steps without change. Check consistency only if arg2 = 1.'
+    option_list = BaseCommand.option_list + (
+        make_option('-c', '--check', action = 'store_true', dest = 'check', default = False, help = 'Check consistency of the distribution (for debugging)'),
+        make_option('-f', '--force', action = 'store_true', dest = 'force', default = False, help = 'Force recalculation of an already distributed roster'),
+	)
+    help = 'Distribute a schedule [pk = arg0] until there are arg1 steps without change.'
     
     def handle(self, *args, **options):
         
@@ -40,17 +45,19 @@ class Command(BaseCommand):
             N = None
             print 'Second argument should be the number of steps (e.g. 150000)'
         
-        try:
-            check_consistency = bool(int(args[1]))
-        except IndexError:
-            check_consistency = 0
-        except ValueError:
-            print 'Third argument should be 1 to check consistency or 0 not to (default)'
+        check_consistency = options['check']
         
         if roster.state < 1:
             print 'This roster is is not ready to distribute yet, complete other steps first'
-            return 
-        elif roster.state > 2:
+            return
+        elif roster.state == 3:
+            if options['force']:
+                roster.state = 2
+                roster.save()
+            else:
+                print 'This roster has already been distributed; use -f to force redistribution'
+                return
+        elif roster.state > 3:
             print 'This roster has already been distributed'
             return
         elif roster.state == 1:
