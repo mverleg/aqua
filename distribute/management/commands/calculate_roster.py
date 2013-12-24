@@ -9,6 +9,7 @@ from aqua.functions.to_hours import to_hours
 from django.contrib.auth.models import User
 from aqua.functions.week_start_date import week_start_date
 from optparse import make_option
+from copy import deepcopy, copy
 
 
 class Command(BaseCommand):
@@ -36,7 +37,6 @@ class Command(BaseCommand):
             print 'Roster with ID %s not found\n' % args[0]
             show_rosters()
             return
-        
         try:
             N = int(args[1])
         except IndexError:
@@ -68,24 +68,23 @@ class Command(BaseCommand):
         
         ''' Create the availability data structure '''
         t_load = time.time()
-        A = {}
-        D = {}
-        degeneracy = {}
-        duration = {}
-        similar = {}
+        all_slots = [ts for ts in TimeSlot.objects.filter(roster = roster)]
+        availabilities_qs = Availability.objects.filter(timeslot__roster = roster)
+        t_assign = time.time()
+        print 'TIME query data:   %.3fs' % (t_assign - t_load)
+        
+        A, D = {}, {}
+        degeneracy, duration, similar = {}, {}, {}
         slots = []
-        all_slots = []
         total_hours = 0
-        for slot in TimeSlot.objects.filter(roster = roster):
+        for slot in all_slots:
             slots.append(slot)
-            all_slots.append(slot)
             D[slot.pk] = slot.degeneracy * [None]
             A[slot.pk] = []
             degeneracy[slot.pk] = slot.degeneracy
             duration[slot.pk] = to_hours(slot.duration)
             similar[slot.pk] = []
             total_hours += slot.degeneracy * to_hours(slot.duration)
-            
             ''' Find similar shifts (exactly a week difference) '''
             monday = week_start_date(slot.start.isocalendar()[0], slot.start.isocalendar()[1])
             day = datetime.timedelta(days = 1)
@@ -98,26 +97,24 @@ class Command(BaseCommand):
                     if sim_slot:
                         similar[slot.pk].append(sim_slot[0])
                 weeks += 7 * day
-        for availability in Availability.objects.all():
+        
+        for availability in availabilities_qs:
             ''' There should be no duplicates but it happens, somehow. Don't know where
                 they come from, but I can't block them at database level because sqlite
                 seems to throw random errors for unique_together... '''
-            if availability.roster.pk == roster.pk:
-                if availability.user.pk not in map_user_pk(A[availability.timeslot.pk]):
-                    A[availability.timeslot.pk].append(availability)
-                else:
-                    print 'There was a duplicate Availability; #%d removed' % availability.pk
-                    apk = availability.pk
-                    Availability.objects.get(pk = apk)
-                    availability.delete()
+            if availability.user.pk not in map_user_pk(A[availability.timeslot.pk]):
+                A[availability.timeslot.pk].append(availability)
+            else:
+                print 'There was a duplicate Availability; #%d removed' % availability.pk
+                apk = availability.pk
+                Availability.objects.get(pk = apk).delete()
         
         if not N:
-            N = 3 * len(slots)
+            N = 10 * len(slots)
         
         ''' Calculate the hours '''
         t_hours = time.time()
-        print 'total hours:       %d' % total_hours
-        print 'TIME load data:    %.3fs' % (t_hours - t_load)
+        print 'TIME assign data:  %.3fs' % (t_hours - t_assign)
         workers = RosterWorker.objects.filter(roster = roster)
         current_hours = {}
         extra_hours = {}
@@ -128,8 +125,8 @@ class Command(BaseCommand):
         ''' Monte Carlo (with only favourable steps though) '''
         t_monte = time.time()
         no_change_steps = 0
-        counter = 100 * len(slots)
-        while no_change_steps < N and counter:
+        counter = 500 * len(slots)
+        while no_change_steps < N and counter> 0:
             updated = False
             counter -= 1
             ''' Trivial slots are removed; if there are no slots left we quit  '''
@@ -167,8 +164,9 @@ class Command(BaseCommand):
             if updated:
                 no_change_steps = 0
         
-        ''' Prevent unnecessary blanks '''
-        #t_post = time.time()
+        ''' Prevent unnecessary blanks (generally none are found) '''
+        t_post = time.time()
+        print 'TIME monte carlo:  %.3fs' % (t_post - t_monte)
         for slot in slots:
             for deg in range(degeneracy[slot.pk]):
                 if D[slot.pk][deg] == None:
@@ -176,20 +174,11 @@ class Command(BaseCommand):
                     min_av = select_fewest_hours(set(A[slot.pk]) - set(D[slot.pk]), current_hours, extra_hours)
                     if min_av:
                         (D, current_hours, updated) = assign(min_av, A, D, slot, deg, current_hours)
-                        if not updated:
-                            print 'Noooo! %s' % min_av
-                            print 'D: %s' % D[slot.pk]
-                            print 'A: %s' % A[slot.pk]
-                            print len(A[slot.pk])
-                            print map_pk(A[slot.pk])
-                            print map_user_pk(A[slot.pk])
         
         ''' Consistency checks '''
         t_check = time.time()
-        print 'TIME monte carlo:  %.3fs' % (t_check - t_monte)
+        print 'TIME post check:   %.3fs' % (t_check - t_post)
         if check_consistency:
-            #for slot in TimeSlot.objects.filter(roster = roster):
-            #    slots.append(slot)
             all_slot_check = 0
             for slot in slots:
                 all_slot_check += to_hours(slot.duration) * slot.degeneracy
@@ -198,9 +187,8 @@ class Command(BaseCommand):
                 ''' Check that there aren't more shifts occupied than there are available people '''
                 assert len(filter(lambda x: x, D[slot.pk])) <= len(A[slot.pk])
                 ''' Check that a person doesn't have two shifts in one slot '''
-                #print '%d:  %s == %s' % (slot.pk, map_user_pk(D[slot.pk]), list(set(map_user_pk(D[slot.pk]))))
                 assert len(map_user_pk(D[slot.pk])) == len(set(map_user_pk(D[slot.pk])))
-            ''' Check that the total hours of all slots doess not exceed the assigned ours '''
+            ''' Check that the total hours of all slots does not exceed the assigned hours '''
             all_assign_check = 0
             for slot_pk, avity_list in D.items():
                 for deg, avity in enumerate(avity_list):
@@ -214,6 +202,24 @@ class Command(BaseCommand):
                             print '>> %s | %s  (%d)' % (set(map_pk(A[slot_pk])), set(map_pk(D[slot_pk])), len(D[slot_pk]))
                             print map_user_pk(A[slot_pk])
                         assert len(set(map_pk(A[slot_pk])) - set(map_pk(D[slot_pk]))) == 0
+            ''' check sum of hours (bugged end 2013) and empty slots '''
+            current_hours_check = {}
+            for rw in workers:
+                current_hours_check[rw.user.pk] = 0
+            for slot_pk, avity_list in D.items():
+                for deg, avity in enumerate(avity_list):
+                    if avity is None:
+                        ''' check that, for every empty slot, there are fewer availabilities than places '''
+                        assert len(A[slot_pk]) <= [slot.degeneracy for slot in all_slots if slot.pk == slot_pk][0]
+                    else:
+                        current_hours_check[avity.user.pk] += to_hours(avity.timeslot.duration)
+            ''' check that the total hours are the same '''
+            assert sum(current_hours.values()) == sum(current_hours_check.values())
+            assert len(current_hours) == len(current_hours_check)
+            ''' check that the hours for individual users are the same '''
+            for user_pk in current_hours.keys():
+                assert current_hours[user_pk] == current_hours_check[user_pk]
+            
             ''' Check that the hours of assigned shifts match the total of current_hours '''
             assert all_assign_check == sum(current_hours.values())
         
@@ -228,17 +234,19 @@ class Command(BaseCommand):
             print 'The state of the roster has changed! There may be a concurrent process. Mission aborted; no changes will be made.'
             return
         Assignment.objects.filter(timeslot__in = all_slots).delete()
+        batch = []
         for availability_list in D.values():
             for deg, availability in enumerate(availability_list):
                 if availability:
-                    Assignment(user = availability.user, timeslot = availability.timeslot, note = 'shift %d' % deg).save()
+                    batch.append(Assignment(user = availability.user, timeslot = availability.timeslot, note = 'shift %d' % deg))
+        Assignment.objects.bulk_create(batch)
         roster.state = 3
         roster.save()
         
         ''' Process the result '''
         t_result = time.time()
         print 'TIME store result: %.3fs' % (t_result - t_store)
-        print 'TIME other steps:  %.3fs' % (t_result - t_init - (t_check - t_monte) - (t_hours - t_load) - (t_result - t_store) - (t_store - t_check))
+        print 'TIME other steps:  %.3fs' % (t_result - t_init - (t_check - t_monte) - (t_hours - t_assign) - (t_assign - t_load) - (t_result - t_store) - (t_store - t_check))
         print 'TIME total time:   %.3fs' % (t_result - t_init)
         print 'remaining hours:   %d' % (total_hours - sum(current_hours.values()))
         print '       user\tfinal\textra (goal)'
@@ -247,9 +255,11 @@ class Command(BaseCommand):
         if not counter:
             print '(Monte Carlo reached iteration limit)'
 
+
 ''' Helper functions because this happens too much '''
 def map_pk(items):
     return map(lambda item: item.pk, filter(lambda item: item, items))
+
 
 def map_user_pk(items):
     return map(lambda item: item.user.pk, filter(lambda item: item, items))
@@ -265,7 +275,10 @@ def switch(slot, deg, worker, A, D, duration, similar, current_hours, extra_hour
         ''' There is a free position for this shift (the day may be trivial but that's not a problem anymore) '''
         (D, current_hours, updated) = assign(worker, A, D, slot, deg, current_hours)
     else:
-        current_hours[D[slot.pk][deg].user.pk] -= slot_duration
+        ''' be careful to store D[slot.pk][deg], because assign() can change it's value,
+            which will make switching hours back not work, costing about 4 hours of debugging '''
+        old_user_pk = D[slot.pk][deg].user.pk
+        current_hours[old_user_pk] -= slot_duration
         current_hours[worker.user.pk] += slot_duration
         cost_new = hour_cost(current_hours, extra_hours)
         if cost_new < cost_old:
@@ -276,14 +289,14 @@ def switch(slot, deg, worker, A, D, duration, similar, current_hours, extra_hour
                     (D, current_hours) = switch(try_slot, deg, worker, A, D, duration, similar, current_hours, extra_hours, recursive = False)[0:2]
         else:
             updated = False
-        current_hours[D[slot.pk][deg].user.pk] += slot_duration
+        current_hours[old_user_pk] += slot_duration
         current_hours[worker.user.pk] -= slot_duration
-        
-    return (D, current_hours, updated)
     
+    return (D, current_hours, updated)
+
 
 ''' Select the availability with the fewest hours '''
-def select_fewest_hours(available_set, current_hours, extra_hours, except_av = None):
+def select_fewest_hours(available_set, current_hours, extra_hours):
     if len(available_set):
         min_worker = available_set.pop()
         min_hours = current_hours[min_worker.user.pk] - extra_hours[min_worker.user.pk]
@@ -291,7 +304,7 @@ def select_fewest_hours(available_set, current_hours, extra_hours, except_av = N
             user_hours = current_hours[available_worker.user.pk] - extra_hours[available_worker.user.pk]
             if user_hours < min_hours:
                 min_worker = available_worker
-                min_hours = current_hours[available_worker.user.pk] - extra_hours[available_worker.user.pk]
+                min_hours = user_hours#current_hours[available_worker.user.pk] - extra_hours[available_worker.user.pk]
         return min_worker
     return None
 
@@ -314,7 +327,7 @@ def assign(availability, A, D, slot, deg, current_hours):
         return (D, current_hours, False)
     ''' Update the times of new and possibly old user '''
     current_hours[availability.user.pk] += to_hours(slot.duration)
-    if D[slot.pk][deg]:
+    if D[slot.pk][deg] is not None:
         current_hours[D[slot.pk][deg].user.pk] -= to_hours(slot.duration)
     ''' And finally, the actual update '''
     D[slot.pk][deg] = availability

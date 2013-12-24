@@ -14,6 +14,7 @@ import os
 import datetime
 from django.db.models.aggregates import Count
 from aqua.functions.group_by import group_by
+from distribute.imgs import generate_user_stats
 
 
 @staff_member_required
@@ -299,17 +300,7 @@ def roster_stats(request, roster):
     #if not roster.state in [3, 4]:
     #    return notification(request, 'Alleen verdeelde roosters hebben statistische informatie')
     ''' Hours per person '''
-    users = []
-    for worker in RosterWorker.objects.filter(roster = roster):
-        user = worker.user
-        user.extra_duration = worker.extra
-        worker_assignments = Assignment.objects.filter(timeslot__roster = roster, user = user)
-        worker_assignments_duration = sum([assignment.timeslot.duration for assignment in worker_assignments], datetime.timedelta())
-        user.assignment_duration = worker_assignments_duration.days * 24.0 + worker_assignments_duration.seconds / 3600.0
-        worker_availabilities = Availability.objects.filter(timeslot__roster = roster, user = user)
-        worker_availabilities_duration = sum([assignment.timeslot.duration for assignment in worker_availabilities], datetime.timedelta())
-        user.availability_duration = worker_availabilities_duration.days * 24.0 + worker_availabilities_duration.seconds / 3600.0
-        users.append(user)
+    users = generate_user_stats(roster)
     
     ''' Availability density (high complexity, N^4 or something) '''
     timeslots = TimeSlot.objects.filter(roster = roster)

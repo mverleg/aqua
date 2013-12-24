@@ -16,6 +16,7 @@ from finalroster.views import final_roster, slot_info, assignment_submit,\
     assignment_submit_add_degeneracy, assignment_redirect, all_rosters_txt
 from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
     AvailableCalendar
+from distribute.imgs import hour_dist_scatter
 admin.autodiscover()
 
 
@@ -46,6 +47,7 @@ urlpatterns = patterns('',
     url(r'^roster/(?P<roster>[^/]+)/availability/(?P<year>[0-9]+)/(?P<week>[0-9]+)/copy/$', availability_copy, name = 'availability_copy'),
     url(r'^roster/(?P<roster>[^/]+)/availability/submit/$', availability_submit, name = 'availability_submit'),
     url(r'^roster/(?P<roster>[^/]+)/stats/$', roster_stats, name = 'roster_stats'),
+    url(r'^roster/(?P<roster>[^/]+)/stats/dist.png$', hour_dist_scatter, name = 'roster_stats_graph'),
     url(r'^calc/(?P<roster>[^/]+)/start/$', calculate_start, name = 'calculate_start'),
     url(r'^calc/(?P<roster>[^/]+)/restart/$', calculate_restart, name = 'calculate_restart'),
     url(r'^calc/(?P<roster>[^/]+)/status/$', calculate_status, name = 'calculate_status'),
