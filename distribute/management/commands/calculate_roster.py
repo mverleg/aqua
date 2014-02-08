@@ -9,7 +9,6 @@ from aqua.functions.to_hours import to_hours
 from django.contrib.auth.models import User
 from aqua.functions.week_start_date import week_start_date
 from optparse import make_option
-from copy import deepcopy, copy
 
 
 class Command(BaseCommand):
