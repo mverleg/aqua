@@ -1,4 +1,9 @@
 
+# needed in live mode only:
+# http://stackoverflow.com/questions/5833623/mplconfigdir-error-in-matplotlib
+from os import environ
+environ['MPLCONFIGDIR'] = '/tmp/'
+
 from numpy import array, polyfit
 from matplotlib.pyplot import subplots
 from timeslot.models import RosterWorker, Roster

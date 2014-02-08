@@ -32,9 +32,8 @@ INSTALLED_APPS = (
     #'general',
 )
 
-ALLOWED_HOSTS = ['.aqua.markv.nl', ]
-
 DEBUG = True
+ALLOWED_HOSTS = ['.aqua.markv.nl', ]
 
 from socket import gethostname
 if gethostname() in ['mulan', 'genie', ]:
@@ -46,7 +45,7 @@ if gethostname() in ['mulan', 'genie', ]:
         }
     }
 elif gethostname() == 'bambi':
-    DATABASES = {
+	DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'aqua',                       # Or path to database file if using sqlite3.
@@ -56,11 +55,13 @@ elif gethostname() == 'bambi':
             'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
         }
     }
+	DEBUG = False
 else:
     raise Exception('hostname not known, no database settings')
 if DEBUG:
     INSTALLED_APPS += ('django.contrib.staticfiles', )
     STATICFILES_DIRS = ('/home/mark/aqua/static', )
+#DEBUG = True # tmp
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'reserveringenstudielandschap@gmail.com'
@@ -194,4 +195,5 @@ LOGGING = {
     }
 }
 
+DEBUG = True
 
