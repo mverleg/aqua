@@ -17,10 +17,13 @@ from finalroster.views import final_roster, slot_info, assignment_submit,\
 from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
     AvailableCalendar
 from distribute.imgs import hour_dist_scatter
+from distribute.special import special_1, special_2
 admin.autodiscover()
 
 
 urlpatterns = patterns('',
+	url(r'^special/1/', special_1),
+	url(r'^special/2/', special_2),
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^login/$', login, name='login'),
 	url(r'^logout/$', logout, name='logout'),
