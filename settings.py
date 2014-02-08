@@ -63,8 +63,8 @@ if DEBUG:
     STATICFILES_DIRS = ('/home/mark/aqua/static', )
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'mdilligaf@gmail.com'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = 'reserveringenstudielandschap@gmail.com'
+EMAIL_HOST_PASSWORD = 'zaalwachten'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
