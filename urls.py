@@ -13,7 +13,8 @@ from finalroster.views import final_roster, slot_info, assignment_submit,\
     assignment_submit_split, assignment_submit_gift, assignment_submit_claim,\
     assignment_submit_staff, assignment_submit_transfer,\
     assignment_submit_delete_empty, assignment_submit_staff_empty,\
-    assignment_submit_add_degeneracy, assignment_redirect, all_rosters_txt
+    assignment_submit_add_degeneracy, assignment_redirect, all_rosters_txt,\
+    ical_html_all
 from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
     AvailableCalendar
 from distribute.imgs import hour_dist_scatter
@@ -77,6 +78,7 @@ urlpatterns = patterns('',
     url(r'^ical2/user(?P<user>[0-9]+)_trace.ics$', AvailableCalendar()), # LEGACY
     url(r'^ical/trade/(?P<user>[^/]+).ics$', AvailableCalendar(), name = 'ical_available'),
     url(r'^ical/user/(?P<user>[^/]+).ics$', OwnCalendar(), name = 'ical_own'),
+    url(r'^ical/all.html$', ical_html_all, name = 'ical_html_all'),
 )
 
 

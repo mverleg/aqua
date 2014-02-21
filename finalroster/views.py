@@ -11,6 +11,8 @@ from django.contrib.auth.models import User, AnonymousUser
 from finalroster.forms import TimeForm
 from aqua.functions.week_start_date import week_start_date
 from django.db.utils import IntegrityError
+from collections import defaultdict
+from django.utils import timezone
 
 
 @login_required
@@ -498,6 +500,17 @@ def assignment_submit_claim(request, timeslot):
     return notification(request, 'There is no shift to claim (anymore)', next_page = reverse('slot_info', kwargs = {'slot': '%s' % timeslot.pk}))
 
 
+def ical_html_all(request):
+    timeslot_assignments = defaultdict(list)
+    start_date, end_date = datetime.date.today() - datetime.timedelta(days = 3), datetime.date.today() + datetime.timedelta(days = 7)
+    relevant_assignments = Assignment.objects.filter(timeslot__start__gte = start_date, timeslot__start__lte = end_date)
+    for assignment in relevant_assignments:
+        timeslot_assignments[assignment.timeslot].append(assignment)
+        print assignment.timeslot.start
+    return render(request, 'ical_html.html', {
+        'timeslots': sorted(timeslot_assignments.items(), key = lambda x: x[0].start),
+        'now': timezone.now(),
+    })
 
 
 

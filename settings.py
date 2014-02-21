@@ -36,7 +36,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['.aqua.markv.nl', ]
 
 from socket import gethostname
-if gethostname() in ['mulan', 'genie', ]:
+if gethostname() in ['mulan', 'genie', 'rafiki',]:
     DEBUG = True
     DATABASES = {
         'default': {
@@ -45,7 +45,7 @@ if gethostname() in ['mulan', 'genie', ]:
         }
     }
 elif gethostname() == 'bambi':
-	DATABASES = {
+    DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'aqua',                       # Or path to database file if using sqlite3.
@@ -55,7 +55,7 @@ elif gethostname() == 'bambi':
             'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
         }
     }
-	DEBUG = False
+    DEBUG = False
 else:
     raise Exception('hostname not known, no database settings')
 if DEBUG:
@@ -89,7 +89,7 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-#TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Amsterdam'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -106,7 +106,7 @@ USE_I18N = True
 USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
-USE_TZ = False
+USE_TZ = False ## TODO this should be true
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"

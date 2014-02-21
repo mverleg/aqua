@@ -1,0 +1,29 @@
+
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+	    <meta charset="utf-8">
+	    <title>Aqua</title>
+	</head>
+	
+	<body style="margin: 0px; padding: 0px; border-collapse:collapse;" border="0" cellspacing="0">
+		<table style="border: px;">
+			{% for timeslot, assignments in timeslots %}
+				<tr style="{% if timeslot.start < now %}{% if timeslot.end < now %}color: gray;{% else %}background-color: black; color: white;{% endif %}{% else %}color: black;{% endif %}">
+					<td style="padding-right: 1em; width: 220px;">
+						{{ timeslot.start|date:'D d b H:i' }} - {{ timeslot.end|date:'H:i' }}
+					</td>
+					<td style="width: 1000px;">
+						{% for assignment in assignments %}
+							<span title="{{ assignment.note }}">{{ assignment.user.get_full_name }}</span>
+							{% if not forloop.last %}
+								&amp;
+							{% endif %}
+						{% endfor %}
+					</td>
+				</tr>
+			{% endfor %}
+		</ul>
+	</body>
+</html>
