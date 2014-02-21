@@ -14,7 +14,7 @@
 					<td style="padding-right: 1em; width: 220px;">
 						{{ timeslot.start|date:'D d b H:i' }} - {{ timeslot.end|date:'H:i' }}
 					</td>
-					<td style="width: 1000px;">
+					<td style="min-width: 400px;">
 						{% for assignment in assignments %}
 							<span title="{{ assignment.note }}">{{ assignment.user.get_full_name }}</span>
 							{% if not forloop.last %}
