@@ -10,15 +10,15 @@ import datetime
 
 #TODO: less hacky
 def localize(dt):
-	tz = timezone('Europe/Amsterdam')
-	tz = UTC
+	#tz = timezone('Europe/Amsterdam')
+	#tz = UTC
 	s = time_offset_NL(dt)
-	return tz.localize(dt - s)
+	return UTC.localize(dt - s)
 
 ''' check if DST is in effect in NL and return offset relative to UTC '''
 def time_offset_NL(dt):
 	''' march 31 '''
-	if dt.month < 5 or (dt.month == 5 and dt.day < 5):
+	if dt.month < 3 or (dt.month == 3 and dt.day <= 30):
 		return datetime.timedelta(hours = 1)
 	''' okt 27 '''
 	if dt.month > 10 or (dt.month == 10 and dt.day >= 27):
