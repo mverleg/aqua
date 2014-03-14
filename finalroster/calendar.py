@@ -5,31 +5,14 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.db.models.query_utils import Q
 from pytz import timezone, UTC
-import datetime
+from datetime import timedelta
 
 
-#TODO: less hacky
+def dst_offset(dt, tz = timezone('Europe/Berlin')):
+	return tz.normalize(dt.replace(tzinfo = tz)).replace(tzinfo = None) - dt.replace(tzinfo = tz).replace(tzinfo = None)
+
 def localize(dt):
-	#tz = timezone('Europe/Amsterdam')
-	#tz = UTC
-	#s = time_offset_NL(dt)
-	#return UTC.localize(dt - s)
-	dt = dt.replace(tzinfo = timezone('UTC'))
-	ldt = dt.astimezone(timezone('Europe/Amsterdam'))
-	return ldt.replace(tzinfo = None)
-
-''' check if DST is in effect in NL and return offset relative to UTC '''
-"""
-def time_offset_NL(dt):
-	''' march 31 '''
-	if dt.month < 3 or (dt.month == 3 and dt.day <= 30):
-		return datetime.timedelta(hours = 1)
-	''' okt 27 '''
-	if dt.month > 10 or (dt.month == 10 and dt.day >= 27):
-		return datetime.timedelta(hours = 1)
-	''' everything else '''
-	return datetime.timedelta(hours = 2)
-"""
+	return (dt - timedelta(hours = 1) - dst_offset(dt)).replace(tzinfo = timezone('UTC'))
 
 class AllCalendar(Events):
 	
