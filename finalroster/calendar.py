@@ -12,10 +12,14 @@ import datetime
 def localize(dt):
 	#tz = timezone('Europe/Amsterdam')
 	#tz = UTC
-	s = time_offset_NL(dt)
-	return UTC.localize(dt - s)
+	#s = time_offset_NL(dt)
+	#return UTC.localize(dt - s)
+	dt = dt.replace(tzinfo = timezone('UTC'))
+	ldt = dt.astimezone(timezone('Europe/Amsterdam'))
+	return ldt.replace(tzinfo = None)
 
 ''' check if DST is in effect in NL and return offset relative to UTC '''
+"""
 def time_offset_NL(dt):
 	''' march 31 '''
 	if dt.month < 3 or (dt.month == 3 and dt.day <= 30):
@@ -25,6 +29,7 @@ def time_offset_NL(dt):
 		return datetime.timedelta(hours = 1)
 	''' everything else '''
 	return datetime.timedelta(hours = 2)
+"""
 
 class AllCalendar(Events):
 	
