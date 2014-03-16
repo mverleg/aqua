@@ -44,7 +44,7 @@ if gethostname() in ['mulan', 'genie', 'rafiki',]:
             'NAME': '.aqua.db',
         }
     }
-elif gethostname() == 'bambi':
+elif gethostname() in ['bambi', 'ursula']:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
