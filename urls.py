@@ -19,6 +19,7 @@ from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
     AvailableCalendar
 from distribute.imgs import hour_dist_scatter
 from distribute.special import special_1, special_2
+from finalroster.tex import work_hour_pdf
 admin.autodiscover()
 
 
@@ -72,6 +73,7 @@ urlpatterns = patterns('',
     url(r'^overview/$', month_overview_all, name = 'month_overview_all'),
     url(r'^overview/(?P<user>[^/]+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', month_overview, name = 'month_overview'),
     url(r'^overview/(?P<user>[^/]+)/$', month_overview, name = 'month_overview'),
+    url(r'^overview/(?P<user>[^/]+)_(?P<year>[0-9]+)_(?P<month>[0-9]+).pdf$', work_hour_pdf, name = 'month_overview_pdf'),
     url(r'^ical/all.ics$', AllCalendar(), name = 'ical_all'),
     url(r'^ical/trade.ics$', TradeCalendar(), name = 'ical_trade'),
     url(r'^ical/user(?P<user>[0-9]+).ics$', OwnCalendar()), # LEGACY

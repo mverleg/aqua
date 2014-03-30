@@ -13,6 +13,7 @@ from aqua.functions.week_start_date import week_start_date
 from django.db.utils import IntegrityError
 from collections import defaultdict
 from django.utils import timezone
+from finalroster.tex import overview_context
 
 
 @login_required
@@ -32,36 +33,7 @@ def month_overview(request, user, year = None, month = None):
         else:
             month = (datetime.datetime.today() - day * 21).month
     
-    refday = datetime.datetime(year = year, month = month, day = 1)
-    hourlist = {}
-    grand_total_hours = 0.0
-    while refday.month == month:
-        day_shifts = TimeSlot.objects.filter(start__gt = refday, end__lt = refday + day)
-        total_hours = 0.0
-        for slot in day_shifts:
-            assignments = Assignment.objects.filter(user = user, timeslot = slot)
-            for assignmnet in assignments:
-                total_hours += assignmnet.timeslot.duration.seconds / 3600.0
-        hourlist[refday.day] = {
-            'date': refday.strftime(DATEFORMAT),
-            'day': refday.strftime('%d'),
-            'weekday': refday.strftime('%a'),
-            'hours': total_hours,
-        }
-        grand_total_hours += total_hours
-        refday += day
-    
-    return render(request, 'shift_overview.html', {
-        'user': user,
-        'hourlist': hourlist,
-        'total': grand_total_hours,
-        'month': month,
-        'prev_month': month - 1 if month > 1 else 12,
-        'next_month': (month % 12) + 1,
-        'year': year,
-        'prev_year': year if month > 1 else year - 1,
-        'next_year': year if month < 12 else year +1,
-    })
+    return render(request, 'shift_overview.html', overview_context(user, year, month))
     
 
 @login_required

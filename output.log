@@ -1,0 +1,18 @@
+This is LuaTeX, Version beta-0.76.0-2013070111 (rev 4627)  (format=lualatex 2014.3.7)  29 MAR 2014 20:59
+ restricted \write18 enabled.
+**input.tex
+
+! Emergency stop.
+<*> input.tex
+          
+
+Here is how much of LuaTeX's memory you used:
+ 6 strings out of 493819
+ 100000,552014 words of node,token memory allocated
+ 182 words of node memory still in use:
+   31 glue_spec nodes
+   avail lists: 2:12,3:1,6:1
+ 3914 multiletter control sequences out of 65536+600000
+ 14 fonts using 563007 bytes
+ 0i,0n,0p,0b,6s stack positions out of 5000i,500n,10000p,200000b,100000s
+!  ==> Fatal error occurred, no output PDF file produced!
