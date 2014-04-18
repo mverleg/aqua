@@ -3,7 +3,8 @@
 # http://stackoverflow.com/questions/5833623/mplconfigdir-error-in-matplotlib
 from os import environ
 environ['MPLCONFIGDIR'] = '/tmp/'
-
+import matplotlib as mpl
+mpl.use('Agg')
 from numpy import array, polyfit
 from matplotlib.pyplot import subplots
 from timeslot.models import RosterWorker, Roster
@@ -26,7 +27,7 @@ def hour_dist_scatter(request, roster):
     fig, ax = subplots(figsize = (6, 5))
     ax.set_title('%s (slope %.3f)' % (roster.name, fit_param[0]))
     ax.plot(sorted(avail), fit_val, label = 'linear fit', color = 'blue')
-    ax.scatter(avail, rec, label = 'totaal', color = 'gray')
+    #ax.scatter(avail, rec, label = 'totaal', color = 'gray')
     ax.scatter(avail, cor, label = 'bonus cor.', color = 'red')
     ax.set_xlim([0., max(avail) * 1.1])
     ax.set_ylim([0., max(rec) * 1.1])
