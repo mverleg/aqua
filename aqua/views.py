@@ -63,6 +63,7 @@ def change_password(request):
 		if not request.user.check_password(request.POST['current_password']):
 			return notification(request, 'Dit is niet je huidige wachtwoord', next_page = reverse('change_password'))
 		request.user.set_password(request.POST['new_password'])
+		request.user.save()
 		return notification(request, 'Je wachtwoord is veranderd', next_page = reverse('home'))
 	else:
 		return render(request, 'change_password.html')
