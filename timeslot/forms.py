@@ -4,8 +4,8 @@ from timeslot.models import Roster
 
 
 class CreateRosterForm(forms.ModelForm):
-    start = forms.DateField(input_formats = ['%Y-%m-%d', ], widget = forms.DateTimeInput(attrs={'class': 'datepicker'}))
-    end =   forms.DateField(input_formats = ['%Y-%m-%d', ], widget = forms.DateTimeInput(attrs={'class': 'datepicker'}))
+    start = forms.DateField(input_formats = ['%Y-%m-%d', ], widget = forms.DateInput(attrs={'class': 'datepicker'}))
+    end =   forms.DateField(input_formats = ['%Y-%m-%d', ], widget = forms.DateInput(attrs={'class': 'datepicker'}))
     
     class Meta:
         model = Roster
@@ -17,7 +17,7 @@ class TemplateRosterForm(forms.Form):
     
 
 class TimeSlotForm(forms.Form):
-    date =  forms.DateField(input_formats = ['%Y-%m-%d', ], widget = forms.DateTimeInput(attrs={'class': 'datepicker'}))
+    date =  forms.DateField(input_formats = ['%Y-%m-%d', ], widget = forms.DateInput(attrs={'class': 'datepicker'}))
     start = forms.TimeField(input_formats = ['%H:%M', ], widget = forms.TimeInput(attrs={'class': 'timepicker'}))
     end =   forms.TimeField(input_formats = ['%H:%M', ], widget = forms.TimeInput(attrs={'class': 'timepicker'}))
     people = forms.IntegerField(initial = 1)
@@ -29,4 +29,5 @@ class TimeSlotForm(forms.Form):
         if not 1 <= self.cleaned_data['people'] <= 10:
             raise forms.ValidationError('Number of people should be between 1 and 10 (inclusive)')
         return self.cleaned_data
+
 
