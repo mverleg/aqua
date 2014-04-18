@@ -65,7 +65,7 @@ def work_hour_pdf(request, year, month, user, template = 'werkbriefje.tex'):
     context = overview_context(user, year, month)
     context.update({
         'date': '%s %s %s %s' % (DAY_NAMES[today.weekday()], today.day, MONTH_NAMES[today.month], today.year),
-        'birthday': '%s %s %s' % (user.birthday.day, MONTH_NAMES[user.birthday.month], user.birthday.year),
+        'birthday': '%s %s %s' % (user.birthday.day, MONTH_NAMES[user.birthday.month], user.birthday.year) if user.birthday else '',
     })
     return render_pdf(request, template, context, filename = '%s_%.4d_%s.pdf' % (request.user, year, MONTH_NAMES[month]))
 

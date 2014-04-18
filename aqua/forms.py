@@ -6,7 +6,7 @@ from aqua.models import AquaUser
 
 class UserForm(models.ModelForm):
     
-    birthday = forms.DateField(input_formats = ['%Y-%m-%d', ], widget = forms.DateInput(attrs={'class': 'datepicker'}))
+    birthday = forms.DateField(input_formats = ['%Y-%m-%d', ], widget = forms.DateInput(attrs={'class': 'datepicker'}), required = False)
     
     class Meta:
         fields = ['first_name', 'last_name', 'birthday']
