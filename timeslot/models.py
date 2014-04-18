@@ -1,7 +1,7 @@
 
 from django.db import models
-from django.contrib.auth.models import User
 from datetime import date, timedelta
+from settings import AUTH_USER_MODEL
 
 DATEFORMAT = '%Y-%m-%d'
 TIMEFORMAT = '%H:%M'
@@ -96,7 +96,7 @@ class TimeSlot(models.Model):
     
 
 class RosterWorker(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(AUTH_USER_MODEL)
     roster = models.ForeignKey(Roster)
     extra = models.FloatField(default = 0.0)
     

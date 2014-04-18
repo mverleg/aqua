@@ -32,6 +32,9 @@ INSTALLED_APPS = (
     #'general',
 )
 
+AUTH_USER_MODEL = 'auth.User'
+#AUTH_USER_MODEL = 'auth.User'
+
 DEBUG = True
 ALLOWED_HOSTS = ['.aqua.markv.nl', ]
 

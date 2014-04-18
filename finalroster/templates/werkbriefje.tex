@@ -112,20 +112,36 @@
 			
 		\paragraph{}
 			
-			Naar waarheid ingevuld
-			
-			Datum: {{ date }}
+			Afdeling: FNWI zaalwacht Kostenpl./pr. code/verb.: 
 			
 		\paragraph{}
 			
-			Handtekening werknemer: 
-			\\
-			\\
-		\paragraph{}
+			De declaratie is naar waarheid ingevuld.
 			
-			Akkoord leidinggevende: 
-			\\
-			\\
+			\begin{multicols}{2}
+				\textbf{Werknemer}
+				\\
+				Naam: {{ user.get_full_name }}
+				\\
+				Handtekening:
+				\\ 
+				\\ 
+				\\ 
+				Datum: {{ date }}
+				
+			\columnbreak
+				\textbf{Werkgever}
+				\\
+				Naam: Gonny Kremers
+				\\
+				Handtekening:
+				\\ 
+				\\ 
+				\\
+				Datum: 
+				
+			\end{multicols}
+			
 		\paragraph{}
 			
 			Campus Detachering betaalt elke maand uit. Werkbriefjes dienen uiterlijk de 4e van de volgende maand binnen te zijn om op tijd te kunnen worden verwerkt. {\bfseries Lever je werkbriefje dus op tijd in!}

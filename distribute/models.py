@@ -1,11 +1,11 @@
 
 from django.db import models
 from timeslot.models import TimeSlot, DATETIMEFORMAT
-from django.contrib.auth.models import User
+from settings import AUTH_USER_MODEL
 
 
 class UserSlotBase(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(AUTH_USER_MODEL)
     timeslot = models.ForeignKey(TimeSlot, db_index = True)
     
     def __unicode__(self):
@@ -26,7 +26,7 @@ class Availability(UserSlotBase):
 
 class Assignment(UserSlotBase):
     fortrade = models.IntegerField(default = 0)
-    giveto = models.ForeignKey(User, blank = True, null = True, related_name = 'assignment_gifts')
+    giveto = models.ForeignKey(AUTH_USER_MODEL, blank = True, null = True, related_name = 'assignment_gifts')
     note = models.CharField(max_length = 64, default = '')
     
 
