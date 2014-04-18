@@ -198,5 +198,3 @@ LOGGING = {
     }
 }
 
-DEBUG = True
-
