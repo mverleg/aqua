@@ -1,7 +1,7 @@
 
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
-from aqua.views import login, logout, change_password, work_home
+from aqua.views import login, logout, change_password, work_home, account
 from timeslot.views import start_roster, add_timeslot, delete_timeslot,\
     timeslots_copy_day, timeslots_empty_day, roster_users, roster_overview,\
     delete_roster, roster_users_submit
@@ -24,14 +24,14 @@ admin.autodiscover()
 
 
 urlpatterns = patterns('',
+    url(r'^$', work_home, name = 'home'),
 	url(r'^special/1/', special_1),
 	url(r'^special/2/', special_2),
     url(r'^admin/', include(admin.site.urls)),
-	url(r'^login/$', login, name='login'),
-	url(r'^logout/$', logout, name='logout'),
-    url(r'^change_password/$', change_password, name='change_password'),
-    url(r'^change_password/$', change_password, name='change_password'),
-    url(r'^$', work_home, name = 'home'),
+	url(r'^login/$', login, name = 'login'),
+	url(r'^logout/$', logout, name = 'logout'),
+    url(r'^account/$', account, name = 'account'),
+    url(r'^change_password/$', change_password, name = 'change_password'),
     url(r'^show/txt/$', all_rosters_txt, name = 'all_rosters_txt'),
     url(r'^show/txt/(?P<year>[0-9]+)/(?P<week>[0-9]+)/$', all_rosters_txt, name = 'all_rosters_txt'),
     url(r'^show/(?P<roster>[^/]+)/$', final_roster, name = 'final_roster'),

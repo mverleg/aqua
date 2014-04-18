@@ -14,12 +14,13 @@ from django.db.utils import IntegrityError
 from collections import defaultdict
 from django.utils import timezone
 from finalroster.tex import overview_context
+from django.contrib.auth import get_user_model
 
 
 @login_required
 def month_overview(request, user, year = None, month = None):
     try:
-        user = User.objects.get(username = user)
+        user = get_user_model().objects.get(username = user)
     except User.DoesNotExist:
         return notification(request, 'Gebruiker met gebruikersnaam \'%s\' niet gevonden' % user)
     day = datetime.timedelta(days = 1)
@@ -38,7 +39,7 @@ def month_overview(request, user, year = None, month = None):
 
 @login_required
 def month_overview_all(request):
-    users = User.objects.all()
+    users = get_user_model().objects.all()
     return render(request, 'shift_overview_all.html', {
         'users': users,
     })
@@ -257,7 +258,7 @@ def assignment_submit(request, assignment):
                 'assignment': assignment,
                 'slot': assignment.timeslot,
                 'roster': assignment.timeslot.roster,
-                'users': User.objects.exclude(pk = request.user.pk),
+                'users': get_user_model().objects.exclude(pk = request.user.pk),
             })
         else:
             return notification(request, 'Action not recognized')
@@ -399,7 +400,7 @@ def assignment_submit_transfer(request, assignment):
     assignment = Assignment.objects.get(pk = int(assignment))
     if request.user.is_staff:
         if 'user' in request.POST.keys():
-            user = User.objects.get(pk = int(request.POST['user']))
+            user = get_user_model().objects.get(pk = int(request.POST['user']))
             if not RosterWorker.objects.filter(user = user, roster = assignment.timeslot.roster):
                 return notification(request, 'Je kan tijdens dit rooster niet werken (je account is niet toegevoegd)')
             if Assignment.objects.filter(timeslot = assignment.timeslot, user = user):
@@ -421,7 +422,7 @@ def assignment_submit_gift(request, assignment):
     assignment = Assignment.objects.get(pk = int(assignment))
     if request.user == assignment.user:
         if 'user' in request.POST.keys():
-            user = User.objects.get(pk = int(request.POST['user']))
+            user = get_user_model().objects.get(pk = int(request.POST['user']))
             if not RosterWorker.objects.filter(user = user, roster = assignment.timeslot.roster):
                 return notification(request, '%s kan tijdens dit rooster niet werken (account is niet toegevoegd)' % user.get_full_name)
             if Assignment.objects.filter(timeslot = assignment.timeslot, user = user):

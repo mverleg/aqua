@@ -9,6 +9,7 @@ from timeslot.models import Roster, TimeSlot, DATETIMEFORMAT, DATEFORMAT, Roster
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 
 @staff_member_required
@@ -171,7 +172,7 @@ def roster_users(request, roster):
         return notification(request, 'Er is geen rooster genaamd \'%s\' gevonden' % roster)
     if roster.state > 0:
         return notification(request, 'Dit rooster is geblokkeerd omdat uren al verdeeld worden of zijn')
-    users = User.objects.all()
+    users = get_user_model().objects.all()
     active_user_pks = map(lambda rw: rw.user.pk, RosterWorker.objects.filter(roster = roster))
     for user in users:
         if user.pk in active_user_pks:
@@ -205,10 +206,10 @@ def roster_users_submit(request, roster):
             except ValueError:
                 pass
         if key[0:5] == 'user_':
-            user = User.objects.get(pk = int(key[5:]))
+            user = get_user_model().objects.get(pk = int(key[5:]))
             RosterWorker(user = user, roster = roster).save()
     for upk, extra in hours.items():
-        user = User.objects.get(pk = upk)
+        user = get_user_model().objects.get(pk = upk)
         rosteruser = RosterWorker.objects.filter(user = user, roster = roster)
         if rosteruser:
             rosteruser[0].extra = extra

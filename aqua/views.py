@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from timeslot.models import Roster, RosterWorker
+from aqua.forms import UserForm
+from django.views.decorators.http import require_POST
 
 
 @login_required
@@ -56,16 +58,29 @@ def logout(request):
 
 
 @login_required
+@require_POST
 def change_password(request):
+	if not request.POST['new_password'] == request.POST['repeat_password']:
+		return notification(request, 'De opgegeven nieuwe wachtwoorden zijn niet gelijk', next_page = reverse('change_password'))
+	if not request.user.check_password(request.POST['current_password']):
+		return notification(request, 'Dit is niet je huidige wachtwoord', next_page = reverse('change_password'))
+	request.user.set_password(request.POST['new_password'])
+	request.user.save()
+	return notification(request, 'Je wachtwoord is veranderd', next_page = reverse('home'))
+
+
+@login_required
+def account(request):
 	if request.method == 'POST':
-		if not request.POST['new_password'] == request.POST['repeat_password']:
-			return notification(request, 'De opgegeven nieuwe wachtwoorden zijn niet gelijk', next_page = reverse('change_password'))
-		if not request.user.check_password(request.POST['current_password']):
-			return notification(request, 'Dit is niet je huidige wachtwoord', next_page = reverse('change_password'))
-		request.user.set_password(request.POST['new_password'])
-		request.user.save()
-		return notification(request, 'Je wachtwoord is veranderd', next_page = reverse('home'))
+		form = UserForm(request.POST, instance = request.user)
+		if form.is_valid():
+			form.save()
 	else:
-		return render(request, 'change_password.html')
-	
+		form = UserForm(instance = request.user)
+	return render(request, 'account.html', {
+		'user': request.user,
+		'form': form,
+	})
+
+
 

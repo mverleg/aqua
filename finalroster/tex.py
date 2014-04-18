@@ -5,6 +5,7 @@ from aqua.functions.notification import notification
 from tex_response import render_pdf
 from timeslot.models import TimeSlot, DATEFORMAT
 from distribute.models import Assignment
+from django.contrib.auth import get_user_model
 
 
 DAY_NAMES = ('maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag')
@@ -48,7 +49,7 @@ def overview_context(user, year, month):
 
 def work_hour_pdf(request, year, month, user, template = 'werkbriefje.tex'):
     try:
-        user = User.objects.get(username = user)
+        user = get_user_model().objects.get(username = user)
     except User.DoesNotExist:
         return notification(request, 'Gebruiker met gebruikersnaam \'%s\' niet gevonden' % user)
     day, today = timedelta(days = 1), datetime.today()
@@ -64,6 +65,7 @@ def work_hour_pdf(request, year, month, user, template = 'werkbriefje.tex'):
     context = overview_context(user, year, month)
     context.update({
         'date': '%s %s %s %s' % (DAY_NAMES[today.weekday()], today.day, MONTH_NAMES[today.month], today.year),
+        'birthday': '%s %s %s' % (user.birthday.day, MONTH_NAMES[user.birthday.month], user.birthday.year),
     })
     return render_pdf(request, template, context, filename = '%s_%.4d_%s.pdf' % (request.user, year, MONTH_NAMES[month]))
 

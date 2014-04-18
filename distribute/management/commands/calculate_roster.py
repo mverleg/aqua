@@ -6,9 +6,9 @@ from django.core.management.base import BaseCommand
 from timeslot.models import Roster, TimeSlot, RosterWorker
 from distribute.models import Availability, Assignment
 from aqua.functions.to_hours import to_hours
-from django.contrib.auth.models import User
 from aqua.functions.week_start_date import week_start_date
 from optparse import make_option
+from django.contrib.auth import get_user_model
 
 
 class Command(BaseCommand):
@@ -238,7 +238,7 @@ class Command(BaseCommand):
             for deg, availability in enumerate(availability_list):
                 if availability:
                     batch.append(Assignment(user = availability.user, timeslot = availability.timeslot, note = 'shift %d' % deg))
-        Assignment.objects.bulk_create(batch)
+        Assignment.objects.bulk_create(batch)  # @UndefinedVariable
         roster.state = 3
         roster.save()
         
@@ -250,7 +250,7 @@ class Command(BaseCommand):
         print 'remaining hours:   %d' % (total_hours - sum(current_hours.values()))
         print '       user\tfinal\textra (goal)'
         for user_pk in current_hours.keys():
-            print ' %10s\t%d\t%d' % (User.objects.get(pk = user_pk), int(current_hours[user_pk]), int(extra_hours[user_pk]))
+            print ' %10s\t%d\t%d' % (get_user_model().objects.get(pk = user_pk), int(current_hours[user_pk]), int(extra_hours[user_pk]))
         if not counter:
             print '(Monte Carlo reached iteration limit)'
 
