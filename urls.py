@@ -1,7 +1,8 @@
 
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
-from aqua.views import login, logout, change_password, work_home, account
+from aqua.views import login, logout, change_password, work_home, account,\
+    account_submit
 from timeslot.views import start_roster, add_timeslot, delete_timeslot,\
     timeslots_copy_day, timeslots_empty_day, roster_users, roster_overview,\
     delete_roster, roster_users_submit
@@ -31,6 +32,7 @@ urlpatterns = patterns('',
 	url(r'^login/$', login, name = 'login'),
 	url(r'^logout/$', logout, name = 'logout'),
     url(r'^account/$', account, name = 'account'),
+    url(r'^account/submit/$', account_submit, name = 'account_submit'),
     url(r'^change_password/$', change_password, name = 'change_password'),
     url(r'^show/txt/$', all_rosters_txt, name = 'all_rosters_txt'),
     url(r'^show/txt/(?P<year>[0-9]+)/(?P<week>[0-9]+)/$', all_rosters_txt, name = 'all_rosters_txt'),

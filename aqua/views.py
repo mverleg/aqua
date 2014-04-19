@@ -71,16 +71,24 @@ def change_password(request):
 
 @login_required
 def account(request):
-	if request.method == 'POST':
-		form = UserForm(request.POST, instance = request.user)
-		if form.is_valid():
-			form.save()
-	else:
-		form = UserForm(instance = request.user)
+	form = UserForm(instance = request.user)
 	return render(request, 'account.html', {
 		'user': request.user,
 		'form': form,
 	})
 
+
+@login_required
+@require_POST
+def account_submit(request):
+	form = UserForm(request.POST, instance = request.user)
+	if form.is_valid():
+		form.save()
+		return redirect(to = reverse('account'))
+	else:
+		return render(request, 'account.html', {
+			'user': request.user,
+			'form': form,
+		})
 
 

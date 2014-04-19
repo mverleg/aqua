@@ -25,7 +25,12 @@
 		<br class="clear" />
 	</p>
 	
-	<p>Download <a href="{% url 'month_overview_pdf' user=user.username year=year month=month %}">loondeclaratie</a> als PDF. Vergeet niet te ondertekenen.</p>
+	<p>
+		Download <a href="{% url 'month_overview_pdf' user=user.username year=year month=month %}">loondeclaratie</a> als PDF. Vergeet niet te ondertekenen.
+		{% if not user.birthday or not user.first_name or not user.last_name %}
+			<strong>Let op!</strong> Je gegevens zijn niet compleet. <a href="{% url 'account' %}" />Vul deze eerst in</a> alvorens het formulier te downloaden!
+		{% endif %}
+	</p>
 	
 {% endblock content %}
 
