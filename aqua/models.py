@@ -14,7 +14,7 @@ class AquaUser(AbstractUser):
     objects = UserManager()
     
     def __unicode__(self):
-        return self.get_full_name()
+        return self.get_full_name() or self.username
     
     class Meta:
         db_table = 'auth_user'
