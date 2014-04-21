@@ -3,7 +3,7 @@
 	{% for assignment in shifts %}
 		<li>
 			<form action="{% url 'assignment_trade_result' assignment=assignment.pk %}" method="POST">
-			{{ assignment.user.get_full_name }} wil je de shift {{ assignment.timeslot }} geven; wil je die aannemen?<br />
+			{{ assignment.user }} wil je de shift {{ assignment.timeslot }} geven; wil je die aannemen?<br />
 				<input type="hidden" name="assignment" value="{{ assignment.pk }}" />
 				ja <input type="radio" name="accept" value="yes"> | 
 				nee <input type="radio" name="accept" value="no">

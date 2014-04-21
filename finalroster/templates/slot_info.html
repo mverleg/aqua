@@ -8,7 +8,7 @@
 	<p>
 		{% if assignments %}
 			{% for assignment in assignments %}
-				<strong>{{ assignment.user.get_full_name }}</strong>
+				<strong>{{ assignment.user }}</strong>
 				{% if not forloop.last %} & {% endif %}
 			{% endfor %}
 			 {{ assignments|pluralize:"heeft,hebben" }} een shift op deze tijd.
@@ -39,7 +39,7 @@
 		{% endif %}
 		
 		{% if assignment.fortrade == 1 %}
-			<p>{{ assignment.user.get_full_name }} wil deze shift ruilen. Stuur een mail als je interesse hebt.</p>
+			<p>{{ assignment.user }} wil deze shift ruilen. Stuur een mail als je interesse hebt.</p>
 		{% endif %}
 	{% endfor %}
 	
@@ -70,7 +70,7 @@
 	{% if availabilities %}
 		<p><span class="help_cursor" title="Opgegeven als beschikbaar voor het kwartaal; dit kan verouderd zijn">Beschikbaar opgegeven</span>:
 			{% for availability in availabilities %}
-				{{ availability.user.get_full_name }}
+				{{ availability.user }}
 				{% if not forloop.last %} & {% endif %}
 			{% endfor %}
 		</p>
@@ -90,7 +90,7 @@
 					<input type="hidden" name="action" value="terminate" />
 					<input type="submit" value="opheffen" />
 				</form>
-				<label>{{ assignment.user.get_full_name }}</label>
+				<label>{{ assignment.user }}</label>
 			</div>
 		{% endfor %}
 		{% if assignments.count < slot.degeneracy %}

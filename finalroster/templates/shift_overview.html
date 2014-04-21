@@ -3,9 +3,9 @@
 
 {% block content %}
 	
-	<h1>{{ user.get_full_name }}: {{ month_name }} {{ year }}</h1>
+	<h1>{{ user }}: {{ month_name }} {{ year }}</h1>
 	
-	<p>Overzicht van uren voor {{ user.get_full_name }} tijdens maand {{ month_name }} van {{ year }}</p>
+	<p>Overzicht van uren voor {{ user }} tijdens maand {{ month_name }} van {{ year }}</p>
 	
 	<ul>
 	{% for day in hourlist.values %}
@@ -17,7 +17,7 @@
 	{% endfor %}
 	</ul>
 	
-	<p>In totaal heeft {{ user.get_full_name }} deze maand <strong>{{ total }}</strong> uur gewerkt.</p>
+	<p>In totaal heeft {{ user }} deze maand <strong>{{ total }}</strong> uur gewerkt.</p>
 	
 	<p id="pagination">
 		<a class="left_align" href="{% url 'month_overview' user=user.username year=prev_year month=prev_month %}"><< previous</a>

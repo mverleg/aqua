@@ -38,7 +38,7 @@
 						  data-link="{% url 'slot_info' slot=timeslot.pk %}">
 							<span class="schedule_timeslot_time">{{ timeslot.start|date:"H:i" }}-{{ timeslot.end|date:"H:i" }}</span>
 							{% for assignment in timeslot.assignments %}
-								<a class="schedule_user" title="{{ assignment.note }}">{{ assignment.user.get_full_name }}</a>
+								<a class="schedule_user" title="{{ assignment.note }}">{{ assignment.user }}</a>
 								{% if not forloop.last %} & {% endif %}
 							{% endfor %}
 						</div>
