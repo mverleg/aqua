@@ -29,7 +29,7 @@ class AllCalendar(Events):
 		return None
 	
 	def item_summary(self, item):
-		name = item.user.get_full_name()
+		name = unicode(item.user)
 		if item.fortrade == 1:
 			name = '%s (te ruil)' % name
 		elif item.fortrade == 2:
@@ -65,9 +65,9 @@ class TradeCalendar(AllCalendar):
 	
 	def item_summary(self, item):
 		if item.fortrade == 1:
-			return 'te ruil (%s)' % item.user.get_full_name()
+			return 'te ruil (%s)' % unicode(item.user)
 		elif item.fortrade == 2:
-			return 'weg te geven (%s)' % item.user.get_full_name()
+			return 'weg te geven (%s)' % unicode(item.user)
 		return '?'
 	
 
@@ -104,7 +104,7 @@ class AvailableCalendar(OwnCalendar):
 		return Assignment.objects.filter(Q(user = obj) | Q(fortrade__in = [1, 2]))
 	
 	def item_summary(self, item):
-		name = item.user.get_full_name()
+		name = unicode(item.user)
 		if item.fortrade == 1:
 			name = '%s (te ruil)' % name
 		elif item.fortrade == 2:
