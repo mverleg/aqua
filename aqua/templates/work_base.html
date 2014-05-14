@@ -45,7 +45,7 @@
     		<div id="topmenu_right">
     			<ul class="topmenu_options menu_list">
     				{% if request.user.is_authenticated %}
-	    				<li id="menu_welcome_message">Welkom {{ request.user.get_full_name }}</li>
+	    				<li id="menu_welcome_message">Welkom {{ request.user }}</li>
 	    				<li><a href="{% url 'month_overview' user=request.user.username %}">je uren</a></li>
 	    				<li><a href="{% url 'account' %}">account</a></li>
 	    				<li><a href="{% url 'logout' %}">logout</a></li>

@@ -9,7 +9,7 @@
 		<p>Aan wie wil je deze lege shift toewijzen?</p>
 	{% else %}
 		{% if staff %}
-			<p>Je zet als beheerder een shift van {{ assignment.user.get_full_name }} over. Wie krijgt deze shift?</p>
+			<p>Je zet als beheerder een shift van {{ assignment.user }} over. Wie krijgt deze shift?</p>
 		{% else %}
 			<p>Aan wie wil je je shift geven?</p>
 		{% endif %}
@@ -21,7 +21,7 @@
 	{% endif %}
 	<ul style="list-style-type: none;">
 		{% for user in users %}
-			<li><input type="radio" name="user" value="{{ user.pk }}" />{{ user.get_full_name }}</li>
+			<li><input type="radio" name="user" value="{{ user.pk }}" />{{ user }}</li>
 		{% endfor %}
 	</ul>
 	{% csrf_token %}

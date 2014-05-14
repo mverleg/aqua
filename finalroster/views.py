@@ -424,7 +424,7 @@ def assignment_submit_gift(request, assignment):
         if 'user' in request.POST.keys():
             user = get_user_model().objects.get(pk = int(request.POST['user']))
             if not RosterWorker.objects.filter(user = user, roster = assignment.timeslot.roster):
-                return notification(request, '%s kan tijdens dit rooster niet werken (account is niet toegevoegd)' % user.get_full_name)
+                return notification(request, '%s kan tijdens dit rooster niet werken (account is niet toegevoegd)' % unicode(user))
             if Assignment.objects.filter(timeslot = assignment.timeslot, user = user):
                 return notification(request, '%s heeft dan al een shift' % user, next_page = reverse('slot_info', kwargs = {'slot': assignment.timeslot.pk}))
             assignment.giveto = user

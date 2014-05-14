@@ -3,15 +3,17 @@
 
 {% block content %}
 	
-	<h1>Account: {{ user.get_full_name }}</h1>
+	<h1>Account: {{ user }}</h1>
 	
 	<h2>Gegevens</h2>
 	
 	<p>Hier kan je je gegevens veranderen (o.a. voor loondeclaraties)</p>
 	
-	<form action="{% url 'account' %}" method="POST">
+	<form action="{% url 'account_submit' %}" method="POST">
 		
 		{{ form.as_p }}
+		
+		<p>Je geboortedatum is nodig voor declaratieformulieren. Hint: selecteer je verjaardag dit jaar en verander daarna handmatig het jaartal.</p>
 		
 		{% csrf_token %}
 		<input type="hidden" name="{{ next }}" />
