@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url, include
 from django.contrib import admin
 from aqua.views import login, logout, change_password, work_home, account,\
-    account_submit
+    account_submit, robots_txt
 from timeslot.views import start_roster, add_timeslot, delete_timeslot,\
     timeslots_copy_day, timeslots_empty_day, roster_users, roster_overview,\
     delete_roster, roster_users_submit
@@ -83,6 +83,7 @@ urlpatterns = patterns('',
     url(r'^ical/trade/(?P<user>[^/]+).ics$', AvailableCalendar(), name = 'ical_available'),
     url(r'^ical/user/(?P<user>[^/]+).ics$', OwnCalendar(), name = 'ical_own'),
     url(r'^ical/all.html$', ical_html_all, name = 'ical_html_all'),
+	url(r'^robots.txt$', robots_txt),
 )
 
 

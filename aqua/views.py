@@ -1,4 +1,5 @@
-
+from django.http import HttpResponse
+from django.template import Template, Context
 from aqua.functions.notification import notification_work as notification
 from django.contrib.auth import authenticate, login as login_func, logout as logout_func
 from django.shortcuts import render, redirect
@@ -8,6 +9,10 @@ from timeslot.models import Roster, RosterWorker
 from aqua.forms import UserForm
 from django.views.decorators.http import require_POST
 
+
+def robots_txt(request):
+	return HttpResponse('''User-agent: *
+Disallow: /''')
 
 @login_required
 def work_home(request):
