@@ -9,6 +9,8 @@ LOGIN_URL = '/login/'
 #    '/live/aqua/static',
 #)
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
