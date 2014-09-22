@@ -1,0 +1,93 @@
+
+{% extends BASE_TEMPLATE %}
+
+{% load crispy_forms_tags %}
+{% load ext %}
+
+
+{% block title %}
+	{% if query %}
+		{{ paginator.count }} results
+		{{ TITLE_SEPARATOR }}
+		{{ query }}
+		{{ TITLE_SEPARATOR }}
+	{% endif %}
+	Search
+	{{ TITLE_SEPARATOR }}
+	{{ block.super }}
+{% endblock title %}
+
+{% block menu_autofocus %}{% endblock menu_autofocus %}
+
+{% block content %}
+
+	<form action="{% url 'search' %}" method="get" class="search_form">
+		<label class="control-label" for="search_field_big">Search query</label>
+		<div id="search_field_big_container">
+			<div class="form-group">
+				<input type="text" name="q" placeholder="search..." id="search_field_big"
+					class="textinput textInput form-control" autofocus value="{{ query }}">
+			</div>
+			<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+		</div>
+		<div id="search_field_options_container">
+			<label class="control-label" for="id_models">Select model</label>
+			<div class="list_horizontal">{{ form.models}}</div>
+		</div>
+		<br class="clear" />
+	</form>
+
+	{% if query %}
+
+		{% if page.has_previous or page.has_next %}
+			<div class="search_pagination">
+
+				{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+				|
+				{{ paginator.count }} results
+				|
+				{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+			</div>
+		{% endif %}
+
+		<div id="search_results">
+			{% for result in page.object_list %}
+				<div class="search_result">
+					<!-- score: {{ result.score }} -->
+					<h2>
+						<a href="{{ result.object.get_absolute_url }}">
+							{{ result.name }}
+						</a>
+					</h2>
+					<p>
+						{{ result.summary|safe|head:350 }}
+						{# <a href="{{ result.object.get_absolute_url }}">{{ result.object.get_absolute_url }}</a> #}
+					</p>
+				</div>
+			{% empty %}
+				<p class="alert alert-warning">
+					<strong>No results for search query <em>{{ query }}</em>.</strong>
+
+					You can refine your search by selecting which parts of the site to search.
+				</p>
+			{% endfor %}
+		</div>
+
+		<div class="search_pagination_more">
+			{% if page.has_next %}
+				<a href="?q={{ query }}&amp;page={{ page.next_page_number }}" class="btn btn-default btn-block"><span class="glyphicon glyphicon-arrow-right"></span> More results</a>
+			{% endif %}
+		</div>
+	{% else %}
+		<p class="alert alert-info">
+			<strong>Search the site by entering keywords and pressing enter.</strong>
+
+			You can search specific parts of the site by selecting one of the options.
+
+			Try it! For example, let's search for "<strong><a href="{% url 'search' %}?q=quantum+chemistry&models=courses.course">quantum chemistry</a></strong>" in courses.
+		</p>
+	{% endif %}
+
+{% endblock content %}
+
+

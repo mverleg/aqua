@@ -1,0 +1,21 @@
+
+{% extends BASE_TEMPLATE %}
+
+
+{% block title %}
+	Home sweet home
+	{{ TITLE_SEPARATOR }}
+	{{ block.super }}
+{% endblock title %}
+
+{% block content %}
+	
+	{% if subject %}
+		<h1>Homepage!</h1>
+	{% endif %}
+	
+	<p>This is the home page! More will probably be added soon!</p>
+	
+{% endblock content %}
+
+

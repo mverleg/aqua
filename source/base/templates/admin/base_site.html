@@ -1,0 +1,21 @@
+
+{% extends "admin/base.html" %}
+
+{% load admin_setting %}
+
+
+{% block title %}{{ title }} {{ TITLE_SEPARATOR }} {{ TITLE_BASE }}{% endblock %}
+
+{% block branding %}
+	<h1 id="site-name">
+		{{ TITLE_BASE }}
+		|
+		<a href="{% url 'admin:index' %}">admin</a>
+		|
+		<a href="{% url 'home' %}">home</a>
+	</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+

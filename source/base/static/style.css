@@ -1,0 +1,45 @@
+
+/*
+	workshop
+*/
+.image_block
+{
+	float: left;
+	margin-right: 20px;
+}
+
+.image_block img
+{
+	width: 100px;
+}
+
+.description_block
+{
+	margin-left: 120px;
+}
+
+.presentable_top .image_block img
+{
+	width: 200px;
+}
+
+.presentable_top .description_block
+{
+	margin-left: 220px;
+}
+
+.desciption_stats_block
+{
+	display_ block;
+	height: 1.2em;
+}
+
+.desciption_stats_block li
+{
+	list-style-type: none;
+	float: left;
+	margin-right: 1.5em;
+	cursor: help;
+}
+
+

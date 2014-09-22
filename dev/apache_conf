@@ -1,0 +1,24 @@
+
+<VirtualHost *:80>
+	ServerName MYURL.nl
+	ServerAlias *.MYURL.nl
+	
+	Options -Indexes
+	
+	Alias /static /live/PROJ/static
+	<Directory /live/PROJ/static>
+		Options -Indexes
+		Order allow,deny
+		Allow from all
+	</Directory>
+	
+	WSGIDaemonProcess MYURL python-path=/live/PROJ/env/lib/python2.7/site-packages
+	WSGIProcessGroup MYURL
+	WSGIScriptAlias / /live/PROJ/wsgi.py
+	
+	LogLevel info
+	ErrorLog ${APACHE_LOG_DIR}/PROJ-error.log
+	CustomLog ${APACHE_LOG_DIR}/PROJ-access.log common
+</VirtualHost>
+
+

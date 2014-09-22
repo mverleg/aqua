@@ -1,0 +1,21 @@
+
+Django Awesome App
+-----------
+
+What it does
+
+Installation & Configuration:
+-----------
+
+- Install using ``pip install git+https://bitbucket.org/mverleg/PROJNAME.git`` (or download and copy the app into your project). 
+- Add ``PROJNAME`` to ``INSTALLED_APPS``.
+
+How to use it
+-----------
+
+License
+-----------
+
+Available under the revised BSD license, see LICENSE.txt. You can do anything as long as you include the license, don't use my name for promotion and are aware that there is no warranty.
+
+
