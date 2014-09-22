@@ -1,0 +1,100 @@
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.test import TestCase, Client
+
+
+class TestSmugglerViewsRequireAuthentication(TestCase):
+    def test_dump_data(self):
+        c = Client()
+        url = reverse('dump-data')
+        response = c.get(url)
+        self.assertRedirects(response, '/admin/login/?next=/admin/dump/')
+
+    def test_dump_app_data(self):
+        c = Client()
+        url = reverse('dump-app-data', kwargs={'app_label': 'sites'})
+        response = c.get(url)
+        self.assertRedirects(response, '/admin/login/?next=/admin/sites/dump/')
+
+    def test_dump_model_data(self):
+        c = Client()
+        url = reverse('dump-model-data', kwargs={
+            'app_label': 'sites',
+            'model_label': 'site'
+        })
+        response = c.get(url)
+        self.assertRedirects(response,
+                             '/admin/login/?next=/admin/sites/site/dump/')
+
+    def test_load_data(self):
+        c = Client()
+        url = reverse('load-data')
+        response = c.get(url, follow=True)
+        self.assertRedirects(response, '/admin/login/?next=/admin/load/')
+
+
+class TestSmugglerViewsDeniesNonSuperuser(TestCase):
+    def setUp(self):
+        staff = User(username='staff')
+        staff.set_password('test')
+        staff.is_staff = True
+        staff.save()
+        self.c = Client()
+        self.c.login(username='staff', password='test')
+
+    def test_dump_data(self):
+        url = reverse('dump-data')
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_dump_app_data(self):
+        url = reverse('dump-app-data', kwargs={'app_label': 'sites'})
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_dump_model_data(self):
+        url = reverse('dump-model-data', kwargs={
+            'app_label': 'sites',
+            'model_label': 'site'
+        })
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_load_data(self):
+        url = reverse('load-data')
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 403)
+
+
+class TestSmugglerViewsAllowsSuperuser(TestCase):
+    def setUp(self):
+        superuser = User(username='superuser')
+        superuser.set_password('test')
+        superuser.is_staff = True
+        superuser.is_superuser = True
+        superuser.save()
+        self.c = Client()
+        self.c.login(username='superuser', password='test')
+
+    def test_dump_data(self):
+        url = reverse('dump-data')
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_dump_app_data(self):
+        url = reverse('dump-app-data', kwargs={'app_label': 'sites'})
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_dump_model_data(self):
+        url = reverse('dump-model-data', kwargs={
+            'app_label': 'sites',
+            'model_label': 'site'
+        })
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_load_data(self):
+        url = reverse('load-data')
+        response = self.c.get(url)
+        self.assertEqual(response.status_code, 200)

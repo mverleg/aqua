@@ -1,0 +1,102 @@
+# Copyright (c) 2010, 2011, 2012 Guilherme Gondim and contributors
+# This file is distributed under the same license as the django-smuggler package.
+# 
+# Translators:
+# Guilherme Gondim <semente@taurinus.org>, 2010,2014
+# Guilherme Gondim <semente+transifex@taurinus.org>, 2011
+msgid ""
+msgstr ""
+"Project-Id-Version: Django Smuggler\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-26 10:01+0200\n"
+"PO-Revision-Date: 2014-08-26 13:25+0000\n"
+"Last-Translator: Guilherme Gondim <semente@taurinus.org>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/django-smuggler/language/pt_BR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: forms.py:48
+#, python-format
+msgid "Invalid file extension: .%(extension)s."
+msgstr "Extensão de arquivo inválida: .%(extension)s."
+
+#: forms.py:106
+msgid "Upload"
+msgstr "Upload"
+
+#: forms.py:114
+msgid "Save in fixture directory"
+msgstr "Salvar no diretório de fixtures"
+
+#: forms.py:117
+#, python-format
+msgid "Uploads will be saved to \"%(fixture_dir)s\"."
+msgstr "Uploads serão salvos em \"%(fixture_dir)s\"."
+
+#: forms.py:123
+msgid "From fixture directory"
+msgstr "Do diretório de fixtures"
+
+#: forms.py:126
+#, python-format
+msgid "Data files from \"%(fixture_dir)s\"."
+msgstr "Arquivos de dados de \"%(fixture_dir)s\"."
+
+#: forms.py:140
+msgid "At least one fixture file needs to be uploaded or selected."
+msgstr "Ao menos um arquivo de fixture precisa ser enviado ou selecionado."
+
+#: views.py:43
+#, python-format
+msgid "An exception occurred while dumping data: %s"
+msgstr "Uma exceção ocorreu enquanto descarregava os dados: %s"
+
+#: views.py:113
+#, python-format
+msgid "Successfully imported %(count)d file."
+msgid_plural "Successfully imported %(count)d files."
+msgstr[0] "Importado %(count)d arquivo com sucesso."
+msgstr[1] "Importado %(count)d arquivos com sucesso."
+
+#: views.py:118
+#, python-format
+msgid "Loaded %(count)d object."
+msgid_plural "Loaded %(count)d objects."
+msgstr[0] "Carregadp %(count)d objeto."
+msgstr[1] "Carregado %(count)d objetos."
+
+#: views.py:127
+#, python-format
+msgid "An exception occurred while loading data: %s"
+msgstr "Uma exceção ocorreu enquanto carregava os dados: %s"
+
+#: templates/smuggler/change_list.html:9
+msgid "Dump data"
+msgstr "Descarregar dados"
+
+#: templates/smuggler/change_list.html:14
+#: templates/smuggler/load_data_form.html:6
+#: templates/smuggler/load_data_form.html:18
+#: templates/smuggler/load_data_form.html:23
+msgid "Load data"
+msgstr "Carregar dados"
+
+#: templates/smuggler/load_data_form.html:17
+msgid "Home"
+msgstr "Início"
+
+#: templates/smuggler/load_data_form.html:26
+msgid ""
+"Existing items with same <strong>primary key</strong> will be overwritten."
+msgstr "Itens existentes com a mesma <strong>chave primária</strong> serão sobrescritos."
+
+#: templates/smuggler/load_data_form.html:34
+msgid "Please correct the error below."
+msgstr "Por favor, corrija o erro abaixo."
+
+#: templates/smuggler/load_data_form.html:55
+msgid "Load"
+msgstr "Carregar"
