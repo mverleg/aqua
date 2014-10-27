@@ -61,10 +61,8 @@ elif gethostname() in ['bambi', 'ursula']:
     DEBUG = False
 else:
     raise Exception('hostname not known, no database settings')
-if DEBUG:
-    INSTALLED_APPS += ('django.contrib.staticfiles', )
-    STATICFILES_DIRS = ('/home/mark/aqua/static', )
-DEBUG = True # tmp
+
+STATICFILES_DIRS = ('/home/mark/aqua/static', )
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'reserveringenstudielandschap@gmail.com'
