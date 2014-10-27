@@ -65,7 +65,7 @@ class Command(BaseCommand):
 
 		''' Create the availability data structure '''
 		t_load = time.time()
-		all_slots = [ts for ts in TimeSlot.objects.filter(roster = roster)]
+		slotmap = {ts.pk: ts for ts in TimeSlot.objects.filter(roster = roster)}
 		availabilities_qs = Availability.objects.filter(timeslot__roster = roster)
 		t_assign = time.time()
 		print 'TIME query data:   %.3fs' % (t_assign - t_load)
@@ -74,7 +74,7 @@ class Command(BaseCommand):
 		degeneracy, duration, similar = {}, {}, {}
 		slots = []
 		total_hours = 0
-		for slot in all_slots:
+		for slot in slotmap.values():
 			slots.append(slot)
 			D[slot.pk] = slot.degeneracy * [None]
 			A[slot.pk] = []
@@ -219,7 +219,7 @@ class Command(BaseCommand):
 				for deg, avity in enumerate(avity_list):
 					if avity is None:
 						''' check that, for every empty slot, there are fewer availabilities than places '''
-						assert len(A[slot_pk]) <= [slot.degeneracy for slot in all_slots if slot.pk == slot_pk][0]
+						assert len(A[slot_pk]) <= [slot.degeneracy for slot in slotmap.values() if slot.pk == slot_pk][0]
 					else:
 						current_hours_check[avity.user.pk] += to_hours(avity.timeslot.duration)
 			''' check that the total hours are the same '''
@@ -242,11 +242,14 @@ class Command(BaseCommand):
 		if not roster.state == 2:
 			print 'The state of the roster has changed! There may be a concurrent process. Mission aborted; no changes will be made.'
 			return
-		Assignment.objects.filter(timeslot__in = all_slots).delete()
+		Assignment.objects.filter(timeslot__in = slotmap.values()).delete()
 		batch = []
-		for availability_list in D.values():
+		empty_slots = []
+		for key, availability_list in D.items():
 			for deg, availability in enumerate(availability_list):
-				if availability:
+				if availability is None:
+					empty_slots.append(slotmap[key])
+				else:
 					batch.append(Assignment(user = availability.user, timeslot = availability.timeslot, note = 'shift %d' % deg))
 		Assignment.objects.bulk_create(batch)
 		roster.state = 3
@@ -258,6 +261,8 @@ class Command(BaseCommand):
 		print 'TIME other steps:  %.3fs' % (t_result - t_init - (t_check - t_monte) - (t_hours - t_assign) - (t_assign - t_load) - (t_result - t_store) - (t_store - t_check))
 		print 'TIME total time:   %.3fs' % (t_result - t_init)
 		print 'remaining hours:   %d' % (total_hours - sum(current_hours.values()))
+		for empty_slot in empty_slots:
+			print '\t %s (%.1fh)' % (empty_slot, to_hours(empty_slot.duration))
 		print 'with alpha = %.3f max extra hours is %.1fh' % (alpha, alpha * (max(flexibility.values()) - min(flexibility.values())))
 		print '       user\tfinal\textra (goal)'
 		for user_pk in current_hours.keys():
