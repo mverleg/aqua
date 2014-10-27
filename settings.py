@@ -9,19 +9,17 @@ LOGIN_URL = '/login/'
 #    '/live/aqua/static',
 #)
 
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     #'django.contrib.sites',
     #'django.contrib.messages',
-    #'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'django.contrib.admin',
     #'extra',
     #'booking',
-    #'rooms',
+    #'rooms', 
     #'reservations',
     #'people',
     #'moderate',
@@ -66,7 +64,7 @@ else:
 if DEBUG:
     INSTALLED_APPS += ('django.contrib.staticfiles', )
     STATICFILES_DIRS = ('/home/mark/aqua/static', )
-#DEBUG = True # tmp
+DEBUG = True # tmp
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'reserveringenstudielandschap@gmail.com'
@@ -199,4 +197,8 @@ LOGGING = {
         },
     }
 }
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+
 

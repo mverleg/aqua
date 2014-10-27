@@ -12,7 +12,8 @@ def dst_offset(dt, tz = timezone('Europe/Berlin')):
 	return tz.normalize(dt.replace(tzinfo = tz)).replace(tzinfo = None) - dt.replace(tzinfo = tz).replace(tzinfo = None)
 
 def localize(dt):
-	return (dt - timedelta(hours = 1) - dst_offset(dt)).replace(tzinfo = timezone('UTC'))
+	# not a clue why this 7 minute shift is needed, I just hope it doesn't break again
+	return (dt - timedelta(hours = 0, minutes = 53) - dst_offset(dt)).replace(tzinfo = timezone('UTC'))
 
 class AllCalendar(Events):
 	
@@ -118,6 +119,6 @@ class AvailableCalendar(OwnCalendar):
 	
 	def filename(self, obj):
 		return 'shifts_%s_trade.ics' % ''.join(ch for ch in obj.username if ch.isalnum())
-	
+
 
 

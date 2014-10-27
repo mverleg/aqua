@@ -12,6 +12,7 @@ from django.views.decorators.http import require_POST
 
 def robots_txt(request):
 	return HttpResponse('''User-agent: *
+Allow: /ical
 Disallow: /''')
 
 @login_required

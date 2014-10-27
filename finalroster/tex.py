@@ -70,3 +70,4 @@ def work_hour_pdf(request, year, month, user, template = 'werkbriefje.tex'):
     return render_pdf(request, template, context, filename = '%s_%.4d_%s.pdf' % (request.user, year, MONTH_NAMES[month]))
 
 
+

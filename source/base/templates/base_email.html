@@ -1,8 +1,0 @@
-{% block header %}Dear user,{% endblock header %}
-
-{% block content %}empty email{% endblock content %}
-
-{% block footer %}Thank you for using our website!{% endblock footer %}
-
-
-{% block footer %}You can unsubscribe from these messages by visiting http://{{ SITE_URL }}{% url 'email_unsubscribe' uid=user.pk token=user.email_unsubscribe_token %}

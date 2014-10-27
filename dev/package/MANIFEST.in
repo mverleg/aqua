@@ -1,3 +1,0 @@
-recursive-include source *
-recursive-include static *
-recursive-include data *
