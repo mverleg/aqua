@@ -29,7 +29,7 @@ def month_overview(request, user, year = None, month = None):
 		month = int(month)
 	else:
 		refday = datetime.datetime.today()
-		if refday.day >= 20:
+		if refday.day < 20:
 			refday -= day * 21
 		year = refday.year
 		month = refday.month
