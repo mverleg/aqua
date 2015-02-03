@@ -487,6 +487,13 @@ def ical_html_all(request):
 	})
 
 
-
+def room_reservations(request):
+	yesterday, today, tomorrow, dayafter = datetime.today() - timedelta(days = 1), datetime.today(), datetime.today() + timedelta(days = 1), datetime.today() + timedelta(days = 2)
+	return render(request, 'room_reservations.html', {
+		'yearm1': yesterday.year, 'monthm1': yesterday.month, 'daym1': yesterday.day,
+		'year': today.year, 'month': today.month, 'day': today.day,
+		'yearp1': tomorrow.year, 'monthp1': tomorrow.month, 'dayp1': tomorrow.day,
+		'yearp2': dayafter.year, 'monthp2': dayafter.month, 'dayp2': dayafter.day,
+	})
 
 

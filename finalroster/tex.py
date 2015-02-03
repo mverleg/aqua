@@ -2,7 +2,7 @@
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from icalendar import Calendar
 from aqua.functions.notification import notification
 from tex_response import render_pdf
@@ -90,7 +90,7 @@ roomfeeds = [
 def zaal_briefjes(request, year = None, month = None, day = None):
 	if year is None or month is None or day is None:
 		date = datetime.now() + timedelta(days = 1)
-		return redirect(to = reverse('room_reservations', kwargs = {
+		return redirect(to = reverse('room_reservations_pdf', kwargs = {
 			'year': '%.4d' % date.year,
 			'month': '%.2d' % date.month,
 			'day': '%.2d' % date.day
@@ -116,6 +116,6 @@ def zaal_briefjes(request, year = None, month = None, day = None):
 		bookings[-1]['items'] = sorted(bookings[-1]['items'], key = lambda event: event['start'])
 	return render_pdf(request, 'zaalreserveringen.tex', {
 		'bookings': bookings,
-	}, filename = 'room_reservations_%.4d_%.2d_%.2d.pdf' % (year, month, day))
+	}, filename = '%.4d_%.2d_%.2d.pdf' % (year, month, day))
 
 

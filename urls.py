@@ -15,7 +15,7 @@ from finalroster.views import final_roster, slot_info, assignment_submit,\
 	assignment_submit_staff, assignment_submit_transfer,\
 	assignment_submit_delete_empty, assignment_submit_staff_empty,\
 	assignment_submit_add_degeneracy, assignment_redirect, all_rosters_txt,\
-	ical_html_all
+	ical_html_all, room_reservations
 from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
 	AvailableCalendar
 from distribute.imgs import hour_dist_scatter
@@ -77,8 +77,9 @@ urlpatterns = patterns('',
 	url(r'^overview/(?P<user>[^/]+)/$', month_overview, name = 'month_overview'),
 	url(r'^overview/(?P<user>[^/]+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', month_overview, name = 'month_overview'),
 	url(r'^overview/(?P<user>[^/]+)_(?P<year>[0-9]+)_(?P<month>[0-9]+).pdf$', work_hour_pdf, name = 'month_overview_pdf'),
-	url(r'^room_reservations/$', zaal_briefjes, name = 'room_reservations'),
-	url(r'^room_reservations/(?P<year>[0-9]+)_(?P<month>[0-9]+)_(?P<day>[0-9]+).pdf$', zaal_briefjes, name = 'room_reservations'),
+	url(r'^room_reservations/today/$', room_reservations, name = 'room_reservations'),
+	url(r'^room_reservations/today/$', zaal_briefjes, name = 'room_reservations_pdf'),
+	url(r'^room_reservations/(?P<year>[0-9]+)_(?P<month>[0-9]+)_(?P<day>[0-9]+).pdf$', zaal_briefjes, name = 'room_reservations_pdf'),
 	url(r'^ical/all.ics$', AllCalendar(), name = 'ical_all'),
 	url(r'^ical/trade.ics$', TradeCalendar(), name = 'ical_trade'),
 	url(r'^ical/user(?P<user>[0-9]+).ics$', OwnCalendar()), # LEGACY

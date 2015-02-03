@@ -1,0 +1,30 @@
+
+{% extends 'work_base.html' %}
+
+{% block content %}
+
+	<h1>Zaalreserveringen</h1>
+
+	<p>Hieronder kun je een document downloaden om uit te printen, zodat je geen briefjes hoeft te schrijven voor op de deuren.</p>
+
+	<ul>
+		<li>Het duurt een paar seconden om het document te maken</li>
+		<li>Er is geen zaalwacht printbudget, je moet het zelf uitprinten</li>
+		<li>De grote zalen hebben geen duidelijke beschrijving, die moet je zelf nog invullen</li>
+	</ul>
+
+	<p>Hier kan je het document downloaden:</p>
+
+	<ul>
+		<li><a href="{% url 'room_reservations_pdf' year=yearm1, month=monthm1, day=daym1 %}">Gister</a></li>
+		<li><a href="{% url 'room_reservations_pdf' year=year  , month=month,   day=day   %}">Vandaag</a></li>
+		<li><a href="{% url 'room_reservations_pdf' year=yearp1, month=monthp1, day=dayp1 %}"><strong>Morgen</strong></a></li>
+		<li><a href="{% url 'room_reservations_pdf' year=yearp2, month=monthp2, day=dayp2 %}">Eergister</a></li>
+	</ul>
+
+	<p>Als je een andere dag nodig hebt kan je zelf de link aanpassen met de juiste datum.</p>
+
+
+{% endblock content %}
+
+

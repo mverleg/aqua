@@ -67,7 +67,15 @@
 
 \begin{document}
 
-	Tijdverspilling YOOOOLOOOOOO!!
+	{% for booking in bookings %}
+		/textbf{ {{ booking.room }} }
+		{{ booking.date }}
+		{% for item in booking.items %}
+			{{ item.start }}
+			{{ item.end }}
+			{{ item.text }}
+		{% endfor %}
+	{% endfor %}
 
 \end{document}
 
