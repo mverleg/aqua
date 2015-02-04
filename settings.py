@@ -1,13 +1,16 @@
 # Django settings for aqua project.
 
 # No final slash
-SITE_BASE_URL = 'http://www.aqua.markv.nl/'
+SITE_BASE_URL = 'http://www.aqua.markv.nl'
 LOGIN_URL = '/login/'
 
 # Additional locations of static files
 #STATICFILES_DIRS = (
 #    '/live/aqua/static',
 #)
+
+# this url is bound to a specific account
+BIG_ROOM_URL = 'http://persoonlijkrooster.ru.nl/ical?54d15a18&eu=dTg3NzE2MA==&t=82bc7bd6-4049-479c-8659-ae85dda5be02&zoneFeed=true'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -19,7 +22,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     #'extra',
     #'booking',
-    #'rooms', 
+    #'rooms',
     #'reservations',
     #'people',
     #'moderate',
@@ -48,6 +51,7 @@ if gethostname() in ['mulan', 'genie', 'rafiki',]:
         }
     }
 elif gethostname() in ['bambi', 'ursula']:
+    DEBUG = True
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -58,7 +62,6 @@ elif gethostname() in ['bambi', 'ursula']:
             'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
         }
     }
-    DEBUG = False
 else:
     raise Exception('hostname not known, no database settings')
 

@@ -1,4 +1,5 @@
 
+from threading import Thread
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
@@ -6,10 +7,13 @@ from django.shortcuts import redirect, render
 from icalendar import Calendar
 from aqua.functions.notification import notification
 from tex_response import render_pdf
+from settings import BIG_ROOM_URL
 from timeslot.models import TimeSlot, DATEFORMAT
 from distribute.models import Assignment
 from django.contrib.auth import get_user_model
 from urllib2 import urlopen
+from string import ascii_letters, digits
+from sys import stderr
 
 
 DAY_NAMES = ('maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag')
@@ -87,35 +91,88 @@ roomfeeds = [
 ]
 
 
-def zaal_briefjes(request, year = None, month = None, day = None):
-	if year is None or month is None or day is None:
-		date = datetime.now() + timedelta(days = 1)
-		return redirect(to = reverse('room_reservations_pdf', kwargs = {
-			'year': '%.4d' % date.year,
-			'month': '%.2d' % date.month,
-			'day': '%.2d' % date.day
-		}))
-	year, month, day = int(year), int(month), int(day)
+def fetch_urls(urls):
+	results = [None] * len(urls)
+	def fetch_url(nr, url):
+		results[nr] = urlopen(url).read()
+	threads = [Thread(target = fetch_url, args = (nr, url)) for nr, url in enumerate(urls)]
+	for thread in threads: thread.start()
+	for thread in threads: thread.join()
+	return results
+
+
+def get_bookings(year, month, day):
+	# url loads should be parallel but too much work
 	thisday = datetime(year = year, month = month, day = day)
+	rooms, urls = zip(*roomfeeds)
+	icals = fetch_urls(urls)
 	bookings = []
-	for room, url in roomfeeds:
+	datestr = thisday.strftime('%A %d %B').lower().replace('0', '')
+	for room, ical in zip(rooms, icals):
 		bookings.append({
 			'room': room,
-			'date': thisday.strftime('%A %d %B'),
+			'date': datestr,
 			'items': [],
 		})
-		cal = Calendar.from_ical(urlopen(url).read())
+		cal = Calendar.from_ical(ical)
 		for event in cal.walk('vevent'):
 			date = event.get('dtstart').dt
 			if date.year == year and date.month == month and date.day == day:
 				bookings[-1]['items'].append({
 					'start': event.get('dtstart').dt.strftime('%H:%M'),
 					'end': event.get('dtend').dt.strftime('%H:%M'),
-					'text': unicode(event.get('summary')),
+					'text': ''.join(letter for letter in unicode(event.get('summary')) if letter in ascii_letters + digits + ' -:'),
 				})
 		bookings[-1]['items'] = sorted(bookings[-1]['items'], key = lambda event: event['start'])
+	# big rooms:
+	bookings.append({'room': 'HG00.217',  'date': datestr, 'items': []})
+	bookings.append({'room': 'HG00.217A', 'date': datestr, 'items': []})
+	bookings.append({'room': 'HG00.218',  'date': datestr, 'items': []})
+	bookings.append({'room': 'HG00.218A', 'date': datestr, 'items': []})
+	indx = {'HG00.217': -4, 'HG00.217A': -3, 'HG00.218': -2, 'HG00.218A': -1}
+	cal = Calendar.from_ical(urlopen(BIG_ROOM_URL).read())
+	for event in cal.walk('vevent'):
+		date = event.get('dtstart').dt
+		if date.year == year and date.month == month and date.day == day:
+			try:
+				loc = indx[str(event.get('location'))]
+			except KeyError:
+				stderr.write('unrecognized room %s in ical feed %s' % (event.get('location'), BIG_ROOM_URL))
+			bookings[loc]['items'].append({
+				'start': event.get('dtstart').dt.strftime('%H:%M'),
+				'end': event.get('dtend').dt.strftime('%H:%M'),
+				'text': ''.join(letter for letter in unicode(event.get('description')).strip() if letter in ascii_letters + digits + ' -:'),
+			})
+	return bookings
+
+
+def zaal_briefjes(request, year = None, month = None, day = None, offset = +1):
+	if year is None or month is None or day is None:
+		date = datetime.now() + timedelta(days = offset)
+		return redirect(to = reverse('room_reservations_pdf', kwargs = {
+			'year': '%.4d' % date.year,
+			'month': '%.2d' % date.month,
+			'day': '%.2d' % date.day
+		}))
+	year, month, day = int(year), int(month), int(day)
+	bookings = get_bookings(year, month, day)
 	return render_pdf(request, 'zaalreserveringen.tex', {
 		'bookings': bookings,
 	}, filename = '%.4d_%.2d_%.2d.pdf' % (year, month, day))
 
+
+
+def zaal_briefjes_html(request, year = None, month = None, day = None, offset = +1):
+	if year is None or month is None or day is None:
+		date = datetime.now() + timedelta(days = offset)
+		return redirect(to = reverse('room_reservations_html', kwargs = {
+			'year': '%.4d' % date.year,
+			'month': '%.2d' % date.month,
+			'day': '%.2d' % date.day
+		}))
+	year, month, day = int(year), int(month), int(day)
+	bookings = get_bookings(year, month, day)
+	return render(request, 'zaalreserveringen.html', {
+		'bookings': bookings,
+	})
 

@@ -1,5 +1,6 @@
 
 import datetime
+from settings import SITE_BASE_URL
 from timeslot.models import Roster, TimeSlot, DATEFORMAT, RosterWorker
 from aqua.functions.notification import notification_work as notification
 from django.shortcuts import render, redirect
@@ -488,12 +489,14 @@ def ical_html_all(request):
 
 
 def room_reservations(request):
-	yesterday, today, tomorrow, dayafter = datetime.now() - datetime.timedelta(days = 1), datetime.now(), datetime.now() + datetime.timedelta(days = 1), datetime.now() + datetime.timedelta(days = 2)
+	#yesterday, today, tomorrow, dayafter = datetime.datetime.now() - datetime.timedelta(days = 1), datetime.datetime.now(), datetime.datetime.now() + datetime.timedelta(days = 1), datetime.datetime.now() + datetime.timedelta(days = 2)
+	today = datetime.datetime.now()
 	return render(request, 'room_reservations.html', {
-		'yearm1': yesterday.year, 'monthm1': yesterday.month, 'daym1': yesterday.day,
-		'year': today.year, 'month': today.month, 'day': today.day,
-		'yearp1': tomorrow.year, 'monthp1': tomorrow.month, 'dayp1': tomorrow.day,
-		'yearp2': dayafter.year, 'monthp2': dayafter.month, 'dayp2': dayafter.day,
+		'baseurl': SITE_BASE_URL,
+	#	'yearm1': yesterday.year, 'monthm1': yesterday.month, 'daym1': yesterday.day,
+		'year': '%.4d' % today.year, 'month': '%.2d' % today.month, 'day': '%.2d' % today.day,
+	#	'yearp1': tomorrow.year, 'monthp1': tomorrow.month, 'dayp1': tomorrow.day,
+	#	'yearp2': dayafter.year, 'monthp2': dayafter.month, 'dayp2': dayafter.day,
 	})
 
 

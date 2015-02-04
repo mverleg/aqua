@@ -8,22 +8,22 @@
 	<p>Hieronder kun je een document downloaden om uit te printen, zodat je geen briefjes hoeft te schrijven voor op de deuren.</p>
 
 	<ul>
-		<li>Het duurt een paar seconden om het document te maken</li>
-		<li>Er is geen zaalwacht printbudget, je moet het zelf uitprinten</li>
-		<li>De grote zalen hebben geen duidelijke beschrijving, die moet je zelf nog invullen</li>
+		<li><a href="{% url 'room_reservations_pdf_yesterday' %}">Gister pdf</a> / <a href="{% url 'room_reservations_html_yesterday' %}">html</a></li>
+		<li><a href="{% url 'room_reservations_pdf_today' %}">Vandaag pdf</a> / <a href="{% url 'room_reservations_html_today' %}">html</a></li>
+		<li><a href="{% url 'room_reservations_pdf_tomorrow' %}"><strong>Morgen</strong> pdf</a> / <a href="{% url 'room_reservations_html_tomorrow' %}">html</a></li>
+		<li><a href="{% url 'room_reservations_pdf_dayafter' %}">Overmorgen pdf</a> / <a href="{% url 'room_reservations_html_dayafter' %}">html</a></li>
 	</ul>
 
-	<p>Hier kan je het document downloaden:</p>
+	Opmerkingen:
 
 	<ul>
-		<li><a href="{% url 'room_reservations_pdf' year=yearm1, month=monthm1, day=daym1 %}">Gister</a></li>
-		<li><a href="{% url 'room_reservations_pdf' year=year  , month=month,   day=day   %}">Vandaag</a></li>
-		<li><a href="{% url 'room_reservations_pdf' year=yearp1, month=monthp1, day=dayp1 %}"><strong>Morgen</strong></a></li>
-		<li><a href="{% url 'room_reservations_pdf' year=yearp2, month=monthp2, day=dayp2 %}">Eergister</a></li>
+		<li>Het duurt even om de kalenders te lezen, 30 seconden is normaal.</li>
+		<li>Er is geen zaalwacht printbudget, je moet het zelf uitprinten.</li>
+		<li>De grote zalen hebben geen duidelijke beschrijving, die moet je zelf nog invullen.</li>
+		<li>Er zijn ook html versies voor als je gewoon wilt overschrijven.</li>
+		<li>Als je een andere dag nodig hebt, verander dan zelf de datum in de url: <br />
+		<a href="{% url 'room_reservations_pdf' year=year month=month day=day %}">{{ baseurl }}{% url 'room_reservations_pdf' year=year month=month day=day %}</a></li>
 	</ul>
-
-	<p>Als je een andere dag nodig hebt kan je zelf de link aanpassen met de juiste datum.</p>
-
 
 {% endblock content %}
 

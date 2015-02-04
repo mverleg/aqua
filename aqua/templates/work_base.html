@@ -9,10 +9,10 @@
 	    <meta charset="utf-8">
 	    <meta name="Content-Script-Type" content="text/javascript">
 	    <meta http-equiv="Content-Style-Type" content="text/css">
-	    
+
 	    <link rel="icon" type="image/png"  href="{% static 'favicon.png' %}">
 	    <title>Aqua</title>
-	    
+
 	    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
 	    <script type="text/javascript" src="{% static 'jq/jquery-1.9.1.js' %}"></script>
 	    {% block cssjs %}
@@ -29,7 +29,7 @@
 		<script type="text/javascript" src="{% static 'js/workscript.js' %}"></script>
 	    {% endblock cssjs %}
 	</head>
-	
+
     <body>
     	<div id="topmenu">
     		<div id="topmenu_left">
@@ -46,6 +46,7 @@
     			<ul class="topmenu_options menu_list">
     				{% if request.user.is_authenticated %}
 	    				<li id="menu_welcome_message">Welkom {{ request.user }}</li>
+					    <li><a href="{% url 'room_reservations' %}">briefjes</a></li>
 	    				<li><a href="{% url 'month_overview' user=request.user.username %}">je uren</a></li>
 	    				<li><a href="{% url 'account' %}">account</a></li>
 	    				<li><a href="{% url 'logout' %}">logout</a></li>

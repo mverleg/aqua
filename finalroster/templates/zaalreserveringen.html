@@ -1,0 +1,22 @@
+
+{% extends 'work_base.html' %}
+
+{% block content %}
+
+	{% for booking in bookings %}
+		<div style="margin-bottom: 1.5em;">
+			<strong>{{ booking.room }}</strong>
+			<br />
+			{{ booking.date }}
+			{% for item in booking.items %}
+				<br />
+				{{ item.start }}-{{ item.end }}: {{ item.text }}
+			{% empty %}
+				<br /><span style="color: gray;">(nothing)</span>
+			{% endfor %}
+		</div>
+	{% endfor %}
+
+{% endblock content %}
+
+

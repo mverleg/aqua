@@ -20,7 +20,7 @@ from finalroster.calendar import AllCalendar, OwnCalendar, TradeCalendar,\
 	AvailableCalendar
 from distribute.imgs import hour_dist_scatter
 from distribute.special import special_1, special_2
-from finalroster.tex import work_hour_pdf, zaal_briefjes
+from finalroster.tex import work_hour_pdf, zaal_briefjes, zaal_briefjes_html
 
 admin.autodiscover()
 
@@ -78,8 +78,16 @@ urlpatterns = patterns('',
 	url(r'^overview/(?P<user>[^/]+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', month_overview, name = 'month_overview'),
 	url(r'^overview/(?P<user>[^/]+)_(?P<year>[0-9]+)_(?P<month>[0-9]+).pdf$', work_hour_pdf, name = 'month_overview_pdf'),
 	url(r'^room_reservations/$', room_reservations, name = 'room_reservations'),
-	url(r'^room_reservations/next/$', zaal_briefjes, name = 'room_reservations_pdf'),
-	url(r'^room_reservations/(?P<year>[0-9]+)_(?P<month>[0-9]+)_(?P<day>[0-9]+).pdf$', zaal_briefjes, name = 'room_reservations_pdf'),
+	url(r'^room_reservations/yesterday/$', zaal_briefjes, {'offset': -1}, name = 'room_reservations_pdf_yesterday'),
+    url(r'^room_reservations/today/$', zaal_briefjes, {'offset': 0}, name = 'room_reservations_pdf_today'),
+    url(r'^room_reservations/tomorrow/$', zaal_briefjes, {'offset': +1}, name = 'room_reservations_pdf_tomorrow'),
+    url(r'^room_reservations/dayafter/$', zaal_briefjes, {'offset': +2}, name = 'room_reservations_pdf_dayafter'),
+    url(r'^room_reservations/(?P<year>[0-9]+)_(?P<month>[0-9]+)_(?P<day>[0-9]+).pdf$', zaal_briefjes, name = 'room_reservations_pdf'),
+	url(r'^room_reservations/html/yesterday/$', zaal_briefjes_html, {'offset': -1}, name = 'room_reservations_html_yesterday'),
+    url(r'^room_reservations/html/today/$', zaal_briefjes_html, {'offset': 0}, name = 'room_reservations_html_today'),
+    url(r'^room_reservations/html/tomorrow/$', zaal_briefjes_html, {'offset': +1}, name = 'room_reservations_html_tomorrow'),
+    url(r'^room_reservations/html/dayafter/$', zaal_briefjes_html, {'offset': +2}, name = 'room_reservations_html_dayafter'),
+	url(r'^room_reservations/(?P<year>[0-9]+)_(?P<month>[0-9]+)_(?P<day>[0-9]+).html$', zaal_briefjes_html, name = 'room_reservations_html'),
 	url(r'^ical/all.ics$', AllCalendar(), name = 'ical_all'),
 	url(r'^ical/trade.ics$', TradeCalendar(), name = 'ical_trade'),
 	url(r'^ical/user(?P<user>[0-9]+).ics$', OwnCalendar()), # LEGACY
