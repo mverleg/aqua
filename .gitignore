@@ -2,3 +2,5 @@
 *.pyc
 backups
 *.db
+.aqua
+

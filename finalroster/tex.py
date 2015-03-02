@@ -135,9 +135,11 @@ def get_bookings(year, month, day):
 		date = event.get('dtstart').dt
 		if date.year == year and date.month == month and date.day == day:
 			try:
+				#todo: it is possible to have multiple rooms like HG00.217 / HG00.218 / HG00.643
 				loc = indx[str(event.get('location'))]
 			except KeyError:
 				stderr.write('unrecognized room %s in ical feed %s' % (event.get('location'), BIG_ROOM_URL))
+				continue
 			bookings[loc]['items'].append({
 				'start': event.get('dtstart').dt.strftime('%H:%M'),
 				'end': event.get('dtend').dt.strftime('%H:%M'),
