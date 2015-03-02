@@ -107,7 +107,7 @@ def get_bookings(year, month, day):
 	rooms, urls = zip(*roomfeeds)
 	icals = fetch_urls(urls)
 	bookings = []
-	datestr = thisday.strftime('%A %d %B').lower().replace('0', '')
+	datestr = thisday.strftime('%A %d %B').replace('0', '')
 	for room, ical in zip(rooms, icals):
 		bookings.append({
 			'room': room,
@@ -141,9 +141,9 @@ def get_bookings(year, month, day):
 			bookings[loc]['items'].append({
 				'start': event.get('dtstart').dt.strftime('%H:%M'),
 				'end': event.get('dtend').dt.strftime('%H:%M'),
-				'text': ''.join(letter for letter in unicode(event.get('description')).strip() if letter in ascii_letters + digits + ' -:'),
+				'text': ''.join(letter for letter in unicode(event.get('description').split('@')[0]).strip() if letter in ascii_letters + digits + ' -:'),
 			})
-	return bookings
+	return [booking for booking in bookings if booking['items']]
 
 
 def zaal_briefjes(request, year = None, month = None, day = None, offset = +1):

@@ -5,7 +5,7 @@
 % Mark Verleg, February 3rd 2015
 
 % switch from some USA size to A4
-\documentclass[a4paper,twoside,twocolumn,20pt]{article}
+\documentclass[a4paper,twoside]{article}
 
 %% PACKAGES
 % for missing packages, the lazy > 1GB way is: apt-get install texlive-full
@@ -75,20 +75,21 @@
 
 		\begin{minipage}{\columnwidth}
 
-			\textbf{ {{ booking.room }} }
-			{{ booking.date }}
+			\huge{\textbf{ {{ booking.room }} }}
+			\huge{ {{ booking.date }} }
 
 			{% for item in booking.items %}
-				{{ item.start }}-{{ item.end }}: {{ item.text }}
+				\huge{ {{ item.start }}-{{ item.end }}: {{ item.text }} }
 			{% empty %}
-				\textit{No reservations.}
+				{# this should never happen anymore #}
+				\huge{ \textit{No reservations.} }
 			{% endfor %}
 
 			\vspace{0.3cm}
 
-			\tiny{\textcolor{mygray}{Your group can use a room if there is no reservation and it is empty.}}
+			\normalsize{ \textcolor{mygray}{Your group can use a room if there is no reservation and it is empty.} }
 
-			\tiny{\textcolor{mygray}{You can book a room for a future day at the supervisor.}}
+			\normalsize{ \textcolor{mygray}{You can book a room for a future day at the supervisor.} }
 
 		\end{minipage}
 
