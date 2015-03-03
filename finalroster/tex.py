@@ -10,6 +10,7 @@ from tex_response import render_pdf
 from settings import BIG_ROOM_URL
 from timeslot.models import TimeSlot, DATEFORMAT
 from distribute.models import Assignment
+from finalroster.calendar import delocalize
 from django.contrib.auth import get_user_model
 from urllib2 import urlopen
 from string import ascii_letters, digits
@@ -141,8 +142,8 @@ def get_bookings(year, month, day):
 				stderr.write('unrecognized room %s in ical feed %s' % (event.get('location'), BIG_ROOM_URL))
 				continue
 			bookings[loc]['items'].append({
-				'start': event.get('dtstart').dt.strftime('%H:%M'),
-				'end': event.get('dtend').dt.strftime('%H:%M'),
+				'start': delocalize(event.get('dtstart').dt).strftime('%H:%M'),
+				'end': delocalize(event.get('dtend').dt).strftime('%H:%M'),
 				'text': ''.join(letter for letter in unicode(event.get('description').split('@')[0]).strip() if letter in ascii_letters + digits + ' -:'),
 			})
 	return [booking for booking in bookings if booking['items']]
