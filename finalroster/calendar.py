@@ -9,17 +9,16 @@ from datetime import timedelta
 
 
 def dst_offset(dt, tz = timezone('Europe/Berlin')):
-	return tz.normalize(dt.replace(tzinfo = tz)).replace(tzinfo = None) - dt.replace(tzinfo = tz).replace(tzinfo = None)
+	return tz.normalize(dt.replace(tzinfo = tz)).replace(tzinfo = None) - dt.replace(tzinfo = tz).replace(tzinfo = None) + timedelta(hours = 0, minutes = 53)
 
 
 def localize(dt):
 	# not a clue why this 7 minute shift is needed, I just hope it doesn't break again
-	return (dt - timedelta(hours = 0, minutes = 53) - dst_offset(dt)).replace(tzinfo = timezone('UTC'))
+	return (dt - dst_offset(dt)).replace(tzinfo = timezone('UTC'))
 
 
 def delocalize(dt):
-	print dst_offset(dt)
-	return dt.replace(tzinfo = timezone('Europe/Berlin')) - timedelta(hours = 1, minutes = 53) - dst_offset(dt)
+	return dt.replace(tzinfo = timezone('Europe/Berlin')) + dst_offset(dt.replace(tzinfo = timezone('Europe/Berlin')))
 
 
 class AllCalendar(Events):

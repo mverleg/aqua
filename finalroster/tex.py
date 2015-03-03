@@ -15,6 +15,7 @@ from django.contrib.auth import get_user_model
 from urllib2 import urlopen
 from string import ascii_letters, digits
 from sys import stderr
+from pytz import timezone
 
 
 DAY_NAMES = ('maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag')
@@ -93,6 +94,7 @@ roomfeeds = [
 
 
 def fetch_urls(urls):
+	# should have used multiprocessing.Pool.map for simplicity, although threads are better than processes here
 	results = [None] * len(urls)
 	def fetch_url(nr, url):
 		results[nr] = urlopen(url).read()
@@ -103,7 +105,6 @@ def fetch_urls(urls):
 
 
 def get_bookings(year, month, day):
-	# url loads should be parallel but too much work
 	thisday = datetime(year = year, month = month, day = day)
 	rooms, urls = zip(*roomfeeds)
 	icals = fetch_urls(urls)
@@ -117,11 +118,19 @@ def get_bookings(year, month, day):
 		})
 		cal = Calendar.from_ical(ical)
 		for event in cal.walk('vevent'):
-			date = event.get('dtstart').dt
-			if date.year == year and date.month == month and date.day == day:
+			#if event.get('summary') == 'Rowena van der Velden':
+			#	print 'Rowena', room
+			#	print event.sorted_items()
+			#	print ''
+			ref_sdate = datetime(year = year, month = month, day = day, hour = 0, tzinfo = timezone('UTC'))
+			ref_edate = datetime(year = year, month = month, day = day, hour = 23, minute = 59, second = 59, tzinfo = timezone('UTC'))
+			sdate = event.get('dtstart').dt
+			edate = event.get('dtend').dt
+			if edate > ref_sdate and sdate < ref_edate:
+				print str(event.get('summary'))
 				bookings[-1]['items'].append({
-					'start': event.get('dtstart').dt.strftime('%H:%M'),
-					'end': event.get('dtend').dt.strftime('%H:%M'),
+					'start': delocalize(event.get('dtstart').dt).strftime('%H:%M'),
+					'end': delocalize(event.get('dtend').dt).strftime('%H:%M'),
 					'text': ''.join(letter for letter in unicode(event.get('summary')) if letter in ascii_letters + digits + ' -:'),
 				})
 		bookings[-1]['items'] = sorted(bookings[-1]['items'], key = lambda event: event['start'])
@@ -135,17 +144,18 @@ def get_bookings(year, month, day):
 	for event in cal.walk('vevent'):
 		date = event.get('dtstart').dt
 		if date.year == year and date.month == month and date.day == day:
-			try:
-				#todo: it is possible to have multiple rooms like HG00.217 / HG00.218 / HG00.643
-				loc = indx[str(event.get('location'))]
-			except KeyError:
-				stderr.write('unrecognized room %s in ical feed %s' % (event.get('location'), BIG_ROOM_URL))
-				continue
-			bookings[loc]['items'].append({
-				'start': delocalize(event.get('dtstart').dt).strftime('%H:%M'),
-				'end': delocalize(event.get('dtend').dt).strftime('%H:%M'),
-				'text': ''.join(letter for letter in unicode(event.get('description').split('@')[0]).strip() if letter in ascii_letters + digits + ' -:'),
-			})
+			loc_names = [str(room).strip() for room in event.get('location').split('/')]
+			for loc_name in loc_names:
+				try:
+					loc = indx[loc_name]
+				except KeyError:
+					stderr.write('unrecognized room %s in ical feed %s\n' % (loc_name, BIG_ROOM_URL))
+					continue
+				bookings[loc]['items'].append({
+					'start': (event.get('dtstart').dt).strftime('%H:%M'),
+					'end': (event.get('dtend').dt).strftime('%H:%M'),
+					'text': ''.join(letter for letter in unicode(event.get('description').split('@')[0]).strip() if letter in ascii_letters + digits + ' -:'),
+				})
 	return [booking for booking in bookings if booking['items']]
 
 
