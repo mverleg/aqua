@@ -1,5 +1,6 @@
 
 import datetime
+from django.http import HttpResponse
 from settings import SITE_BASE_URL
 from timeslot.models import Roster, TimeSlot, DATEFORMAT, RosterWorker
 from aqua.functions.notification import notification_work as notification
@@ -9,7 +10,7 @@ from distribute.models import Assignment, Availability
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User, AnonymousUser
-from finalroster.forms import TimeForm
+from finalroster.forms import TimeForm, KostenplaatsForm
 from aqua.functions.week_start_date import week_start_date
 from django.db.utils import IntegrityError
 from collections import defaultdict
@@ -49,15 +50,45 @@ def month_overview_all(request):
 
 
 @login_required
-def month_overview_CD(request):
+def month_overview_CD(request, year = None, month = None):
+	if year and month:
+		year = int(year)
+		month = int(month)
+		monthdate = datetime.datetime(year = year, month = month, day = 1)
+	else:
+		return redirect(reverse('month_overview_CD', kwargs = {'year': str(datetime.datetime.today().year), 'month': str(datetime.datetime.today().month)}))
 	if not request.user.is_staff:
 		return notification(request, 'Alleen beheerders mogen gegevens voor iedereen als CSV downloaden. Je kan wel je eigen gegevens inzien.')
-	# naam, soort werk (100%), aantal uur (op die dag), kostenplaats, relatie (iets van LoS?), datum
-	response = HttpResponse(content_type='text/csv')
-	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
-	writer = csv.writer(response)
-	writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
-	writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
+	form = KostenplaatsForm(request.POST or None)
+	if not form.is_valid():
+		totals = {}
+		for user in get_user_model().objects.filter(is_active = True):
+			context = overview_context(user, year, month)
+			totals[user.get_full_name()] = context['totalnr']
+		return render(request, 'get_kostenplaats.html', {
+			'form': form,
+			'monthdate': monthdate,
+			'totals': totals,
+			'overall_total': sum(totals.values()),
+		})
+	response = HttpResponse(content_type = 'text/csv')
+	response['Content-Disposition'] = 'attachment; filename="overview_%s.csv"' % monthdate.strftime('%b_%Y').lower()
+	fh = writer(response)
+	totals = {}
+	fh.writerow(['NAAM MEDEWERKER', 'RELATIE', 'TYPE_WERK', 'KOSTENPLAATS', 'DATUM', 'AANTAL UUR'])
+	for user in get_user_model().objects.filter(is_active = True):
+		context = overview_context(user, year, month)
+		totals[user.get_full_name()] = context['totalnr']
+		for dayinfo in context['hourlist'].values():
+			if dayinfo['hournr'] > 0:
+				fh.writerow([
+					user.get_full_name(),
+					form.cleaned_data['relatie'],
+					form.cleaned_data['type_werk'],
+					form.cleaned_data['kostenplaatsnummer'],
+					dayinfo['date'],
+					dayinfo['hournr'],
+				])
 	return response
 
 

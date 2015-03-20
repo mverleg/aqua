@@ -1,0 +1,49 @@
+
+{% extends 'work_base.html' %}
+
+{% block content %}
+
+	<h1>Download alle uren als CSV</h1>
+
+	<p>Hier kan het overzicht van alle uren voor {{ monthdate|date:"F Y" }} gedownload worden als een CSV bestand om te importeren in andere diensten.</p>
+
+	<p>Dit zijn de uren per persoon deze maand, voor een totaal van <strong>{{ overall_total }}</strong>:</p>
+	<table>
+		<tbody>
+			<tr>
+				<th>Memewerker</th>
+				<th>Uren</th>
+			</tr>
+			{% for user, total in totals.items %}
+				{% if total %}
+					<tr>
+						<td>{{ user }}</td>
+						<td>{{ total }}</td>
+					</tr>
+				{% endif %}
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<br />
+	<p>Voor het genereren is wat informatie nodig:</p>
+
+	<form action="{% url 'month_overview_CD' year=monthdate.year month=monthdate.month %}" method="POST">
+
+		{{ form.as_p }}
+
+		{% csrf_token %}
+
+		<p>
+			<input type="submit" value="Download CSV" data-role="button" data-icon="check" />
+		</p>
+
+	</form>
+
+	<p>Het is aan te raden om als minimale contole het CSV-bestand te openen in Excel en het aantal uren op te tellen en te kijken of dit overeenkomt ({{ overall_total }}) en redelijk lijkt.</p>
+
+	<p>(Deze pagina is alleen toegankelijk voor beheerders. Voor een andere maand kunnen het jaar en de maand in de adresbalk veranderd worden. Nu wordt gedownload voor {{ monthdate|date:"F Y" }}.)</p>
+
+{% endblock content %}
+
+

@@ -40,6 +40,7 @@ def overview_context(user, year, month):
 			'day': refday.strftime('%d'),
 			'weekday': DAY_NAMES[refday.weekday()],
 			'hours': rounded_hours,
+			'hournr': total_hours,
 		}
 		grand_total_hours += total_hours
 		refday += day
@@ -47,6 +48,7 @@ def overview_context(user, year, month):
 		'user': user,
 		'hourlist': hourlist,
 		'total': '%d:%.2d' % (grand_total_hours // 1, 15 * round((grand_total_hours % 1) / .25)),
+	    'totalnr': grand_total_hours,
 		'month_name': MONTH_NAMES[month],
 		'month': month,
 		'prev_month': month - 1 if month > 1 else 12,
