@@ -108,8 +108,13 @@ def get_bookings(year, month, day):
 	thisday = datetime(year = year, month = month, day = day)
 	rooms, urls = zip(*roomfeeds)
 	icals = fetch_urls(urls)
+
+	#mycal = iCalendar(); mycal.string_load(icals[0]); print mycal.get_event_instances(start = '20150301', end = '20150315')
+	#dates = mycal.get_event_instances(start = datetime.today().strftime("%Y%m%d"), end = datetime.today().strftime("%Y%m%d"))
+	#dates = mycal.get_event_instances(start = '20150301', end = '20150315')
+
 	bookings = []
-	datestr = thisday.strftime('%A %d %B').replace('0', '')
+	datestr = thisday.strftime('%A %d %B').replace(' 0', ' ')
 	for room, ical in zip(rooms, icals):
 		bookings.append({
 			'room': room,
@@ -118,21 +123,20 @@ def get_bookings(year, month, day):
 		})
 		cal = Calendar.from_ical(ical)
 		for event in cal.walk('vevent'):
-			#if event.get('summary') == 'Rowena van der Velden':
-			#	print 'Rowena', room
-			#	print event.sorted_items()
-			#	print ''
+			#todo: does not work will full-day events since they are dates and can't be compared to datetimes
 			ref_sdate = datetime(year = year, month = month, day = day, hour = 0, tzinfo = timezone('UTC'))
 			ref_edate = datetime(year = year, month = month, day = day, hour = 23, minute = 59, second = 59, tzinfo = timezone('UTC'))
 			sdate = event.get('dtstart').dt
 			edate = event.get('dtend').dt
-			if edate > ref_sdate and sdate < ref_edate:
-				print str(event.get('summary'))
-				bookings[-1]['items'].append({
-					'start': delocalize(event.get('dtstart').dt).strftime('%H:%M'),
-					'end': delocalize(event.get('dtend').dt).strftime('%H:%M'),
-					'text': ''.join(letter for letter in unicode(event.get('summary')) if letter in ascii_letters + digits + ' -:'),
-				})
+			try:
+				if edate > ref_sdate and sdate < ref_edate:
+					bookings[-1]['items'].append({
+						'start': delocalize(event.get('dtstart').dt).strftime('%H:%M'),
+						'end': delocalize(event.get('dtend').dt).strftime('%H:%M'),
+						'text': ''.join(letter for letter in unicode(event.get('summary')) if letter in ascii_letters + digits + ' -:'),
+					})
+			except TypeError:
+				stderr.write('skipped a full-day event "%s"\n' % event.get('summary'))
 		bookings[-1]['items'] = sorted(bookings[-1]['items'], key = lambda event: event['start'])
 	# big rooms:
 	bookings.append({'room': 'HG00.217',  'date': datestr, 'items': []})

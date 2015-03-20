@@ -1,0 +1,7 @@
+'''
+Created on Feb 12, 2013
+
+@author: Oberron
+'''
+
+RFC5546_METHODS = ["PUBLISH","REQUEST","REPLY","ADD","CANCEL","REFRESH","COUNTER","DECLINECOUNTER"]

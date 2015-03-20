@@ -18,6 +18,7 @@ def localize(dt):
 
 
 def delocalize(dt):
+	#todo: there is a difference between .localize(dt) and .replace(tzinfo)! only the former does DST calculation
 	return dt.replace(tzinfo = timezone('Europe/Berlin')) + dst_offset(dt.replace(tzinfo = timezone('Europe/Berlin')))
 
 
