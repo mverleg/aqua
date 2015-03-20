@@ -10,7 +10,7 @@ from distribute.views import roster_lock, invite_workers, availability,\
 	availability_submit, availability_copy, calculate_start, \
 	calculate_status, calculate_publish, calculate_restart, roster_stats
 from finalroster.views import final_roster, slot_info, assignment_submit,\
-	assignment_trade_result, month_overview, month_overview_all,\
+	assignment_trade_result, month_overview, month_overview_all, month_overview_CD,\
 	assignment_submit_split, assignment_submit_gift, assignment_submit_claim,\
 	assignment_submit_staff, assignment_submit_transfer,\
 	assignment_submit_delete_empty, assignment_submit_staff_empty,\
@@ -74,6 +74,7 @@ urlpatterns = patterns('',
 	url(r'^assignment/(?P<assignment>[0-9]+)/submit/transfer/$', assignment_submit_transfer, name = 'assignment_submit_transfer'),
 	url(r'^assignment/(?P<assignment>[0-9]+)/trade_result/$', assignment_trade_result, name = 'assignment_trade_result'),
 	url(r'^overview/$', month_overview_all, name = 'month_overview_all'),
+	url(r'^overview/CD/$', month_overview_CD, name = 'month_overview_CD'),
 	url(r'^overview/(?P<user>[^/]+)/$', month_overview, name = 'month_overview'),
 	url(r'^overview/(?P<user>[^/]+)/(?P<year>[0-9]+)/(?P<month>[0-9]+)/$', month_overview, name = 'month_overview'),
 	url(r'^overview/(?P<user>[^/]+)_(?P<year>[0-9]+)_(?P<month>[0-9]+).pdf$', work_hour_pdf, name = 'month_overview_pdf'),

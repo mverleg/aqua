@@ -16,6 +16,7 @@ from collections import defaultdict
 from django.utils import timezone
 from finalroster.tex import overview_context
 from django.contrib.auth import get_user_model
+from csv import writer
 
 
 @login_required
@@ -41,10 +42,23 @@ def month_overview(request, user, year = None, month = None):
 
 @login_required
 def month_overview_all(request):
-	users = get_user_model().objects.all()
+	users = get_user_model().objects.filter(is_active = True)
 	return render(request, 'shift_overview_all.html', {
 		'users': users,
 	})
+
+
+@login_required
+def month_overview_CD(request):
+	if not request.user.is_staff:
+		return notification(request, 'Alleen beheerders mogen gegevens voor iedereen als CSV downloaden. Je kan wel je eigen gegevens inzien.')
+	# naam, soort werk (100%), aantal uur (op die dag), kostenplaats, relatie (iets van LoS?), datum
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+	writer = csv.writer(response)
+	writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+	writer.writerow(['Second row', 'A', 'B', 'C', '"Testing"', "Here's a quote"])
+	return response
 
 
 def final_roster(request, roster, year = None, week = None):
