@@ -1,0 +1,13 @@
+Django==1.7.7
+argparse==1.2.1
+django-cal==0.2.2
+django-colorfield==0.1.3
+icalendar==3.8.4
+pyparsing==2.0.3
+python-dateutil==1.5
+pytz==2015.2
+six==1.9.0
+vobject==0.6.6
+wsgiref==0.1.2
+numpy==1.8.2
+matplotlib==1.3.1

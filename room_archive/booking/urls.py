@@ -40,3 +40,4 @@ urlpatterns = patterns('',
     url(r'^subscibe/(?P<token>[0-9a-zA-Z]+)/off/$', unsubscribe_confirm, name = 'unsubscribe_confirm'),
 )
 
+
