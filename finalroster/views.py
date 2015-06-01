@@ -1,8 +1,9 @@
 
 import datetime
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from settings import SITE_BASE_URL
-from timeslot.models import Roster, TimeSlot, DATEFORMAT, RosterWorker
+from timeslot.models import Roster, TimeSlot, RosterWorker
 from aqua.functions.notification import notification_work as notification
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
@@ -50,6 +51,7 @@ def month_overview_all(request):
 
 
 @login_required
+@staff_member_required
 def month_overview_CD(request, year = None, month = None):
 	if year and month:
 		year = int(year)
@@ -75,7 +77,7 @@ def month_overview_CD(request, year = None, month = None):
 	response['Content-Disposition'] = 'attachment; filename="overview_%s.csv"' % monthdate.strftime('%b_%Y').lower()
 	fh = writer(response)
 	totals = {}
-	fh.writerow(['NAAM MEDEWERKER', 'RELATIE', 'TYPE_WERK', 'KOSTENPLAATS', 'DATUM', 'AANTAL UUR'])
+	fh.writerow(['NAAM', 'DATUM', 'AANTAL UUR', 'LOONCOMPONENT', 'TYPE_WERK'])
 	for user in get_user_model().objects.filter(is_active = True):
 		context = overview_context(user, year, month)
 		totals[user.get_full_name()] = context['totalnr']
@@ -83,11 +85,11 @@ def month_overview_CD(request, year = None, month = None):
 			if dayinfo['hournr'] > 0:
 				fh.writerow([
 					user.get_full_name(),
-					form.cleaned_data['relatie'],
-					form.cleaned_data['type_werk'],
-					form.cleaned_data['kostenplaatsnummer'],
+					#form.cleaned_data['relatie'],
 					dayinfo['date'],
 					dayinfo['hournr'],
+					form.cleaned_data['type_werk'],
+					form.cleaned_data['kostenplaatsnummer'],
 				])
 	return response
 
