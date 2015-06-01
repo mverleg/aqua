@@ -47,7 +47,7 @@ if gethostname() in ['mulan', 'genie', 'rafiki',]:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': '.aqua.db',
+            'NAME': 'aqua.db',
         }
     }
 elif gethostname() in ['bambi', 'ursula']:
