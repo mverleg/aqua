@@ -1,8 +1,9 @@
 
 import datetime
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from settings import SITE_BASE_URL
-from timeslot.models import Roster, TimeSlot, DATEFORMAT, RosterWorker
+from timeslot.models import Roster, TimeSlot, RosterWorker
 from aqua.functions.notification import notification_work as notification
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
@@ -50,6 +51,7 @@ def month_overview_all(request):
 
 
 @login_required
+@staff_member_required
 def month_overview_CD(request, year = None, month = None):
 	if year and month:
 		year = int(year)
