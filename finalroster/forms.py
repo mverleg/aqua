@@ -9,6 +9,6 @@ class TimeForm(forms.Form):
 class KostenplaatsForm(forms.Form):
 	kostenplaatsnummer = forms.CharField(min_length = 6, max_length = 20, required = True)
 	relatie = forms.CharField(max_length = 64, initial = 'OWC - Library of science (Zaalwacht)')
-	type_werk = forms.CharField(max_length = 64, initial = 'Loon normale uren 100%')
+	type_werk = forms.CharField(max_length = 64, initial = 'Loon normale uren')
 
 
