@@ -58,7 +58,7 @@ def month_overview_CD(request, year = None, month = None):
 		month = int(month)
 		monthdate = datetime.datetime(year = year, month = month, day = 1)
 	else:
-		ref = datetime.datetime.today() - datetime.datetime.timedelta(days = 14)
+		ref = datetime.datetime.today() - datetime.timedelta(days = 14)
 		return redirect(reverse('month_overview_CD', kwargs = {'year': str(ref.year), 'month': str(ref.month)}))
 	if not request.user.is_staff:
 		return notification(request, 'Alleen beheerders mogen gegevens voor iedereen als CSV downloaden. Je kan wel je eigen gegevens inzien.')
