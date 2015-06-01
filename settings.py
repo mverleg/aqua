@@ -51,7 +51,7 @@ if gethostname() in ['mulan', 'genie', 'rafiki',]:
         }
     }
 elif gethostname() in ['bambi', 'ursula']:
-    DEBUG = True
+    DEBUG = False
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
