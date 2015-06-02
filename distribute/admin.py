@@ -1,7 +1,20 @@
 
 from django.contrib import admin
-from distribute.models import Availability
+from django.contrib.admin import ModelAdmin
+from distribute.models import Availability, Assignment
 
 
-admin.site.register(Availability)
+class AvailabilityAdmin(ModelAdmin):
+	list_display = ('__unicode__', 'user', 'timeslot',)
+	list_filter = ('user', 'timeslot__roster',)
+
+
+class AssignmentAdmin(ModelAdmin):
+	list_display = ('__unicode__', 'user', 'timeslot', 'fortrade', 'note',)
+	list_filter = ('user', 'timeslot__roster', 'fortrade',)
+
+
+admin.site.register(Availability, AvailabilityAdmin)
+admin.site.register(Assignment, AssignmentAdmin)
+
 
