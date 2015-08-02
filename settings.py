@@ -1,6 +1,9 @@
 # Django settings for aqua project.
 
 # No final slash
+from os.path import exists
+from os.path import join
+
 SITE_BASE_URL = 'http://www.aqua.markv.nl'
 LOGIN_URL = '/login/'
 
@@ -13,57 +16,40 @@ LOGIN_URL = '/login/'
 BIG_ROOM_URL = 'http://persoonlijkrooster.ru.nl/ical?54d15a18&eu=dTg3NzE2MA==&t=82bc7bd6-4049-479c-8659-ae85dda5be02&zoneFeed=true'
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    #'django.contrib.sites',
-    #'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.admin',
-    #'extra',
-    #'booking',
-    #'rooms',
-    #'reservations',
-    #'people',
-    #'moderate',
-    #'colorfield',
-    'aqua',
-    #'working',
-    'timeslot',
-    'distribute',
-    'finalroster',
-    #'general',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	#'django.contrib.sites',
+	#'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'django.contrib.admin',
+	#'extra',
+	#'booking',
+	#'rooms',
+	#'reservations',
+	#'people',
+	#'moderate',
+	#'colorfield',
+	'aqua',
+	#'working',
+	'timeslot',
+	'distribute',
+	'finalroster',
+	#'general',
 )
 
 AUTH_USER_MODEL = 'aqua.AquaUser'
 #AUTH_USER_MODEL = 'auth.User'
 
-DEBUG = True
-ALLOWED_HOSTS = ['.aqua.markv.nl', ]
+DEBUG = False
+DATABASES = {
+	'default': {
+		'ENGINE': 'django.db.backends.sqlite3',
+		'NAME': 'aqua.db',
+	}
+}
 
-from socket import gethostname
-if gethostname() in ['mulan', 'genie', 'rafiki',]:
-    DEBUG = True
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'aqua.db',
-        }
-    }
-elif gethostname() in ['bambi', 'ursula']:
-    DEBUG = False
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': 'aqua',                       # Or path to database file if using sqlite3.
-            'USER': 'aqua',                       # Not used with sqlite3.
-            'PASSWORD': 'wcq6MELmdASKBSuqP',      # Not used with sqlite3.
-            'HOST': '127.0.0.1',                  # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '3306',                       # Set to empty string for default. Not used with sqlite3.
-        }
-    }
-else:
-    raise Exception('hostname not known, no database settings')
+ALLOWED_HOSTS = []
 
 STATICFILES_DIRS = ('/home/mark/aqua/static', )
 
@@ -79,14 +65,14 @@ APPEND_SLASH = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+	# ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
-    'django.core.context_processors.request',
+	'django.core.context_processors.request',
 )
 
 # Local time zone for this installation. Choices can be found here:
@@ -134,8 +120,8 @@ STATIC_URL = '/static/'
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    #'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+	'django.contrib.staticfiles.finders.FileSystemFinder',
+	#'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -144,19 +130,19 @@ SECRET_KEY = 'abc#2uxr=+c*u%pt(*zdckg1s9=uk1ab2%c1e*)z9u7b06*j0r'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+	'django.template.loaders.filesystem.Loader',
+	'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	# Uncomment the next line for simple clickjacking protection:
+	# 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -165,9 +151,9 @@ ROOT_URLCONF = 'urls'
 WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+	# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+	# Always use forward slashes, even on Windows.
+	# Don't forget to use absolute paths, not relative paths.
 )
 
 # A sample logging configuration. The only tangible logging
@@ -176,30 +162,34 @@ TEMPLATE_DIRS = (
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
+	'version': 1,
+	'disable_existing_loggers': False,
+	'filters': {
+		'require_debug_false': {
+			'()': 'django.utils.log.RequireDebugFalse'
+		}
+	},
+	'handlers': {
+		'mail_admins': {
+			'level': 'ERROR',
+			'filters': ['require_debug_false'],
+			'class': 'django.utils.log.AdminEmailHandler'
+		}
+	},
+	'loggers': {
+		'django.request': {
+			'handlers': ['mail_admins'],
+			'level': 'ERROR',
+			'propagate': True,
+		},
+	}
 }
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
+if not exists('local.py'):
+	with open('local.py', 'w+') as fh:
+		fh.write('"""\nLocal (machine specific) settings that overwrite the general ones.\n"""\n\n')
+from local import *
 
 
