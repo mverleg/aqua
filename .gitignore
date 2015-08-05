@@ -1,8 +1,8 @@
 *.db
 *.pyc
-backups
+/backups
 *.db
 .aqua
-env/
-local.py
+/env/
+/local.py
 

@@ -5,7 +5,7 @@ from timeslot.models import Roster, TimeSlot, RosterWorker
 
 
 class RosterAdmin(ModelAdmin):
-	list_display = ('name', 'start', 'end', 'get_state_label',)
+	list_display = ('name', 'start', 'end', 'get_state_display',)
 	list_filter = ('state', 'start', 'end',)
 
 
