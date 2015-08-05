@@ -12,7 +12,13 @@ class Roster(models.Model):
     name = models.CharField(max_length = 32, unique = True)
     start = models.DateField()
     end = models.DateField()
-    state = models.IntegerField(default = 0, help_text = '0: created, 1: entering availability, 2: distributing, 3: distributed preview, 4: final')
+    state = models.IntegerField(default = 0, choices = (
+        (0, 'Creating'),
+        (1, 'Entering availabilities'),
+        (2, 'Calculating distribution'),
+        (3, 'Preview distribution (hidden)'),
+        (4, 'Live'),
+    ))
 
     def __unicode__(self):
         return self.name

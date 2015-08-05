@@ -25,7 +25,12 @@ class Availability(UserSlotBase):
 
 
 class Assignment(UserSlotBase):
-    fortrade = models.IntegerField(default = 0)  #todo: dropdown
+    fortrade = models.IntegerField(default = 0, choices = (
+        (0, '(Normal)'),
+        (1, 'Marked for trading'),
+        (2, 'Free to claim'),
+        (3, 'Transfer to someone [giveto]'),
+    ))
     giveto = models.ForeignKey(AUTH_USER_MODEL, blank = True, null = True, related_name = 'assignment_gifts')
     note = models.CharField(max_length = 64, default = '')
 

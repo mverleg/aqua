@@ -10,7 +10,7 @@ class AvailabilityAdmin(ModelAdmin):
 
 
 class AssignmentAdmin(ModelAdmin):
-	list_display = ('__unicode__', 'user', 'timeslot', 'fortrade', 'note',)
+	list_display = ('__unicode__', 'user', 'timeslot', 'get_fortrade_label', 'note',)
 	list_filter = ('user', 'timeslot__roster', 'fortrade',)
 
 
