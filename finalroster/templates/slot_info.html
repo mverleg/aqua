@@ -2,9 +2,9 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>{{ slot.start|date:"Y-m-d" }} van {{ slot.start|date:"H:i" }} tot {{ slot.end|date:"H:i" }}</h1>
-	
+
 	<p>
 		{% if assignments %}
 			{% for assignment in assignments %}
@@ -16,7 +16,7 @@
 			Niemand heeft een shift op deze tijd.
 		{% endif %}
 	</p>
-	
+
 	{% if assignments.count < slot.degeneracy %}
 		<p>
 			Deze shift is vrij.
@@ -26,7 +26,7 @@
 			</form>
 		</p>
 	{% endif %}
-	
+
 	{% for assignment in assignments %}
 		{% if assignment.fortrade == 2 %}
 			<p>
@@ -37,15 +37,15 @@
 				</form>
 			</p>
 		{% endif %}
-		
+
 		{% if assignment.fortrade == 1 %}
 			<p>{{ assignment.user }} wil deze shift ruilen. Stuur een mail als je interesse hebt.</p>
 		{% endif %}
 	{% endfor %}
-	
+
 	{% if owner_shift %}
 		<p>Je hebt een shift op deze tijd {% if owner_shift.note %}met opmerking "{{ owner_shift.note }}"{% endif %}. Wat wil je hier mee doen?</p>
-		
+
 		{% if owner_shift.fortrade == 1 %}
 			<p><strong>Je hebt deze shift te ruil aangeboden.</strong></p>
 		{% elif owner_shift.fortrade == 2 %}
@@ -53,7 +53,7 @@
 		{% elif owner_shift.giveto %}
 			<p><strong>Je geeft deze shift aan {{ owner_shift.giveto.username }}.</strong> Selecteer een van de opties om dit ongedaan te maken.</p>
 		{% endif %}
-		
+
 		<form action="{% url 'assignment_submit' assignment=owner_shift.pk %}" method="POST">
 		<ul style="list-style-type: none;">
 			{% if not owner_shift.fortrade == 0 %}<li><input type="radio" name="action" value="keep" /> Houden: de shift niet langer wegruilen of -geven</li>{% endif %}
@@ -66,7 +66,7 @@
 		<p><input type="submit" value="Uitvoeren" /></p>
 		</form>
 	{% endif %}
-	
+
 	{% if availabilities %}
 		<p><span class="help_cursor" title="Opgegeven als beschikbaar voor het kwartaal; dit kan verouderd zijn">Beschikbaar opgegeven</span>:
 			{% for availability in availabilities %}
@@ -75,7 +75,7 @@
 			{% endfor %}
 		</p>
 	{% endif %}
-	
+
 	{% if user.is_staff %}
 		<h2>Beheer</h2>
 		{% for assignment in assignments %}
@@ -111,10 +111,12 @@
 			<input type="submit" value="extra shift" />
 		</form>
 	{% endif %}
-	
+
 	<br /><br />
 	<p><a href="{% url 'final_roster' roster=roster.name year=slot.year week=slot.week %}">Naar het overzicht</a></p>
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
 
 

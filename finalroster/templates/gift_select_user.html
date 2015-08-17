@@ -2,9 +2,9 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>{{ slot.start|date:"Y-m-d" }} van {{ slot.start|date:"H:i" }} tot {{ slot.end|date:"H:i" }}</h1>
-	
+
 	{% if was_empty %}
 		<p>Aan wie wil je deze lege shift toewijzen?</p>
 	{% else %}
@@ -14,7 +14,7 @@
 			<p>Aan wie wil je je shift geven?</p>
 		{% endif %}
 	{% endif %}
-	
+
 	<form action="{% if staff %}{% url 'assignment_submit_transfer' assignment=assignment.pk%}{% else %}{% url 'assignment_submit_gift' assignment=assignment.pk%}{% endif %}" method="POST">
 	{% if not users %}
 		<p>No users!</p>
@@ -28,11 +28,13 @@
 	<input type="hidden" name="staff_mode" value="{{ staff }}" />
 	<p><input type="submit" value="Uitvoeren" /></p>
 	</form>
-	
+
 	<p>De andere gebruiker moet de shift accepteren</p>
-	
+
 	<p><a href="{% url 'final_roster' roster=roster.name year=slot.year week=slot.week %}">Naar het overzicht</a></p>
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
 
 

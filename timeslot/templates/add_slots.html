@@ -4,28 +4,28 @@
 {% load dayshifts %}
 
 {% block content %}
-	
+
 	<h1>Tijdslots voor {{ roster }}</h1>
-	
+
 	<p>Dit rooster loopt van {{ roster.start }} tot {{ roster.end }} en heeft {{ roster.total_timeslots }} tijdsloten van totaal {{ roster.total_duration }} uur, te verdelen over {{ roster.total_users }} gebruikers.</p>
-	
+
 	<p>Voeg de beschikbare shifts toe.</p>
-	
+
 	<form id="add_slot_form" action="" method="POST">
-		
+
 		{{ slot_form.as_p }}
-		
+
 		{% csrf_token %}
-		
+
 		<input type="submit" value="Voeg toe" data-role="button" data-icon="check" />
-		
+
 	</form>
-	
+
 	{% for day in days %}
 		<p>
 		{{ day|daylong }}
 		{% if day|dayshiftcount:roster.pk %}
-			[<a href="{% url 'timeslots_copy_day' roster=roster.name date=day %}">copy</a> | 
+			[<a href="{% url 'timeslots_copy_day' roster=roster.name date=day %}">copy</a> |
 			<a href="{% url 'timeslots_empty_day' roster=roster.name date=day %}">purge</a>]
 		</p>
 		{{ day|dayshifts:roster.pk }}
@@ -35,11 +35,14 @@
 		</ul>
 		</p>
 		{% endif %}
-		
+
 	{% endfor %}
-	
+
 	<p><a href="{% url 'roster_users' roster=roster.name %}">Voeg gebruikers toe</a></p>
 	<p><a href="{% url 'roster_lock' roster=roster.name %}">Klaar; nodig gebruikers uit</a></p>
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
+
 

@@ -81,10 +81,12 @@ button, input[type="submit"]
 	width: 800px;
 	margin: 30px auto 0px auto;
 	padding: 2em;
+	padding-bottom: 4em; /*footer*/
 	min-height: 900px;
 	border-right: 2px solid #A6BCDD;
 	border-bottom: 2px solid #A6BCDD;
 	border-left: 2px solid #A6BCDD;
+	position: relative;
 }
 
 #topmenu
@@ -158,6 +160,16 @@ button, input[type="submit"]
 {
 	float: right;
 	margin-right: 18px;
+	text-align: right;
+}
+
+#footer
+{
+	position: absolute;
+	bottom: 0px;
+	right: 2em;
+	opacity: 0.2;
+	padding: 0.5em 0em;
 	text-align: right;
 }
 

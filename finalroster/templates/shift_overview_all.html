@@ -2,11 +2,11 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>Overzicht uren</h1>
-	
+
 	<p>Klik op een naam om het aantal uren te zien</p>
-	
+
 	<ul>
 	{% for user in users %}
 		<li>
@@ -14,9 +14,11 @@
 		</li>
 	{% endfor %}
 	</ul>
-	
+
 	<p>In totaal heeft {{ user }} deze maand <strong>{{ total }}</strong> uur gewerkt.</p>
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
 
 

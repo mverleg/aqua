@@ -2,22 +2,24 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>{{ slot.start|date:"Y-m-d" }} van {{ slot.start|date:"H:i" }} tot {{ slot.end|date:"H:i" }}</h1>
-	
+
 	<p>Op werk tijdstip wil je de shift splitsen?</p>
-	
+
 	<form action="{% url 'assignment_submit_split' assignment=assignment.pk%}" method="POST">
 		{{ timeform.as_p }}
 		{% csrf_token %}
 		<p><input type="hidden" name="splitting" value="N/A" /></p>
 		<p><input type="submit" value="Uitvoeren" /></p>
 	</form>
-	
+
 	<p>(Dit kan niet ongedaan worden gemaakt{% if slot.degeneracy > 1 %} en geldt ook voor andere mensen die deze dienst hebben{% endif %})</p>
-	
+
 	<p><a href="{% url 'final_roster' roster=roster.name year=slot.year week=slot.week %}">Naar het overzicht</a></p>
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
 
 

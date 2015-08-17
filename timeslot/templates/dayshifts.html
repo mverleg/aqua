@@ -2,7 +2,7 @@
 <ul>
     {% for slot in slots %}
         <li>
-        	{{ slot }} 
+        	{{ slot }}
         	[<a href="{% url 'delete_timeslot' slot=slot.pk %}">delete</a>]
         	{% if slot.degeneracy > 1 %}
         		({{ slot.degeneracy }} pers.)
@@ -10,4 +10,7 @@
         </li>
     {% endfor %}
 </ul>
+
+{% block footer %}{% endblock footer %}
+
 

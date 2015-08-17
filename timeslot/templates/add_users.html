@@ -2,13 +2,13 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>Werkers voor {{ roster }}</h1>
-	
+
 	<p>Dit rooster loopt van {{ roster.start }} tot {{ roster.end }} en heeft {{ roster.total_timeslots }} tijdsloten van totaal {{ roster.total_duration }} uur, te verdelen over {{ roster.total_users }} gebruikers.</p>
-	
+
 	<p>Voeg hier gebruikers in en waar nodig het aantal extra uren (meestal niet nodig; kan ook negatief)</p>
-	
+
 	<form action="{% url 'roster_users_submit' roster=roster.name %}" method="POST">
 		<ul>
 		{% for user in users %}
@@ -22,12 +22,15 @@
 		{% csrf_token %}
 		<input type="submit" value="Aanpassen" />
 	</form>
-	
+
 	<br />
-	
+
 	<p><a href="{% url 'add_timeslots' roster=roster.name %}">Voeg shifts toe</a></p>
 	<p><a href="{% url 'roster_lock' roster=roster.name %}">Klaar; nodig gebruikers uit</a></p>
 	<p><a href="/admin/">Nieuwe gebruiker</a></p>
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
+
 

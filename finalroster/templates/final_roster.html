@@ -2,9 +2,9 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>{{ roster }}{% if request.user.is_authenticated %} ({{ request.user }}){% endif %}</h1>
-	
+
 	<div data-role="content">
 	    {% if not request.user.is_authenticated %}
 	        <p>Als je zaalwacht bent kun je <a href="{% url 'login' %}">hier inloggen.</a></p>
@@ -25,7 +25,7 @@
 				<div class="schedule_{{ day.name }}">
 					<div class="schedule_date">{{ day.date }}</div>
 					{% for timeslot in day.timeslots %}
-						<div 
+						<div
 						  class="schedule_timeslot final_shift
 						  {% for assignment in timeslot.assignments %}
 						  	  {% if user.pk == assignment.user.pk %}final_shift_mine{% endif %}
@@ -47,7 +47,7 @@
 			{% endfor %}
 		</div>
 	</div>
-	
+
 	{% if prev_year or next_year %}
 	<p class="week_links">
 	{% for monday in mondays %}
@@ -59,7 +59,7 @@
 		{% if not forloop.last %} | {% endif %}
 	{% endfor %}
 	</p>
-	
+
 	<p id="pagination">
 		{% if prev_year %}
 			<a class="left_align" href="{% url 'final_roster' roster=roster.name year=prev_year week=prev_week %}"><< previous</a>
@@ -69,18 +69,20 @@
 		{% endif %}
 		<br class="clear" />
 	</p>
-	{% endif %} 
-	
+	{% endif %}
+
 	{% if user.is_authenticated %}
 		<p>
 			ical / ics:
-			<a href="{{ urls.all }}">alles</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.all|urlencode:"" }}" target="_blank">gcal</a>), 
-			<a href="{{ urls.own }}">{{ user.username }}</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.own|urlencode:"" }}" target="_blank">gcal</a>), 
-			<a href="{{ urls.trade }}">te ruil</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.trade|urlencode:"" }}" target="_blank">gcal</a>), 
+			<a href="{{ urls.all }}">alles</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.all|urlencode:"" }}" target="_blank">gcal</a>),
+			<a href="{{ urls.own }}">{{ user.username }}</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.own|urlencode:"" }}" target="_blank">gcal</a>),
+			<a href="{{ urls.trade }}">te ruil</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.trade|urlencode:"" }}" target="_blank">gcal</a>),
 			<a href="{{ urls.available }}">{{ user.username }}+ruil</a> (<a href="http://www.google.com/calendar/render?cid={{ urls.available|urlencode:"" }}" target="_blank">gcal</a>),
 		</p>
 	{% endif %}
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
 
 

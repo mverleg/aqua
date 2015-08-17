@@ -2,18 +2,18 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>Nodig uit voor {{ roster }}</h1>
-	
+
 	<p>Het rooster is vergrendeld; mensen kunnen zich nu opgeven via:</p>
-	
+
 	<p><a href="{% url 'availability' roster=roster.name %}">{{ base_url }}{% url 'availability' roster=roster.name %}</a></p>
-	
+
 	<p>Aanmeldstatus:</p>
 	<ul>
 		{% for worker in workers %}
 			<li>
-				<strong>{{ worker.user }}</strong>: 
+				<strong>{{ worker.user }}</strong>:
 				{% if worker.hours_entered %}
 					beschikbaar voor {{ worker.hours_entered }} uur
 				{% else %}
@@ -22,12 +22,12 @@
 			</li>
 		{% endfor %}
 	</ul>
-	
+
 	<p>Er zijn in totaal {{ hours_total }} uren beschikbaar ({{ hours_pp }} gemiddeld per persoon).</p>
-	
+
 	<p>Het starten van de verdeling betekent dat mensen geen beschikbaarheid meer kunnen doorgeven!</p>
-	
+
 	<p><a href="{% url 'calculate_start' roster=roster.name %}">Verdeel het rooster</a></p>
-	
+
 {% endblock content %}
 

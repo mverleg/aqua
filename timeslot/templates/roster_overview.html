@@ -2,11 +2,11 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>Roosters</h1>
-	
+
 	<a href="{% url 'start_roster' %}">Start een rooster</a>
-	
+
 	<ul>
 		{% for roster in rosters %}
 			<li>
@@ -37,5 +37,9 @@
 			</li>
 		{% endfor %}
 	</ul>
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
+
+

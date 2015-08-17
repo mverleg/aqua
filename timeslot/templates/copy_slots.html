@@ -4,19 +4,19 @@
 {% load dayshifts %}
 
 {% block content %}
-	
+
 	<h1>Kopieer shifts van {{ date }}</h1>
-	
+
 	<p>Het gaat om de volgende shifts:</p>
-	
+
 	<ul>
 	{% for slot in slots %}
 		<li>{{ slot }}</li>
 	{% endfor %}
 	</ul>
-	
+
 	<p>Naar welke dagen wil je dit kopieren?</p>
-	
+
 	<ul>
 		<li><a href="{% url 'timeslots_copy_day' roster=roster.name date=date to="nextday" %}">Kopieer naar de volgende dag</a></li>
 		<li><a href="{% url 'timeslots_copy_day' roster=roster.name date=date to="samedays" %}">Kopieer naar elke {{ weekday }}</a></li>
@@ -24,7 +24,10 @@
 		<li><a href="{% url 'timeslots_copy_day' roster=roster.name date=date to="alldays" %}">Kopieer naar elke dag</a></li>
 		<li><a href="{% url 'add_timeslots' roster=roster.name %}">Terug naar het overzicht</a></li>
 	</ul>
-	
+
 	<p>Er wordt alleen gekopieerd naar lege dagen</p>
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
+
 

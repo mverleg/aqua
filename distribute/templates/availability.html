@@ -2,11 +2,11 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
 	<h1>Beschikbaarheid voor {{ roster }}</h1>
-	
+
 	<p>Dit rooster loopt van {{ roster.start }} tot {{ roster.end }} en heeft {{ roster.total_timeslots }} tijdsloten van totaal {{ roster.total_duration }} uur.</p>
-	
+
 	<div data-role="content">
 		<div class="schedule availability_schedule">
 			<div class="schedule_times">
@@ -34,7 +34,7 @@
 			{% endfor %}
 		</div>
 	</div>
-	
+
 	{% if prev_year or next_year %}
 	<p class="week_links">
 	{% for monday in mondays %}
@@ -46,7 +46,7 @@
 		{% if not forloop.last %} | {% endif %}
 	{% endfor %}
 	</p>
-	
+
 	<p id="pagination">
 		{% if prev_year %}
 			<a class="left_align" href="{% url 'availability' roster=roster.name year=prev_year week=prev_week %}"><< previous</a>
@@ -57,17 +57,19 @@
 		<br class="clear" />
 	</p>
 	{% endif %}
-	
+
 	<form id="shift_form" action="{% url 'availability_submit' roster=roster.name %}" method="POST">
 		<input type="hidden" id="shift_input" name="shifts" value="" />
 		<input type="hidden" name="year" value="{{ year }}" />
 		<input type="hidden" name="week" value="{{ week }}" />
 		{% csrf_token %}
 	</form>
-	
+
 	<p id="shift_submit"><a href="#">Beschikbaarheid opslaan</a> voor deze week</p>
 	<p id="shift_copy"><a href="{% url 'availability_copy' roster=roster.name year=year week=week %}">Kopieer naar alle weken</a>; je kunt daarna nog aanpassingen maken</p>
-	
+
 {% endblock content %}
+
+{% block footer %}{% endblock footer %}
 
 
