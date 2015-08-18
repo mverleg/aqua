@@ -5,7 +5,6 @@ from os.path import exists, join, realpath, dirname
 from os.path import join
 
 BASE_DIR = dirname(realpath(__file__))
-print BASE_DIR
 
 SITE_BASE_URL = 'http://www.aqua.markv.nl'
 LOGIN_URL = '/login/'
