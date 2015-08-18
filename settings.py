@@ -1,8 +1,11 @@
 # Django settings for aqua project.
 
 # No final slash
-from os.path import exists
+from os.path import exists, join, realpath, dirname
 from os.path import join
+
+BASE_DIR = dirname(realpath(__file__))
+print BASE_DIR
 
 SITE_BASE_URL = 'http://www.aqua.markv.nl'
 LOGIN_URL = '/login/'
@@ -45,13 +48,11 @@ DEBUG = False
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': 'aqua.db',
+		'NAME': join(BASE_DIR, 'aqua.db'),
 	}
 }
 
 ALLOWED_HOSTS = []
-
-STATICFILES_DIRS = ('/home/mark/aqua/static', )
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'reserveringenstudielandschap@gmail.com'
@@ -111,7 +112,9 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-#STATIC_ROOT = '/web/aqua/static/'
+STATIC_ROOT = join(BASE_DIR, 'static/')
+
+#STATICFILES_DIRS = [join(BASE_DIR, 'aqua', 'static')]
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -121,7 +124,7 @@ STATIC_URL = '/static/'
 # various locations.
 STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.FileSystemFinder',
-	#'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
