@@ -1,0 +1,3 @@
+[submodule "source/django_tex_response"]
+	path = source/django_tex_response
+	url = bitbucket:mverleg/django_tex_response
