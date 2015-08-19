@@ -2,9 +2,15 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
+	{% if SITEWIDE_NOTIFICATION %}
+		<div style="background-color: #ffafbc; padding: 1em 0;">
+			<h1>{{ SITEWIDE_NOTIFICATION }}</h1>
+		</div>
+	{% endif %}
+
 	<h1>Roostersite</h1>
-	
+
 	{% if actives %}
 		<h2>Huidige roosters</h2>
 		<ul>
@@ -15,7 +21,7 @@
 			{% endfor %}
 		</ul>
 	{% endif %}
-	
+
 	<h2>Beschikbaarheid doorgeven</h2>
 	{% if availabilities %}
 		<p>Je wordt gevraagd voor de volgende roosters je beschikbaarheid door te geven:</p>
@@ -29,7 +35,7 @@
 	{% else %}
 		<p>Als er roosters zijn waarvoor je gevraagd wordt beschikbaarheid door te geven komen ze hier</p>
 	{% endif %}
-	
+
 	<h2>Alle roosters</h2>
 	{% if final %}
 		<ul>
@@ -42,6 +48,6 @@
 	{% else %}
 		<p>Er zijn momenteel geen definitieve roosters</p>
 	{% endif %}
-	
+
 {% endblock content %}
 

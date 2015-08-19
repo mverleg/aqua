@@ -63,6 +63,7 @@ MANAGERS = ADMINS
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 	'django.core.context_processors.request',
+	'aqua.context.context_settings.context_settings',
 )
 
 # Local time zone for this installation. Choices can be found here:
@@ -185,7 +186,8 @@ try:
 			fh.write('DATABASES = {\'default\': {\n\t\'ENGINE\': \'django.db.backends.sqlite3\',\n\t\'NAME\': \'aqua.db\',\n}}\n\n')
 			fh.write('ALLOWED_HOSTS = [\'localhost\', \'http://.localhost.markv.nl\',]\n\n')
 			fh.write('SECRET_KEY = "{0:s}"\n\n'.format(''.join(SystemRandom().choice(string.letters + string.digits + '#$%&()*+,-./:;?@[]^_`{|}~') for _ in range(50))))
-			fh.write('TEMPLATE_DEBUG = DEBUG = False\n\n\n')
+			fh.write('TEMPLATE_DEBUG = DEBUG = False\n\n')
+			fh.write('# use this to put notifications on the main page\nSITEWIDE_NOTIFICATION = \'\'\n\n\n')
 except Exception:
 	print 'could not create local.py settings file'
 

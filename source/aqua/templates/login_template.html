@@ -2,37 +2,43 @@
 {% extends 'work_base.html' %}
 
 {% block content %}
-	
+
+	{% if SITEWIDE_NOTIFICATION %}
+		<div style="background-color: #ffafbc; padding: 1em 0; font-size: 150%;">
+			{{ SITEWIDE_NOTIFICATION }}
+		</div>
+	{% endif %}
+
 	<h1>Login</h1>
-	
+
 	{% if request.user.is_authenticated %}
 		<p>
 			Je bent al ingelogd als {{ request.user }}. <a href="{% url 'logout' %}?next={{ request.path }}">Log uit</a>.
 		</p>
 	{% else %}
 		<p>Zaalwachten kunnen hier inloggen</p>
-	
+
 		<form action="{% url 'login' %}" method="POST">
-		
+
 			<p>
 				<label>Gebruiker:</label>
 				<input type="text" name="username" />
 			</p>
-		
+
 			<p>
 				<label>Wachtwoord:</label>
 				<input type="password" name="password" />
 			</p>
-		
+
 			{% csrf_token %}
 			<input type="hidden" name="{{ next }}" />
 
 			<p>
 				<input type="submit" value="Login" data-role="button" data-icon="check" />
 			</p>
-		
+
 		</form>
 	{% endif %}
-	
+
 {% endblock content %}
 
