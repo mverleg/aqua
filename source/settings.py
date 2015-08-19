@@ -127,9 +127,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'abc#2uxr=+c*u%pt(*zdckg1s9=uk1ab2%c1e*)z9u7b06*j0r'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
 	'django.template.loaders.filesystem.Loader',
@@ -189,9 +186,47 @@ LOGGING = {
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-#if not exists('local.py'):
-#	with open('local.py', 'w+') as fh:
-#		fh.write('"""\nLocal (machine specific) settings that overwrite the general ones.\n"""\n\n')
+# http://ianalexandr.com/blog/getting-started-with-django-logging-in-5-minutes.html
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': join(BASE_DIR, '..', 'logs', 'error.django.log'),
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['file'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
+        'MYAPP': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+    }
+}
+
+try:
+	if not exists(join(BASE_DIR, 'local.py')):
+		with open(join(BASE_DIR, 'local.py'), 'w+') as fh:
+			fh.write('"""\nLocal (machine specific) settings that overwrite the general ones.\n"""\n\n')
+except Exception:
+	print 'could not create local.py settings file'
 from local import *
+
 
 

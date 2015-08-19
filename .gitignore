@@ -5,6 +5,6 @@
 .aqua
 /env/
 /static/
-/local.py
+/source/local.py
 /htdocs
 /logs
