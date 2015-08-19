@@ -8,3 +8,4 @@
 /source/local.py
 /htdocs
 /logs
+*.log

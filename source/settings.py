@@ -3,6 +3,8 @@
 # No final slash
 from os.path import exists, join, realpath, dirname
 from os.path import join
+from random import SystemRandom
+import string
 
 BASE_DIR = dirname(realpath(__file__))
 
@@ -43,16 +45,6 @@ INSTALLED_APPS = (
 AUTH_USER_MODEL = 'aqua.AquaUser'
 #AUTH_USER_MODEL = 'auth.User'
 
-DEBUG = False
-DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': join(BASE_DIR, 'aqua.db'),
-	}
-}
-
-ALLOWED_HOSTS = []
-
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'reserveringenstudielandschap@gmail.com'
 EMAIL_HOST_PASSWORD = 'zaalwachten'
@@ -61,8 +53,6 @@ EMAIL_USE_TLS = True
 
 PREPEND_WWW = False
 APPEND_SLASH = True
-
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
 	# ('Your Name', 'your_email@example.com'),
@@ -155,77 +145,50 @@ TEMPLATE_DIRS = (
 	# Don't forget to use absolute paths, not relative paths.
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOGGING = {
-	'version': 1,
-	'disable_existing_loggers': False,
-	'filters': {
-		'require_debug_false': {
-			'()': 'django.utils.log.RequireDebugFalse'
-		}
-	},
-	'handlers': {
-		'mail_admins': {
-			'level': 'ERROR',
-			'filters': ['require_debug_false'],
-			'class': 'django.utils.log.AdminEmailHandler'
-		}
-	},
-	'loggers': {
-		'django.request': {
-			'handlers': ['mail_admins'],
-			'level': 'ERROR',
-			'propagate': True,
-		},
-	}
-}
-
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # http://ianalexandr.com/blog/getting-started-with-django-logging-in-5-minutes.html
+LOG_FILE = join(BASE_DIR, '..', 'logs', 'error.django.log') if exists(join(BASE_DIR, '..', 'logs')) else 'error.log'
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%d/%b/%Y %H:%M:%S"
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': join(BASE_DIR, '..', 'logs', 'error.django.log'),
-            'formatter': 'verbose'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers':['file'],
-            'propagate': True,
-            'level':'DEBUG',
-        },
-        'MYAPP': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-        },
-    }
+	'version': 1,
+	'disable_existing_loggers': False,
+	'formatters': {
+		'verbose': {
+			'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+			'datefmt' : "%d/%b/%Y %H:%M:%S"
+		},
+		'simple': {
+			'format': '%(levelname)s %(message)s'
+		},
+	},
+	'handlers': {
+		'file': {
+			'level': 'DEBUG',
+			'class': 'logging.FileHandler',
+			'filename': LOG_FILE,
+			'formatter': 'verbose'
+		},
+	},
+	'loggers': {
+		'django': {
+			'handlers':['file'],
+			'propagate': True,
+			'level':'INFO',
+		},
+	}
 }
 
 try:
 	if not exists(join(BASE_DIR, 'local.py')):
 		with open(join(BASE_DIR, 'local.py'), 'w+') as fh:
 			fh.write('"""\nLocal (machine specific) settings that overwrite the general ones.\n"""\n\n')
+			fh.write('DATABASES = {\'default\': {\n\t\'ENGINE\': \'django.db.backends.sqlite3\',\n\t\'NAME\': \'aqua.db\',\n}}\n\n')
+			fh.write('ALLOWED_HOSTS = [\'localhost\', \'http://.localhost.markv.nl\',]\n\n')
+			fh.write('SECRET_KEY = "{0:s}"\n\n'.format(''.join(SystemRandom().choice(string.letters + string.digits + '#$%&()*+,-./:;?@[]^_`{|}~') for _ in range(50))))
+			fh.write('TEMPLATE_DEBUG = DEBUG = False\n\n\n')
 except Exception:
 	print 'could not create local.py settings file'
+
 from local import *
 
 
