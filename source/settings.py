@@ -189,9 +189,9 @@ LOGGING = {
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-if not exists('local.py'):
-	with open('local.py', 'w+') as fh:
-		fh.write('"""\nLocal (machine specific) settings that overwrite the general ones.\n"""\n\n')
+#if not exists('local.py'):
+#	with open('local.py', 'w+') as fh:
+#		fh.write('"""\nLocal (machine specific) settings that overwrite the general ones.\n"""\n\n')
 from local import *
 
 
