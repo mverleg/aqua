@@ -183,6 +183,7 @@ try:
 	if not exists(join(BASE_DIR, 'local.py')):
 		with open(join(BASE_DIR, 'local.py'), 'w+') as fh:
 			fh.write('"""\nLocal (machine specific) settings that overwrite the general ones.\n"""\n\n')
+			fh.write('BASE_DIR = dirname(realpath(__file__))')
 			fh.write('DATABASES = {\'default\': {\n\t\'ENGINE\': \'django.db.backends.sqlite3\',\n\t\'NAME\': \'aqua.db\',\n}}\n\n')
 			fh.write('ALLOWED_HOSTS = [\'localhost\', \'http://.localhost.markv.nl\',]\n\n')
 			fh.write('SECRET_KEY = "{0:s}"\n\n'.format(''.join(SystemRandom().choice(string.letters + string.digits + '#$%&()*+,-./:;?@[]^_`{|}~') for _ in range(50))))
