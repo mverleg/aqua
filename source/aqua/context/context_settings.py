@@ -7,11 +7,11 @@ def context_settings(request):
 	notification = ''
 	try:
 		with open(settings.NOTIFICATION_PATH, 'r') as fh:
-			notification = mark_safe(fh.read())
+			notification = mark_safe(fh.read().strip())
 	except Exception:
 		try:
 			with open(settings.NOTIFICATION_PATH, 'w+') as fh:
-				fh.write('<!-- notification here -->\n')
+				fh.write('')
 		except Exception:
 			print 'no notification file and not writable ({0:s})'.format(settings.NOTIFICATION_PATH)
 	return {

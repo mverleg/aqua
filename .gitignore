@@ -10,3 +10,4 @@ static/
 /logs
 /writable
 *.log
+/notification.html
