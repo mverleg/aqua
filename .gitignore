@@ -4,7 +4,7 @@
 *.db
 .aqua
 /env/
-/static/
+static/
 /source/local.py
 /htdocs
 /logs

@@ -6,10 +6,14 @@ from django.utils.safestring import mark_safe
 def context_settings(request):
 	notification = ''
 	try:
-		with open(settings.NOTIFICATION_PATH) as fh:
+		with open(settings.NOTIFICATION_PATH, 'r') as fh:
 			notification = mark_safe(fh.read())
 	except Exception:
-		pass
+		try:
+			with open(settings.NOTIFICATION_PATH, 'w+') as fh:
+				fh.write('<!-- notification here -->\n')
+		except Exception:
+			print 'no notification file and not writable ({0:s})'.format(settings.NOTIFICATION_PATH)
 	return {
 		'SITEWIDE_NOTIFICATION': notification,
 	}
