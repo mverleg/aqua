@@ -1,4 +1,4 @@
-
+from django.contrib.auth import get_user_model
 from django_cal.views import Events  # @UnresolvedImport
 from distribute.models import Assignment
 from django.contrib.auth.models import User
@@ -85,7 +85,7 @@ class OwnCalendar(AllCalendar):
 		try:
 			user = int(user)
 		except ValueError:
-			return get_object_or_404(User, username = user)
+			return get_object_or_404(get_user_model(), username = user)
 		return get_object_or_404(User, pk = int(user))
 
 	def items(self, obj):

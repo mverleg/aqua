@@ -92,8 +92,8 @@ urlpatterns = patterns('',
 	url(r'^room_reservations/(?P<year>[0-9]+)_(?P<month>[0-9]+)_(?P<day>[0-9]+).html$', zaal_briefjes_html, name = 'room_reservations_html'),
 	url(r'^ical/all.ics$', AllCalendar(), name = 'ical_all'),
 	url(r'^ical/trade.ics$', TradeCalendar(), name = 'ical_trade'),
-	url(r'^ical/user(?P<user>[0-9]+).ics$', OwnCalendar()), # LEGACY
-	url(r'^ical2/user(?P<user>[0-9]+)_trace.ics$', AvailableCalendar()), # LEGACY
+	#url(r'^ical/user(?P<user>[0-9]+).ics$', OwnCalendar()), # LEGACY
+	#url(r'^ical2/user(?P<user>[0-9]+)_trace.ics$', AvailableCalendar()), # LEGACY
 	url(r'^ical/trade/(?P<user>[^/]+).ics$', AvailableCalendar(), name = 'ical_available'),
 	url(r'^ical/user/(?P<user>[^/]+).ics$', OwnCalendar(), name = 'ical_own'),
 	url(r'^ical/all.html$', ical_html_all, name = 'ical_html_all'),
