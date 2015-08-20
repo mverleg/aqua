@@ -14,6 +14,7 @@ def context_settings(request):
 				fh.write('')
 		except Exception:
 			print 'no notification file and not writable ({0:s})'.format(settings.NOTIFICATION_PATH)
+	print notification
 	return {
 		'SITEWIDE_NOTIFICATION': notification,
 	}
