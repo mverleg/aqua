@@ -8,7 +8,7 @@ import string
 
 BASE_DIR = dirname(realpath(__file__))
 
-SITE_BASE_URL = 'http://www.aqua.markv.nl'
+SITE_BASE_URL = 'http://aqua.science.ru.nl/'
 LOGIN_URL = '/login/'
 
 # Additional locations of static files
