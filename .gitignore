@@ -4,8 +4,10 @@
 *.db
 .aqua
 /env/
-/static/
+static/
 /source/local.py
 /htdocs
 /logs
+/writable
 *.log
+/source/notification.html

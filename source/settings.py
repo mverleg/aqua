@@ -102,7 +102,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = join(BASE_DIR, 'static/')
+STATIC_ROOT = join(BASE_DIR, '..', 'static/')
 
 #STATICFILES_DIRS = [join(BASE_DIR, 'aqua', 'static')]
 
@@ -183,11 +183,13 @@ try:
 	if not exists(join(BASE_DIR, 'local.py')):
 		with open(join(BASE_DIR, 'local.py'), 'w+') as fh:
 			fh.write('"""\nLocal (machine specific) settings that overwrite the general ones.\n"""\n\n')
-			fh.write('DATABASES = {\'default\': {\n\t\'ENGINE\': \'django.db.backends.sqlite3\',\n\t\'NAME\': \'aqua.db\',\n}}\n\n')
-			fh.write('ALLOWED_HOSTS = [\'localhost\', \'http://.localhost.markv.nl\',]\n\n')
+			fh.write('from os.path import join, realpath, dirname\n\n\n')
+			fh.write('BASE_DIR = dirname(realpath(__file__))\n\n')
+			fh.write('DATABASES = {\'default\': {\n\t\'ENGINE\': \'django.db.backends.sqlite3\',\n\t\'NAME\': join(BASE_DIR, \'aqua.db\'),\n}}\n\n')
+			fh.write('ALLOWED_HOSTS = [\'localhost\', \'.localhost.markv.nl\',]\n\n')
 			fh.write('SECRET_KEY = "{0:s}"\n\n'.format(''.join(SystemRandom().choice(string.letters + string.digits + '#$%&()*+,-./:;?@[]^_`{|}~') for _ in range(50))))
-			fh.write('TEMPLATE_DEBUG = DEBUG = False\n\n')
-			fh.write('# use this to put notifications on the main page\nSITEWIDE_NOTIFICATION = \'\'\n\n\n')
+			fh.write('NOTIFICATION_PATH = join(BASE_DIR, \'notification.html\')\n\n')
+			fh.write('TEMPLATE_DEBUG = DEBUG = False\n\n\n')
 except Exception:
 	print 'could not create local.py settings file'
 
