@@ -17,6 +17,8 @@ DATABASES = {
 if exists(DBPATH):
 	chmod(DBPATH, 0770)
 
+DEBUG = True
+
 print '\n***USING TEST SETTINGS***\n'
 
 
