@@ -22,7 +22,6 @@ from string import ascii_letters, digits
 from sys import stderr
 from pytz import timezone
 from django.http import HttpResponse
-from django.utils.encoding import smart_str
 
 
 DAY_NAMES = ('maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag')
@@ -55,7 +54,7 @@ def overview_context(user, year, month):
 		'user': user,
 		'hourlist': hourlist,
 		'total': '%d:%.2d' % (grand_total_hours // 1, 15 * round((grand_total_hours % 1) / .25)),
-	    'totalnr': grand_total_hours,
+		'totalnr': grand_total_hours,
 		'month_name': MONTH_NAMES[month],
 		'month': month,
 		'prev_month': month - 1 if month > 1 else 12,
