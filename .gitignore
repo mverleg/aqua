@@ -11,3 +11,5 @@ static/
 /writable
 *.log
 /source/notification.html
+.idea/
+
