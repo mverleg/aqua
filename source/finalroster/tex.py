@@ -205,7 +205,6 @@ def zaal_briefjes(request, year = None, month = None, day = None, offset = +1):
 	return response
 
 
-
 def zaal_briefjes_html(request, year = None, month = None, day = None, offset = +1):
 	if year is None or month is None or day is None:
 		date = datetime.now() + timedelta(days = offset)
