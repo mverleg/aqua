@@ -16,6 +16,11 @@ python manage.py
 - collectstatic: static files in /static/ zetten (bij serververhuizing)
 - export_backup: zet een backup in /backups/
 
+Testing
+-------------------------------
+
+    python source/manage.py runserver --settings test_settings
+
 Use / contributing
 -------------------------------
 

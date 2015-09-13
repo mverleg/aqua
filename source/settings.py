@@ -8,16 +8,17 @@ import string
 
 BASE_DIR = dirname(realpath(__file__))
 
-SITE_BASE_URL = 'http://www.aqua.markv.nl'
+SITE_BASE_URL = 'http://aqua.science.ru.nl'
 LOGIN_URL = '/login/'
 
 # Additional locations of static files
+# Not yet in use.
 #STATICFILES_DIRS = (
 #    '/live/aqua/static',
 #)
 
 # this url is bound to a specific account
-BIG_ROOM_URL = 'http://persoonlijkrooster.ru.nl/ical?54d15a18&eu=dTg3NzE2MA==&t=82bc7bd6-4049-479c-8659-ae85dda5be02&zoneFeed=true'
+BIG_ROOM_URL = 'http://persoonlijkrooster.ru.nl/ical?55e853e8&deduplicate=false&eu=dTU2NzE2Mg==&t=efc169f8-b917-409a-a0c4-d24ee199999a&zoneFeed=true'
 
 INSTALLED_APPS = (
 	'django.contrib.auth',
@@ -47,7 +48,7 @@ AUTH_USER_MODEL = 'aqua.AquaUser'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'reserveringenstudielandschap@gmail.com'
-EMAIL_HOST_PASSWORD = 'zaalwachten'
+EMAIL_HOST_PASSWORD = 'awesomezaalwachten'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
