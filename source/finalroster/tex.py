@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
 from icalendar import Calendar
 from aqua.functions.notification import notification
-# from tex_response import render_pdf
+from tex_response import render_pdf
 from settings import BIG_ROOM_URL
 from timeslot.models import TimeSlot, DATEFORMAT
 from distribute.models import Assignment
@@ -136,7 +136,11 @@ def get_bookings(year, month, day):
 			ref_sdate = datetime(year = year, month = month, day = day, hour = 0, tzinfo = timezone('UTC'))
 			ref_edate = datetime(year = year, month = month, day = day, hour = 23, minute = 59, second = 59, tzinfo = timezone('UTC'))
 			sdate = event.get('dtstart').dt
-			edate = event.get('dtend').dt
+			try:
+				edate = event.get('dtend').dt
+			except:
+				edate = sdate
+				pass
 			try:
 				if edate > ref_sdate and sdate < ref_edate:
 					bookings[-1]['items'].append({
@@ -182,27 +186,12 @@ def zaal_briefjes(request, year = None, month = None, day = None, offset = +1):
 		}))
 	year, month, day = int(year), int(month), int(day)
 	bookings = get_bookings(year, month, day)
-	#return render_pdf(request, 'zaalreserveringen.tex', {
-	#	'bookings': bookings,
-	#}, filename = '%.4d_%.2d_%.2d.pdf' % (year, month, day))
-	filename = '%.4d_%.2d_%.2d.pdf' % (year, month, day)
-	filepath = dirname(realpath(__file__)) + "/../pdf_reserveringen_chmod/" + filename
-	tmp_folder = mkdtemp()
-	os.chdir(tmp_folder)
-	texfile, texfilename = mkstemp(dir=tmp_folder)
-	os.write(texfile, render_to_string('zaalreserveringen.tex', {'bookings': bookings}))
-	os.close(texfile)
-	call(['pdflatex', texfilename])
-	os.rename(texfilename + '.pdf', filepath)
-	os.remove(texfilename)
-	os.remove(texfilename + '.aux')
-	os.remove(texfilename + '.log')
-	os.rmdir(tmp_folder)
-	with open(filepath, 'r') as pdfhandle:
-		response = HttpResponse(pdfhandle.read(), content_type='application/pdf')
-		response['Content-Disposition'] = 'attachment; filename="' + filename + '"'
-	pdfhandle.closed
-	return response
+
+	print "Jo, ik ga de PDF maken!"
+
+	return render_pdf(request, 'zaalreserveringen.tex', {
+		'bookings': bookings,
+	}, filename = '%.4d_%.2d_%.2d.pdf' % (year, month, day))
 
 
 def zaal_briefjes_html(request, year = None, month = None, day = None, offset = +1):
