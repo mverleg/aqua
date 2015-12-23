@@ -66,7 +66,7 @@
 	</form>
 
 	<p id="shift_submit"><a href="#">Beschikbaarheid opslaan</a> voor deze week</p>
-	<p id="shift_copy"><a href="{% url 'availability_copy' roster=roster.name year=year week=week %}">Kopieer naar alle weken</a>; je kunt daarna nog aanpassingen maken</p>
+	<p id="shift_copy"><a href="{% url 'availability_copy' roster=roster.name year=year week=week %}">Kopieer naar alle weken</a>; je kunt daarna nog aanpassingen maken. Zondagen worden niet gekopieerd.</p>
 
 {% endblock content %}
 

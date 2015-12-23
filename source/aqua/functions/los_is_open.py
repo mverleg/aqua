@@ -10,7 +10,7 @@ def los_is_open(day):
     if day.weekday() == 5:
         if now >= time(8, 30) and now <= time(17, 30):
             return True
-    if day.weekday() == 6:
+    if day.weekday() == (6 or 7):
         if now >= time(9, 30) and now <= time(16, 00):
             return True
     return False

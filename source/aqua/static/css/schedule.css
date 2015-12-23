@@ -21,12 +21,18 @@
 	width: 15%;
 }
 
-.schedule_monday { left: 10%; }
-.schedule_tuesday { left: 25%; }
-.schedule_wednesday { left: 40%; }
-.schedule_thursday { left: 55%; }
-.schedule_friday { left: 70%; }
-.schedule_saturday { left: 85%; }
+.schedule_times
+{
+	display:none;
+}
+
+.schedule_monday { left: 0; }
+.schedule_tuesday { left: 14%; }
+.schedule_wednesday { left: 28%; }
+.schedule_thursday { left: 42%; }
+.schedule_friday { left: 56%; }
+.schedule_saturday { left: 70%; }
+.schedule_sunday { left: 84%; }
 
 .schedule_week, .schedule_date
 {

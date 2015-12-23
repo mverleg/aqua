@@ -131,6 +131,7 @@ def final_roster(request, roster, year = None, week = None):
 		'thursday': {'date': (monday + 3 * day).strftime('%a %d %b'), 'name': 'thursday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 3 * day, end__lt = monday + 4 * day)},
 		'friday': {'date': (monday + 4 * day).strftime('%a %d %b'), 'name': 'friday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 4 * day, end__lt = monday + 5 * day)},
 		'saturday': {'date': (monday + 5 * day).strftime('%a %d %b'), 'name': 'saturday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 5 * day, end__lt = monday + 6 * day)},
+		'sunday': {'date': (monday + 6 * day).strftime('%a %d %b'), 'name': 'sunday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 6 * day, end__lt = monday + 7 *day)},
 	}
 
 	(next_year, next_week) = (monday + 7 * day).isocalendar()[0:2]
@@ -219,6 +220,7 @@ def all_rosters_txt(request, year = None, week = None):
 		{'date': (monday + 3 * day).strftime('%a %d %b'), 'name': 'thursday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday + 3 * day, end__lt = monday + 4 * day)},
 		{'date': (monday + 4 * day).strftime('%a %d %b'), 'name': 'friday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday + 4 * day, end__lt = monday + 5 * day)},
 		{'date': (monday + 5 * day).strftime('%a %d %b'), 'name': 'saturday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__gt = monday + 5 * day, end__lt = monday + 6 * day)},
+		{'date': (monday + 6 * day).strftime('%a %d %b'), 'name': 'sunday', 'timeslots': TimeSlot.objects.filter(roster__in = rosters, start__qt = monday + 6 * day, end__lt = monday + 7 * day)},
 	]
 
 	(next_year, next_week) = (monday + 7 * day).isocalendar()[0:2]
@@ -252,6 +254,8 @@ def all_rosters_txt(request, year = None, week = None):
 	while day_k <= end_monday:
 		mondays.append({'name': day_k.strftime('%d %b'), 'is_this_week': monday == day_k, 'year': day_k.isocalendar()[0], 'week': day_k.isocalendar()[1]})
 		day_k += oneweek
+
+	print schedule
 
 	return render(request, 'all_rosters_txt.html', {
 		'user': user,

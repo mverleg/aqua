@@ -118,6 +118,7 @@ def availability(request, roster, year = None, week = None):
         'thursday': {'date': (monday + 3 * day).strftime('%a %d %b'), 'name': 'thursday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 3 * day, end__lt = monday + 4 * day)},
         'friday': {'date': (monday + 4 * day).strftime('%a %d %b'), 'name': 'friday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 4 * day, end__lt = monday + 5 * day)},
         'saturday': {'date': (monday + 5 * day).strftime('%a %d %b'), 'name': 'saturday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 5 * day, end__lt = monday + 6 * day)},
+        'sunday': {'date': (monday + 6 * day).strftime('%a %d %b'), 'name': 'sunday', 'timeslots': TimeSlot.objects.filter(roster = roster, start__gt = monday + 6 * day, end__lt = monday + 7 * day)},
     }
     
     for schedule_day in schedule.values():
