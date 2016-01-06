@@ -168,11 +168,12 @@ def get_bookings(year, month, day):
 				except KeyError:
 					stderr.write('unrecognized room %s in ical feed %s\n' % (loc_name, BIG_ROOM_URL))
 					continue
-				bookings[loc]['items'].append({
-					'start': (event.get('dtstart').dt).strftime('%H:%M'),
-					'end': (event.get('dtend').dt).strftime('%H:%M'),
-					'text': ''.join(letter for letter in unicode(event.get('description').split('@')[0]).strip() if letter in ascii_letters + digits + ' -:'),
-				})
+				if event.get('description') is not None:
+					bookings[loc]['items'].append({
+						'start': (event.get('dtstart').dt).strftime('%H:%M'),
+						'end': (event.get('dtend').dt).strftime('%H:%M'),
+						'text': ''.join(letter for letter in unicode(event.get('description').split('@')[0]).strip() if letter in ascii_letters + digits + ' -:'),
+					})
 	return [booking for booking in bookings if booking['items']]
 
 
