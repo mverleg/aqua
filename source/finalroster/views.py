@@ -87,7 +87,6 @@ def month_overview_CD(request, year = None, month = None):
 				looncomponent = form.cleaned_data['type_werk'] if dayinfo['percentage'] is 100 else "Loon onregelmatige uren " + str(dayinfo['percentage']) + "%"
 				fh.writerow([
 					user.get_full_name(),
-					#form.cleaned_data['relatie'],
 					dayinfo['date'],
 					dayinfo['hournr'],
 					looncomponent,
