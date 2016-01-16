@@ -11,7 +11,10 @@
 	{% for day in hourlist.values %}
 		{% if day.hours %}
 			<li>
-				{{ day.weekday }} {{ day.day }}: <strong>{{ day.hours }}</strong> met ({{ day.percentage }}%)
+				{{ day.weekday }} {{ day.day }}: <strong>{{ day.hours }}</strong>
+				{% if day.percentage != "100" %}
+					 met {{ day.percentage }}% uitbetaling
+				{% endif %}
 			</li>
 		{% endif %}
 	{% endfor %}
