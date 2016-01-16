@@ -52,10 +52,10 @@ def overview_context(user, year, month):
 				'day': refday.strftime('%d'),
 				'weekday': DAY_NAMES[refday.weekday()],
 				'hours': rounded_hours,
-				'hournr': total_hours,
+				'hournr': percentage_hours,
 				'percentage': percentage,
 			}
-			grand_total_hours += total_hours
+			grand_total_hours += percentage_hours
 		refday += day
 	return {
 		'user': user,
