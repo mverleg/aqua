@@ -10,7 +10,7 @@ class RosterAdmin(ModelAdmin):
 
 
 class TimeslotAdmin(ModelAdmin):
-	list_display = ('__unicode__', 'roster', 'start', 'end', 'degeneracy',)
+	list_display = ('__unicode__', 'roster', 'start', 'end', 'degeneracy', 'pay_percentage',)
 	list_filter = ('roster', 'degeneracy', 'start',)
 
 

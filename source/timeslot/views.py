@@ -82,7 +82,7 @@ def add_timeslot(request, roster):
                     #TODO: this doesn't work somehow...
                 })
             else:
-                return notification(request, 'Dit tijdslot duurt van %s tot %s. De ingevoerde dag, %s, valt hierf buiten.' % (roster.start.strftime(DATETIMEFORMAT), roster.end.strftime(DATETIMEFORMAT), slot_form.cleaned_data['date'].strftime(DATETIMEFORMAT)))
+                return notification(request, 'Dit tijdslot duurt van %s tot %s. De ingevoerde dag, %s, valt hier buiten.' % (roster.start.strftime(DATETIMEFORMAT), roster.end.strftime(DATETIMEFORMAT), slot_form.cleaned_data['date'].strftime(DATETIMEFORMAT)))
     else:
         slot_form = TimeSlotForm(initial = {'roster': roster})
     

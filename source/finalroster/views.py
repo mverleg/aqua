@@ -84,12 +84,13 @@ def month_overview_CD(request, year = None, month = None):
 		totals[user.get_full_name()] = context['totalnr']
 		for dayinfo in context['hourlist'].values():
 			if dayinfo['hournr'] > 0:
+				looncomponent = form.cleaned_data['type_werk'] if dayinfo['percentage'] is 100 else "Loon onregelmatige uren " + dayinfo['percentage'] + "%"
 				fh.writerow([
 					user.get_full_name(),
 					#form.cleaned_data['relatie'],
 					dayinfo['date'],
 					dayinfo['hournr'],
-					form.cleaned_data['type_werk'],
+					looncomponent,
 					form.cleaned_data['kostenplaatsnummer'],
 				])
 	return response

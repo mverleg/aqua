@@ -65,6 +65,7 @@ class TimeSlot(models.Model):
     start = models.DateTimeField(db_index = True)
     end = models.DateTimeField(db_index = True)
     degeneracy = models.PositiveIntegerField(default = 1)
+    pay_percentage = models.PositiveIntegerField(default = 100)
     #user = models.ForeignKey(User, blank = True, null = True)
 
     class Meta:
