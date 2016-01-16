@@ -45,18 +45,18 @@ def overview_context(user, year, month):
 				else:
 					total_hours[str(assignment.timeslot.pay_percentage)] = assignment.timeslot.duration.seconds / 3600.
 
-		for percentage, percentage_hours in total_hours.iteritems:
-			if percentage is not None and percentage_hours is not None:
-				rounded_hours = '%d:%.2d' % (percentage_hours // 1, 15 * round((percentage_hours % 1) / .25)) if percentage_hours else None
+		for percentage in total_hours:
+			if percentage is not None and total_hours[percentage] is not None:
+				rounded_hours = '%d:%.2d' % (total_hours[percentage] // 1, 15 * round((total_hours[percentage] % 1) / .25)) if total_hours[percentage] else None
 				hourlist[refday.day] = {
 					'date': refday.strftime(DATEFORMAT),
 					'day': refday.strftime('%d'),
 					'weekday': DAY_NAMES[refday.weekday()],
 					'hours': rounded_hours,
-					'hournr': percentage_hours,
+					'hournr': total_hours[percentage],
 					'percentage': percentage,
 				}
-				grand_total_hours += percentage_hours
+				grand_total_hours += total_hours[percentage]
 		refday += day
 	return {
 		'user': user,
