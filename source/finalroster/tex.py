@@ -34,7 +34,7 @@ def overview_context(user, year, month):
 	refday = datetime(year = year, month = month, day = 1)
 	hourlist = {}
 	grand_total_hours = 0.
-	total_hours = [0.]*1000
+	total_hours = [None]*1000
 	while refday.month == month:
 		day_shifts = TimeSlot.objects.filter(start__gt = refday, end__lt = refday + day)
 		for slot in day_shifts:
