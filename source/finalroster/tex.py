@@ -34,7 +34,7 @@ def overview_context(user, year, month):
 	refday = datetime(year = year, month = month, day = 1)
 	hourlist = {}
 	grand_total_hours = 0.
-	total_hours = []
+	total_hours = [0.]*1000
 	while refday.month == month:
 		day_shifts = TimeSlot.objects.filter(start__gt = refday, end__lt = refday + day)
 		for slot in day_shifts:
@@ -46,16 +46,17 @@ def overview_context(user, year, month):
 					total_hours[assignment.timeslot.pay_percentage] = assignment.timeslot.duration.seconds / 3600.
 
 		for percentage, percentage_hours in enumerate(total_hours):
-			rounded_hours = '%d:%.2d' % (percentage_hours // 1, 15 * round((percentage_hours % 1) / .25)) if percentage_hours else None
-			hourlist[refday.day] = {
-				'date': refday.strftime(DATEFORMAT),
-				'day': refday.strftime('%d'),
-				'weekday': DAY_NAMES[refday.weekday()],
-				'hours': rounded_hours,
-				'hournr': percentage_hours,
-				'percentage': percentage,
-			}
-			grand_total_hours += percentage_hours
+			if percentage is not None:
+				rounded_hours = '%d:%.2d' % (percentage_hours // 1, 15 * round((percentage_hours % 1) / .25)) if percentage_hours else None
+				hourlist[refday.day] = {
+					'date': refday.strftime(DATEFORMAT),
+					'day': refday.strftime('%d'),
+					'weekday': DAY_NAMES[refday.weekday()],
+					'hours': rounded_hours,
+					'hournr': percentage_hours,
+					'percentage': percentage,
+				}
+				grand_total_hours += percentage_hours
 		refday += day
 	return {
 		'user': user,
