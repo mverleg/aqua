@@ -57,6 +57,7 @@ def overview_context(user, year, month):
 					'percentage': percentage,
 				}
 				grand_total_hours += total_hours[percentage]
+		total_hours = {} # clear totals for this day
 		refday += day
 	return {
 		'user': user,
