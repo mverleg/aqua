@@ -34,18 +34,18 @@ def overview_context(user, year, month):
 	refday = datetime(year = year, month = month, day = 1)
 	hourlist = {}
 	grand_total_hours = 0.
-	total_hours = [None]*1000
+	total_hours = {}
 	while refday.month == month:
 		day_shifts = TimeSlot.objects.filter(start__gt = refday, end__lt = refday + day)
 		for slot in day_shifts:
 			assignments = Assignment.objects.filter(user = user, timeslot = slot)
 			for assignment in assignments:
-				if assignment.timeslot.pay_percentage in total_hours:
-					total_hours[assignment.timeslot.pay_percentage] += assignment.timeslot.duration.seconds / 3600.
+				if "assignment.timeslot.pay_percentage" in total_hours:
+					total_hours[str(assignment.timeslot.pay_percentage)] += assignment.timeslot.duration.seconds / 3600.
 				else:
-					total_hours[assignment.timeslot.pay_percentage] = assignment.timeslot.duration.seconds / 3600.
+					total_hours[str(assignment.timeslot.pay_percentage)] = assignment.timeslot.duration.seconds / 3600.
 
-		for percentage, percentage_hours in enumerate(total_hours):
+		for percentage, percentage_hours in total_hours.iteritems:
 			if percentage is not None and percentage_hours is not None:
 				rounded_hours = '%d:%.2d' % (percentage_hours // 1, 15 * round((percentage_hours % 1) / .25)) if percentage_hours else None
 				hourlist[refday.day] = {
