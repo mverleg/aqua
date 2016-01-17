@@ -40,7 +40,7 @@ def overview_context(user, year, month):
 		for slot in day_shifts:
 			assignments = Assignment.objects.filter(user = user, timeslot = slot)
 			for assignment in assignments:
-				if "assignment.timeslot.pay_percentage" in total_hours:
+				if str(assignment.timeslot.pay_percentage) in total_hours:
 					total_hours[str(assignment.timeslot.pay_percentage)] += assignment.timeslot.duration.seconds / 3600.
 				else:
 					total_hours[str(assignment.timeslot.pay_percentage)] = assignment.timeslot.duration.seconds / 3600.
