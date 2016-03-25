@@ -285,7 +285,7 @@ def map_user_pk(items):
 def switch(slot, deg, worker, A, D, duration, similar, current_hours, extra_hours, recursive = False):
 	''' There is a selected worker, and at least one alternative '''
 	slot_duration = duration[slot.pk]
-	cost_old = hour_cost(current_hours, extra_hours)
+	cost_old = hour_cost(current_hours, extra_hours, slot)
 	if D[slot.pk][deg] == None:
 		''' There is a free position for this shift (the day may be trivial but that's not a problem anymore) '''
 		(D, current_hours, updated) = assign(worker, A, D, slot, deg, current_hours)
@@ -295,7 +295,7 @@ def switch(slot, deg, worker, A, D, duration, similar, current_hours, extra_hour
 		old_user_pk = D[slot.pk][deg].user.pk
 		current_hours[old_user_pk] -= slot_duration
 		current_hours[worker.user.pk] += slot_duration
-		cost_new = hour_cost(current_hours, extra_hours)
+		cost_new = hour_cost(current_hours, extra_hours, slot)
 		if cost_new < cost_old:
 			''' Let's change it (time was already updated) '''
 			(D, current_hours, updated) = assign(worker, A, D, slot, deg, current_hours)
@@ -324,11 +324,29 @@ def select_fewest_hours(available_set, current_hours, extra_hours):
 	return None
 
 
-''' Cost function, based solely on the hour distribution '''
-def hour_cost(current, extra):
+''' Cost function, based on the hour distribution and on the time '''
+''' Some shifts will be more expansive / cheaper than others, based on the time. '''
+''' CAUTION: Multiplier currently only effective for shifts that have competition! '''
+def hour_cost(current, extra, slot):
 	cost = 0
+
+	slot_start = slot.start.strftime('%H:%M')
+	slot_end = slot.end.strftime('%H:%M')
+	pay_percentage = slot.pay_percentage
+
+	multiplier = 1
+	if (slot_start == "12:30" and slot_end == "13:30"):
+		' This is a pauzeshift '
+		multiplier = 0.5
+	elif (slot_start == "09:30" and slot_end == "10:30"):
+		' This is an eerste uurtje shift '
+		multiplier = 0.5
+	elif (pay_percentage is not 100):
+		' This is a shift with a different pay percentage '
+		multiplier = pay_percentage / 100
+
 	for user in current.keys():
-		cost += (current[user] - extra[user]) ** 2
+		cost += (current[user] - extra[user]) ** 2 * multiplier
 	return cost
 
 

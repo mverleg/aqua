@@ -95,6 +95,10 @@ class TimeSlot(models.Model):
     def timestr(self):
         return '%s van %s tot %s' % (self.start.strftime(DATEFORMAT), self.end.strftime(TIMEFORMAT), self.end.strftime(TIMEFORMAT))
 
+    @property
+    def ppercentage(self):
+        return self.pay_percentage
+
     def year(self):
         return self.start.year
 
