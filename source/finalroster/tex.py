@@ -1,5 +1,6 @@
 
 import os
+import unidecode
 from os.path import dirname, realpath
 from subprocess import call
 from tempfile import mkdtemp, mkstemp
@@ -180,6 +181,9 @@ def get_bookings(year, month, day):
 					description = event.get('description').split('@')[0]
 				else:
 					description = event.get('summary')
+					
+				# replace tremas with their normalized counterparts. Duplicate functionality with the for below, but maintained for security reasons
+				description = unidecode.unidecode(description)
 
 				bookings[loc]['items'].append({
 					'start': (event.get('dtstart').dt).strftime('%H:%M'),
