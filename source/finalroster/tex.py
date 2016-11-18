@@ -188,7 +188,10 @@ def get_bookings(year, month, day):
 
 				# we retrieve the booker's email address from the booking summary
 				match = re.search(r'[\w\.-]+@[\w\.-]+', event.get('summary'))
-				email = match.group(0)
+				if match is not None:
+					email = match.group(0)
+				else:
+					email = "@"
 
 				# We want to prevent double listings when multiple rooms are booked in a single booking
 				start_check = 0
@@ -199,7 +202,7 @@ def get_bookings(year, month, day):
 				# Generate the text to show on the deurbriefje. Description is shortened and email is appended.
 				booking_text_long = ''.join(letter for letter in unicode(description).strip() if letter in ascii_letters + digits + ' -:/')
 				booking_text = (booking_text_long[:30] + '...') if len(booking_text_long) > 30 else booking_text_long
-				booking_text = booking_text + " \\textcolor{mygray}{" + email.partition("@")[0] + '}'
+				booking_text = booking_text + " \\textcolor{mygray}{" + ''.join(letter for letter in unicode(email.partition("@")[0]).strip() if letter in ascii_letters + digits + ' -.') + '}'
 
 				if start_check == 0:
 					bookings[loc]['items'].append({
