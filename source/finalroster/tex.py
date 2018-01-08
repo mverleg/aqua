@@ -1,6 +1,7 @@
 
 import os
 import unidecode
+import re
 from os.path import dirname, realpath
 from subprocess import call
 from tempfile import mkdtemp, mkstemp
@@ -178,18 +179,37 @@ def get_bookings(year, month, day):
 					stderr.write('unrecognized room %s in ical feed %s\n' % (loc_name, BIG_ROOM_URL))
 					continue
 				if event.get('description') is not None:
-					description = event.get('description').split('@')[0]
+					description = (event.get('description').partition("\n\n")[0]).split('@')[0]
 				else:
 					description = event.get('summary')
-					
+
 				# replace tremas with their normalized counterparts. Duplicate functionality with the for below, but maintained for security reasons
 				description = unidecode.unidecode(description)
 
-				bookings[loc]['items'].append({
-					'start': (event.get('dtstart').dt).strftime('%H:%M'),
-					'end': (event.get('dtend').dt).strftime('%H:%M'),
-					'text': ''.join(letter for letter in unicode(description).strip() if letter in ascii_letters + digits + ' -:/'),
-				})
+				# we retrieve the booker's email address from the booking summary
+				match = re.search(r'[\w\.-]+@[\w\.-]+', event.get('summary'))
+				if match is not None:
+					email = match.group(0)
+				else:
+					email = "@"
+
+				# We want to prevent double listings when multiple rooms are booked in a single booking
+				start_check = 0
+				for booking_check in bookings[loc]['items']:
+					if booking_check['start'] == (event.get('dtstart').dt).strftime('%H:%M'):
+						start_check = 1
+
+				# Generate the text to show on the deurbriefje. Description is shortened and email is appended.
+				booking_text_long = ''.join(letter for letter in unicode(description).strip() if letter in ascii_letters + digits + ' -:/')
+				booking_text = (booking_text_long[:30] + '...') if len(booking_text_long) > 30 else booking_text_long
+				booking_text = booking_text + " \\textcolor{mygray}{" + ''.join(letter for letter in unicode(email.partition("@")[0]).strip() if letter in ascii_letters + digits + ' -.') + '}'
+
+				if start_check == 0:
+					bookings[loc]['items'].append({
+						'start': (event.get('dtstart').dt).strftime('%H:%M'),
+						'end': (event.get('dtend').dt).strftime('%H:%M'),
+						'text': booking_text,
+					})
 	return [booking for booking in bookings if booking['items']]
 
 
