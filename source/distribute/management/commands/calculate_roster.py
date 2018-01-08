@@ -286,26 +286,29 @@ def switch(slot, deg, worker, A, D, duration, similar, current_hours, extra_hour
 	''' There is a selected worker, and at least one alternative '''
 	slot_duration = duration[slot.pk]
 	cost_old = hour_cost(current_hours, extra_hours, slot)
-	if D[slot.pk][deg] == None:
-		''' There is a free position for this shift (the day may be trivial but that's not a problem anymore) '''
-		(D, current_hours, updated) = assign(worker, A, D, slot, deg, current_hours)
-	else:
-		''' be careful to store D[slot.pk][deg], because assign() can change it's value,
-			which will make switching hours back not work, costing about 4 hours of debugging '''
-		old_user_pk = D[slot.pk][deg].user.pk
-		current_hours[old_user_pk] -= slot_duration
-		current_hours[worker.user.pk] += slot_duration
-		cost_new = hour_cost(current_hours, extra_hours, slot)
-		if cost_new < cost_old:
-			''' Let's change it (time was already updated) '''
+	if len(D[slot.pk]) > deg:
+		if D[slot.pk][deg] == None:
+			''' There is a free position for this shift (the day may be trivial but that's not a problem anymore) '''
 			(D, current_hours, updated) = assign(worker, A, D, slot, deg, current_hours)
-			if recursive:
-				for try_slot in similar[slot.pk]:
-					(D, current_hours) = switch(try_slot, deg, worker, A, D, duration, similar, current_hours, extra_hours, recursive = False)[0:2]
 		else:
-			updated = False
-		current_hours[old_user_pk] += slot_duration
-		current_hours[worker.user.pk] -= slot_duration
+			''' be careful to store D[slot.pk][deg], because assign() can change it's value,
+				which will make switching hours back not work, costing about 4 hours of debugging '''
+			old_user_pk = D[slot.pk][deg].user.pk
+			current_hours[old_user_pk] -= slot_duration
+			current_hours[worker.user.pk] += slot_duration
+			cost_new = hour_cost(current_hours, extra_hours, slot)
+			if cost_new < cost_old:
+				''' Let's change it (time was already updated) '''
+				(D, current_hours, updated) = assign(worker, A, D, slot, deg, current_hours)
+				if recursive:
+					for try_slot in similar[slot.pk]:
+						(D, current_hours) = switch(try_slot, deg, worker, A, D, duration, similar, current_hours, extra_hours, recursive = False)[0:2]
+			else:
+				updated = False
+			current_hours[old_user_pk] += slot_duration
+			current_hours[worker.user.pk] -= slot_duration
+	else:
+		updated = False
 
 	return (D, current_hours, updated)
 
