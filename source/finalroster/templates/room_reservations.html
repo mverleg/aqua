@@ -3,31 +3,26 @@
 
 {% block content %}
 
-	<h1>Zaalreserveringen</h1>
+	<h1>Deurbriefjes printen</h1>
 
-	<!-- <p style="font-weight: bold; color: red;">Er lijken nog wat problemen te zijn (overgeslagen ruimtes) dus let goed op! Wordt binnenkort naar gekeken, wellicht tot die tijd nog even zelf schrijven...</p> -->
-	<p style="font-weight: bold; color: red;">De meeste problemen lijken opgelost (anders laat maar weten). Behalve een: herhalende gebeurtenissen verschijnen niet. Hierop moet dus helaas handmatig gecontroleerd worden voor HG00.208 tm HG00.216 als je briefjes uitprint.</p>
-
-	<p>Hieronder kun je een document downloaden om uit te printen, zodat je geen briefjes hoeft te schrijven voor op de deuren.</p>
+	<p>Hieronder kun je een document downloaden om uit te printen, zodat je geen briefjes hoeft te schrijven voor op de deuren. Mocht dit niet werken dan liggen in het rek op de balie briefjes om de reserveringen met de hand op te schrijven. </p>
 
 	<ul>
-		<li><a href="{% url 'room_reservations_pdf_yesterday' %}">Gister pdf</a> / <a href="{% url 'room_reservations_html_yesterday' %}">html</a></li>
-		<li><a href="{% url 'room_reservations_pdf_today' %}">Vandaag pdf</a> / <a href="{% url 'room_reservations_html_today' %}">html</a></li>
-		<li><a href="{% url 'room_reservations_pdf_tomorrow' %}"><strong>Morgen</strong> pdf</a> / <a href="{% url 'room_reservations_html_tomorrow' %}">html</a></li>
-		<li><a href="{% url 'room_reservations_pdf_dayafter' %}">Overmorgen pdf</a> / <a href="{% url 'room_reservations_html_dayafter' %}">html</a></li>
+		<li style="margin-bottom:10px;"><a href="{% url 'room_reservations_pdf_yesterday' %}">Gisteren</a></li>
+		<li style="margin-bottom:10px;"><a href="{% url 'room_reservations_pdf_today' %}">Vandaag</a></li>
+		<li style="margin-bottom:10px;"><a href="{% url 'room_reservations_pdf_tomorrow' %}"><strong>Morgen</strong></a></li>
+		<li><a href="{% url 'room_reservations_pdf_dayafter' %}">Overmorgen</a></li>
 	</ul>
 
 	Opmerkingen:
 
 	<ul>
-		<li>Het duurt even om de kalenders te lezen, 30 seconden is normaal.</li>
-		<li>Er is geen zaalwacht printbudget, je moet het zelf uitprinten.</li>
-		<li>De grote zalen hebben geen duidelijke beschrijving, die moet je zelf nog invullen.</li>
-		<li>Er zijn ook html versies voor als je gewoon wilt overschrijven.</li>
-		<li>Als je een andere dag nodig hebt, verander dan zelf de datum in de url: <br />
-		<a href="{% url 'room_reservations_pdf' year=year month=month day=day %}">{{ baseurl }}{% url 'room_reservations_pdf' year=year month=month day=day %}</a></li>
+		<li>Het duurt even om de reserveringen in te lezen; 30 seconden is normaal.</li>
+		<li>Je kan de briefjes vanuit je U-nummer printen. Het geld wordt dan bij de bibliotheek afgeschreven en niet bij jou.</li>
+		<li>Gebruik geen herhalende boekingen ('wekelijks herhalen' in Google Calendar). De vervolgafspraken komen dan niet op het briefje te staan.</li>
+		<li>Vul bij het boeken van de grote zalen <b>altijd</b> als 'omschrijving' de naam van de boeker in. Dat is wat op het briefje komt te staan. Voor de zekerheid wordt ook het eerste deel van het e-mailadres getoond</li>
+		<li>Als je een andere dag nodig hebt, kopieer dan onderstaande URL en verander de datum: <br />
+		<a href="{% url 'room_reservations_pdf' year=year month=month day=day %}">{{ baseurl }}r/..{% url 'room_reservations_pdf' year=year month=month day=day %}</a></li>
 	</ul>
 
 {% endblock content %}
-
-
