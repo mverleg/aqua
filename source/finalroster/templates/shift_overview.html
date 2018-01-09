@@ -28,20 +28,6 @@
 		<br class="clear" />
 	</p>
 
-	<p>
-		Download <a href="{% url 'month_overview_pdf' user=user.username year=year month=month %}">loondeclaratie</a> als PDF. Vergeet niet te ondertekenen.
-		{% if not user.birthday or not user.first_name or not user.last_name %}
-			<strong>Let op!</strong> Je gegevens zijn niet compleet. <a href="{% url 'account' %}" />Vul deze eerst in</a> alvorens het formulier te downloaden!
-		{% endif %}
-	</p>
-
-	<p style='color: red; font-weight: bold;'>
-		<!-- Papieren briefjes worden waarschijnlijk niet meer verwerkt door Campusdetachering (met onmiddelijke ingang) omdat ze een <a href="https://campusdetachering.flexportal.eu/">digitaal systeem</a> hebben. -->
-		Campusdetachering krijgt de uren tegenwoordig direct uit Aqua (via Rene), dus je hoeft niks te doen, behalve natuurlijk zorgen dat je uren kloppen (altijd, maar vooral aan het eind van de maand). Alleen als je bij de hoofdbalie gewerkt hebt moet je gebruik maken van het <a href="https://campusdetachering.flexportal.eu/">digitale systeem</a>.
-	</p>
-
 {% endblock content %}
 
 {% block footer %}{% endblock footer %}
-
-

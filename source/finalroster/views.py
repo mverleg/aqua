@@ -76,7 +76,7 @@ def month_overview_CD(request, year = None, month = None):
 		})
 	response = HttpResponse(content_type = 'text/csv')
 	response['Content-Disposition'] = 'attachment; filename="overview_%s.csv"' % monthdate.strftime('%b_%Y').lower()
-	fh = writer(response)
+	fh = writer(response, delimiter=';')
 	totals = {}
 	fh.writerow(['Naam', 'Datum', 'Uur gewerkt', 'Looncomponent', 'Kostenplaats'])
 	for user in get_user_model().objects.filter(is_active = True):
@@ -88,7 +88,7 @@ def month_overview_CD(request, year = None, month = None):
 				fh.writerow([
 					user.get_full_name(),
 					dayinfo['date'],
-					dayinfo['hournr'],
+					str(dayinfo['hournr']).replace('.', ','),
 					looncomponent,
 					form.cleaned_data['kostenplaatsnummer'],
 				])
@@ -548,5 +548,3 @@ def room_reservations(request):
 	#	'yearp1': tomorrow.year, 'monthp1': tomorrow.month, 'dayp1': tomorrow.day,
 	#	'yearp2': dayafter.year, 'monthp2': dayafter.month, 'dayp2': dayafter.day,
 	})
-
-
