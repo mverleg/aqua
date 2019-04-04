@@ -47,24 +47,33 @@ def overview_context(user, year, month):
 				else:
 					total_hours[str(assignment.timeslot.pay_percentage)] = assignment.timeslot.duration.seconds / 3600.
 
+		normalRates = 0
+		specialRates= 0
+		specialpercentage = "100"
+		totalFull_hours = 0.0
 
 		for percentage in total_hours:
 			if percentage is not None and total_hours[percentage] is not None:
-
-				if(total_hours[percentage] > 100):
-					highWageHours = '%d:%.2d' % (total_hours[percentage] // 1, 15 * round((total_hours[percentage] % 1) / .25)) if total_hours[percentage] else None
+				totalFull_hours += total_hours[percentage]
+				if int(percentage) == 100:
+					normalRates = total_hours[percentage]
 				else:
-					rounded_hours = '%d:%.2d' % (total_hours[percentage] // 1, 15 * round((total_hours[percentage] % 1) / .25)) if total_hours[percentage] else None
-				hourlist[refday.day] = {
-					'date': refday.strftime(DATEFORMAT),
-					'day': refday.strftime('%d'),
-					'weekday': DAY_NAMES[refday.weekday()],
-					'hours': rounded_hours,
-					'highWageHours': hHours,
-					'hournr': total_hours[percentage],
-					'percentage': percentage,
+					specialRates = total_hours[percentage]
+					specialpercentage = percentage
+
+		normalRates = '%d:%.2d' % (normalRates // 1, 15 * round((normalRates % 1) / .25))
+		specialRates = '%d:%.2d' % (specialRates // 1, 15 * round((specialRates % 1) / .25))
+		hourlist[refday.day] = {
+			'date': refday.strftime(DATEFORMAT),
+			'day': refday.strftime('%d'),
+			'weekday': DAY_NAMES[refday.weekday()],
+			'normalRates': normalRates,
+			'specialRates': specialRates,
+			'hournr':	totalFull_hours,
+			'percentage': specialpercentage,
+
 				}
-				grand_total_hours += total_hours[percentage]
+		grand_total_hours += totalFull_hours
 		total_hours = {} # clear totals for this day
 		refday += day
 	return {
