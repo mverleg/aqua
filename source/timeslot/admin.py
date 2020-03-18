@@ -10,7 +10,7 @@ class RosterAdmin(ModelAdmin):
 
 
 class TimeslotAdmin(ModelAdmin):
-	list_display = ('__unicode__', 'roster', 'start', 'end', 'degeneracy', 'pay_percentage',)
+	list_display = ('__unicode__', 'roster', 'start', 'end', 'degeneracy', 'holiday',)
 	list_filter = ('roster', 'degeneracy', 'start',)
 
 
@@ -22,5 +22,3 @@ class RosterWorkerAdmin(ModelAdmin):
 admin.site.register(Roster, RosterAdmin)
 admin.site.register(TimeSlot, TimeslotAdmin)
 admin.site.register(RosterWorker, RosterWorkerAdmin)
-
-

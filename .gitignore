@@ -2,6 +2,7 @@
 *.pyc
 /backups
 *.db
+*.sql
 .aqua
 /env/
 static/
@@ -12,4 +13,5 @@ static/
 *.log
 /source/notification.html
 .idea/
+/source/distribute/imgs.py
 

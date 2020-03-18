@@ -84,14 +84,37 @@ def month_overview_CD(request, year = None, month = None):
 		totals[user.get_full_name()] = context['totalnr']
 		for dayinfo in context['hourlist'].values():
 			if dayinfo['hournr'] > 0:
-				looncomponent = form.cleaned_data['type_werk'] if dayinfo['percentage'] == "100" else "Loon onregelmatige uren " + dayinfo['percentage'] + "%"
-				fh.writerow([
-					user.get_full_name(),
-					dayinfo['date'],
-					str(dayinfo['hournr']).replace('.', ','),
-					looncomponent,
-					form.cleaned_data['kostenplaatsnummer'],
-				])
+				if dayinfo['specialhours'] > 0 and  dayinfo['normalhours'] > 0:
+					fh.writerow([
+						user.get_full_name(),
+						dayinfo['date'],
+						str(dayinfo['normalhours']).replace(':',','),
+						form.cleaned_data['type_werk'],
+						form.cleaned_data['kostenplaatsnummer'],
+						])
+					fh.writerow([
+						user.get_full_name(),
+						dayinfo['date'],
+						str(dayinfo['specialhours']).replace(':',','),
+						"Loon onregelmatige uren "+str(dayinfo['percentage'])+"%",
+						form.cleaned_data['kostenplaatsnummer'],
+						])
+				elif dayinfo['specialhours'] <= 0:
+					fh.writerow([
+						user.get_full_name(),
+						dayinfo['date'],
+						str(dayinfo['normalhours']).replace(':',','),
+						form.cleaned_data['type_werk'],
+						form.cleaned_data['kostenplaatsnummer'],
+						])
+				else:
+					fh.writerow([
+						user.get_full_name(),
+						dayinfo['date'],
+						str(dayinfo['specialhours']).replace(':',','),
+						"Loon onregelmatige uren "+str(dayinfo['percentage'])+"%",
+						form.cleaned_data['kostenplaatsnummer'],
+						])
 	return response
 
 

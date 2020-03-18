@@ -3,10 +3,10 @@
 # http://stackoverflow.com/questions/5833623/mplconfigdir-error-in-matplotlib
 from os import environ
 environ['MPLCONFIGDIR'] = '/tmp/'
-import matplotlib as mpl
-mpl.use('Agg')
-from numpy import array, polyfit
-from matplotlib.pyplot import subplots
+#import matplotlib as mpl
+#mpl.use('Agg')
+#from numpy import array, polyfit
+#from matplotlib.pyplot import subplots
 from timeslot.models import RosterWorker, Roster
 from distribute.models import Assignment, Availability
 from datetime import timedelta
@@ -19,11 +19,11 @@ def hour_dist_scatter(request, roster):
     avail = array([user.availability_duration for user in users])
     rec = array([user.assignment_duration for user in users])
     extra = array([user.extra_duration for user in users])
-    
+
     cor = [max(val, 0) for val in rec - extra]
     fit_param = polyfit(avail, cor, 1)
     fit_val = fit_param[0] * array(sorted(avail)) + fit_param[1]
-    
+
     fig, ax = subplots(figsize = (6, 5))
     ax.set_title('%s (slope %.3f)' % (roster.name, fit_param[0]))
     ax.plot(sorted(avail), fit_val, label = 'linear fit', color = 'blue')
@@ -52,4 +52,3 @@ def generate_user_stats(roster):
         user.availability_duration = worker_availabilities_duration.days * 24.0 + worker_availabilities_duration.seconds / 3600.0
         users.append(user)
     return users
-

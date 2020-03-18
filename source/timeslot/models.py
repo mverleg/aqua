@@ -65,8 +65,9 @@ class TimeSlot(models.Model):
     start = models.DateTimeField(db_index = True)
     end = models.DateTimeField(db_index = True)
     degeneracy = models.PositiveIntegerField(default = 1)
-    pay_percentage = models.PositiveIntegerField(default = 100)
+    #pay_percentage = models.PositiveIntegerField(default = 100)
     #user = models.ForeignKey(User, blank = True, null = True)
+    holiday = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['start', ]
@@ -95,9 +96,9 @@ class TimeSlot(models.Model):
     def timestr(self):
         return '%s van %s tot %s' % (self.start.strftime(DATEFORMAT), self.end.strftime(TIMEFORMAT), self.end.strftime(TIMEFORMAT))
 
-    @property
-    def ppercentage(self):
-        return self.pay_percentage
+    #@property
+    #def ppercentage(self):
+    #    return self.pay_percentage
 
     def year(self):
         return self.start.year
@@ -113,7 +114,3 @@ class RosterWorker(models.Model):
 
     def __unicode__(self):
         return '%s @ %s' % (self.user, self.roster.name)
-
-
-
-

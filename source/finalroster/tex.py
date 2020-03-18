@@ -8,7 +8,7 @@ from tempfile import mkdtemp, mkstemp
 from django.template.loader import render_to_string
 from threading import Thread
 from django.contrib.auth.models import User
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time, date
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, render
 from icalendar import Calendar
@@ -32,40 +32,67 @@ MONTH_NAMES = ('', 'januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli
 
 
 def overview_context(user, year, month):
-	day = timedelta(days = 1)
-	refday = datetime(year = year, month = month, day = 1)
+	day = timedelta(days= 1)
+	refday = datetime(year=year, month=month, day = 1)
 	hourlist = {}
-	grand_total_hours = 0.
+	grand_total_hours = 0
 	total_hours = {}
+	total_hours['140'] = 0
+	total_hours['175'] = 0
+	total_hours['100'] = 0
 	while refday.month == month:
 		day_shifts = TimeSlot.objects.filter(start__gt = refday, end__lt = refday + day)
 		for slot in day_shifts:
 			assignments = Assignment.objects.filter(user = user, timeslot = slot)
-			for assignment in assignments:
-				if str(assignment.timeslot.pay_percentage) in total_hours:
-					total_hours[str(assignment.timeslot.pay_percentage)] += assignment.timeslot.duration.seconds / 3600.
-				else:
-					total_hours[str(assignment.timeslot.pay_percentage)] = assignment.timeslot.duration.seconds / 3600.
 
+			for assignment in assignments:
+				if assignment.timeslot.end.weekday() > 4 or assignment.timeslot.holiday:
+					if assignment.timeslot.end.weekday() == 5:
+						total_hours['140'] += assignment.timeslot.duration.total_seconds() / 3600
+
+					else:
+						total_hours['175'] += assignment.timeslot.duration.total_seconds() / 3600
+				else:
+					if assignment.timeslot.start.time() < time(7,0,0):
+						if assignment.timeslot.end().time() < time(7,0,0):
+							total_hours['140'] += assignment.timeslot.duration.total_seconds() / 3600
+						else:
+							total_hours['140'] += (datetime.combine(date.today(),time(7,0,0)) - datetime.combine(date.today(),assignment.timeslot.start.time())).total_seconds()/3600# TIME BEFORE 7AM
+							if assignment.TimeSlot.end() < time(20,0,0):
+								total_hours['100'] += (assignment.timeslot.duration.total_seconds() /3600) - ((datetime.combine(date.today(),time(7,0,0))-datetime.combine(date.today(),datassignment.timeslot.start.time())).total_seconds()/3600)# full time minus the time before 7 am
+							else:
+								total_hours['100'] += (time(20,0,0)-time(7,0,0)).total_seconds()# time between 7 am and 20:00 pm
+								total_hours['140'] += (datetime.combine(date.today(), assignment.timeslot.end.time()) - datetime.combine(date.today(),time(20,0,0))).total_seconds()
+					else:
+						if assignment.timeslot.end.time() < time(20,0,0):
+							total_hours['100'] += assignment.timeslot.duration.total_seconds() / 3600
+						else:
+							total_hours['100'] += (datetime.combine(date.today(),time(20,0,0))- datetime.combine(date.today(), assignment.timeslot.start.time())).total_seconds()/3600 # time between 7 am and 20:00 pm
+							total_hours['140'] += (datetime.combine(date.today(), assignment.timeslot.end.time()) - datetime.combine(date.today(), time(20,0,0))).total_seconds()/3600
 		normalRates = 0
 		specialRates= 0
 		specialpercentage = "100"
 		totalFull_hours = 0.0
 
 		for percentage in total_hours:
-			if percentage is not None and total_hours[percentage] is not None:
+			if percentage is not None and total_hours[percentage] is not 0:
 				totalFull_hours += total_hours[percentage]
 				if int(percentage) == 100:
 					normalRates = total_hours[percentage]
 				else:
-					specialRates = total_hours[percentage]
-					specialpercentage = percentage
+					if total_hours[percentage] is not 0:
+						specialRates = total_hours[percentage]
+						specialpercentage = percentage
+					else:
+						specialRates = 0.0
 
 		normalRates = '%d:%.2d' % (normalRates // 1, 15 * round((normalRates % 1) / .25))
 		specialRates = '%d:%.2d' % (specialRates // 1, 15 * round((specialRates % 1) / .25))
 		hourlist[refday.day] = {
 			'date': refday.strftime(DATEFORMAT),
 			'day': refday.strftime('%d'),
+			'normalhours': total_hours["100"],
+			"specialhours": total_hours["175"] if total_hours["175"] is not 0 else total_hours["140"] ,
 			'weekday': DAY_NAMES[refday.weekday()],
 			'normalRates': normalRates,
 			'specialRates': specialRates,
@@ -74,20 +101,24 @@ def overview_context(user, year, month):
 
 				}
 		grand_total_hours += totalFull_hours
-		total_hours = {} # clear totals for this day
+		total_hours = {}
+		total_hours['140'] = 0
+		total_hours['175'] = 0
+		total_hours['100'] = 0 # clear totals for this day
 		refday += day
+
 	return {
-		'user': user,
-		'hourlist': hourlist,
-		'total': '%d:%.2d' % (grand_total_hours // 1, 15 * round((grand_total_hours % 1) / .25)),
-		'totalnr': grand_total_hours,
-		'month_name': MONTH_NAMES[month],
-		'month': month,
-		'prev_month': month - 1 if month > 1 else 12,
-		'next_month': (month % 12) + 1,
-		'year': year,
-		'prev_year': year if month > 1 else year - 1,
-		'next_year': year if month < 12 else year +1,
+			'user': user,
+			'hourlist': hourlist,
+			'total': '%d:%.2d' % (grand_total_hours // 1, 15 * round((grand_total_hours % 1) / .25)),
+			'totalnr': grand_total_hours,
+			'month_name': MONTH_NAMES[month],
+			'month': month,
+			'prev_month': month - 1 if month > 1 else 12,
+			'next_month': (month % 12) + 1,
+			'year': year,
+			'prev_year': year if month > 1 else year - 1,
+			'next_year': year if month < 12 else year +1,
 	}
 
 
